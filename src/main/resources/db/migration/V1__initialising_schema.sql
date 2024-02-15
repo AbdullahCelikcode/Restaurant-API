@@ -1,6 +1,6 @@
 
 
-CREATE TYPE table_status as ENUM ('OCCUPIED','AVAILABLE','RESERVED');
+CREATE TYPE order_table_status as ENUM ('OCCUPIED','AVAILABLE','RESERVED');
 CREATE TYPE order_status as ENUM ('PENDING','PROCESSING','COMPLETED','CANCELLED','PAID');
 CREATE TYPE extent_type as ENUM ('ML','GR');
 CREATE TYPE status as ENUM ('ACTIVE','INACTIVE');
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS order_table
 (
     id                    uuid PRIMARY KEY,
     dining_table_merge_id uuid           NOT NULL,
-    status                table_status   NOT NULL,
+    status                order_table_status   NOT NULL,
     price                 NUMERIC(50, 8) NOT NULL,
     created_at            TIMESTAMP(0)   NOT NULL,
     updated_at            TIMESTAMP(0)
