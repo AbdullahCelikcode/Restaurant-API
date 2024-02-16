@@ -1,111 +1,109 @@
+create type dining_table_status as enum ('OCCUPIED','AVAILABLE','RESERVED');
+create type order_status as enum ('PENDING','PROCESSING','COMPLETED','CANCELLED','PAID');
+create type order_item_status as enum ('UNPAID','PAID');
+create type extent_type as enum ('ML','GR');
+create type category_status as enum ('ACTIVE','INACTIVE');
+create type product_status as enum ('ACTIVE','INACTIVE');
 
-
-CREATE TYPE order_table_status as ENUM ('OCCUPIED','AVAILABLE','RESERVED');
-CREATE TYPE order_status as ENUM ('PENDING','PROCESSING','COMPLETED','CANCELLED','PAID');
-CREATE TYPE extent_type as ENUM ('ML','GR');
-CREATE TYPE status as ENUM ('ACTIVE','INACTIVE');
-
-CREATE TABLE IF NOT EXISTS category
+create table if not exists rma_category
 (
-    id         BIGSERIAL PRIMARY KEY,
-    name       VARCHAR(512) NOT NULL,
-    status     status       NOT NULL,
-    created_at TIMESTAMP(0) NOT NULL,
-    updated_at TIMESTAMP(0)
+    id         bigserial primary key,
+    name       varchar(512)    not null,
+    status     category_status not null,
+    created_at timestamp(0)    not null,
+    updated_at timestamp(0)
 );
 
 
-CREATE TABLE IF NOT EXISTS product
+create table if not exists  rma_product
 (
-    id          uuid PRIMARY KEY,
-    name        VARCHAR(512)   NOT NULL,
-    ingredient  VARCHAR(2048)  NOT NULL,
-    price       NUMERIC(50, 8) NOT NULL,
-    status      status         NOT NULL,
-    extent      INTEGER        NOT NULL,
-    extent_type extent_type    NOT NULL,
-    created_at  TIMESTAMP(0)   NOT NULL,
-    updated_at  TIMESTAMP(0),
-    category_id BIGINT,
-    FOREIGN KEY (category_id) REFERENCES category (id)
+    id          uuid
+        constraint pk__rma_product__id primary key,
+    name        varchar(512)   not null,
+    ingredient  varchar(2048)  not null,
+    price       numeric(50, 8) not null,
+    status      product_status not null,
+    extent      integer        not null,
+    extent_type extent_type    not null,
+    category_id bigint
+        constraint fk__rma_product__category_id not null,
+    created_at  timestamp(0)   not null,
+    updated_at  timestamp(0),
+
+    foreign key (category_id) references rma_category (id)
 );
 
 
-CREATE TABLE IF NOT EXISTS order_table
+create table if not exists rma_order
 (
-    id                    uuid PRIMARY KEY,
-    dining_table_merge_id uuid           NOT NULL,
-    status                order_table_status   NOT NULL,
-    price                 NUMERIC(50, 8) NOT NULL,
-    created_at            TIMESTAMP(0)   NOT NULL,
-    updated_at            TIMESTAMP(0)
+    id                    uuid
+        constraint pk__rma_order__id primary key,
+    dining_table_merge_id uuid           not null,
+    status                order_status   not null,
+    price                 numeric(50, 8) not null,
+    created_at            timestamp(3)   not null,
+    updated_at            timestamp(3)
 );
 
-CREATE TABLE IF NOT EXISTS order_item
+create table if not exists rma_order_item
 (
-    id         uuid PRIMARY KEY,
-    order_id   uuid           NOT NULL,
-    product_id uuid           NOT NULL,
-    price      NUMERIC(50, 8) NOT NULL,
-    status     order_status   NOT NULL,
-    created_at TIMESTAMP(0)   NOT NULL,
-    updated_at TIMESTAMP(0),
-    FOREIGN KEY (order_id) REFERENCES order_table (id),
-    FOREIGN KEY (product_id) REFERENCES product (id)
-);
-
-
-
-CREATE TABLE IF NOT EXISTS dining_table
-(
-    id         BIGSERIAL PRIMARY KEY,
-    merge_id   uuid         NOT NULL,
-    status     VARCHAR      NOT NULL,
-    size       INT          NOT NULL,
-    created_at TIMESTAMP(0) NOT NULL,
-    updated_at TIMESTAMP(0)
+    id         uuid primary key,
+    order_id   uuid
+        constraint fk__rma_order_item__order_id not null,
+    product_id uuid
+        constraint fk__rma_order_item__product_id not null,
+    price      numeric(50, 8)    not null,
+    status     order_item_status not null,
+    created_at timestamp(3)      not null,
+    updated_at timestamp(3),
+    foreign key (order_id) references rma_order (id),
+    foreign key (product_id) references rma_product (id)
 );
 
 
 
-CREATE TABLE IF NOT EXISTS parameter
+create table if not exists rma_dining_table
 (
-    currency CHAR(3) NOT NULL
+    id         bigserial
+        constraint pk__rma_dining_table__id primary key,
+    merge_id   uuid                not null,
+    status     dining_table_status not null,
+    size       int                 not null,
+    created_at timestamp(0)        not null,
+    updated_at timestamp(0)
 );
 
-INSERT INTO category (name, status, created_at, updated_at)
-VALUES ('Category 1', 'ACTIVE', CURRENT_TIMESTAMP, NULL),
-       ('Category 2', 'INACTIVE', CURRENT_TIMESTAMP, NULL),
-       ('Category 3', 'ACTIVE', CURRENT_TIMESTAMP, NULL);
 
 
-INSERT INTO product (id, name, ingredient, price, status, extent, extent_type, created_at, updated_at, category_id)
-VALUES ('550e8400-e29b-41d4-a716-446655440000', 'Product 1', 'Ingredient 1', 10.99, 'ACTIVE', 100, 'ML',
-        CURRENT_TIMESTAMP, NULL, (SELECT id FROM category WHERE name = 'Category 1')),
-       ('550e8400-e29b-41d4-a716-446655440001', 'Product 2', 'Ingredient 2', 15.99, 'INACTIVE', 200, 'GR',
-        CURRENT_TIMESTAMP, NULL, (SELECT id FROM category WHERE name = 'Category 2')),
-       ('550e8400-e29b-41d4-a716-446655440002', 'Product 3', 'Ingredient 3', 25.99, 'ACTIVE', 150, 'ML',
-        CURRENT_TIMESTAMP, NULL, (SELECT id FROM category WHERE name = 'Category 3'));
+create table if not exists rma_parameter
+(
+    id         bigserial
+        constraint pk__rma_parameter__id primary key,
+    name       varchar(52)  not null,
+    currency   char(3)      not null,
+    created_at timestamp(0) not null,
+    updated_at timestamp(0)
 
-INSERT INTO dining_table (merge_id, status, size, created_at, updated_at)
-VALUES ('550e8400-e29b-41d4-a716-446655440003', 'OCCUPIED', 4, CURRENT_TIMESTAMP, NULL),
-       ('550e8400-e29b-41d4-a716-446655440004', 'AVAILABLE', 2, CURRENT_TIMESTAMP, NULL);
+);
 
-INSERT INTO order_table (id, dining_table_merge_id, status, price, created_at, updated_at)
-VALUES ('550e8400-e29b-41d4-a716-446655440005', '550e8400-e29b-41d4-a716-446655440003', 'OCCUPIED', 50.99,
-        CURRENT_TIMESTAMP, NULL),
-       ('550e8400-e29b-41d4-a716-446655440006', '550e8400-e29b-41d4-a716-446655440004', 'AVAILABLE', 75.99,
-        CURRENT_TIMESTAMP, NULL);
+insert into rma_category (name, status, created_at)
+values ('category 1', 'ACTIVE', current_timestamp),
+       ('category 2', 'INACTIVE', current_timestamp),
+       ('category 3', 'ACTIVE', current_timestamp);
 
 
-INSERT INTO order_item (id, order_id, product_id, price, status, created_at, updated_at)
-VALUES ('550e8400-e29b-41d4-a716-446655440007', '550e8400-e29b-41d4-a716-446655440005',
-        '550e8400-e29b-41d4-a716-446655440000', 10.99, 'PROCESSING', CURRENT_TIMESTAMP, NULL),
-       ('550e8400-e29b-41d4-a716-446655440008', '550e8400-e29b-41d4-a716-446655440005',
-        '550e8400-e29b-41d4-a716-446655440001', 15.99, 'PROCESSING', CURRENT_TIMESTAMP, NULL),
-       ('550e8400-e29b-41d4-a716-446655440009', '550e8400-e29b-41d4-a716-446655440006',
-        '550e8400-e29b-41d4-a716-446655440002', 25.99, 'COMPLETED', CURRENT_TIMESTAMP, NULL);
+insert into rma_product (id, name, ingredient, price, status, extent, extent_type, created_at, category_id)
+values ('7fa260e0-8391-4a1f-86ab-f20a4a3808c9', 'product 1', 'ingredient 1', 10.99, 'ACTIVE', 100, 'ML',
+        current_timestamp, 1),
+       ('5d090f5b-a74d-4886-a398-e150b38249b9', 'product 2', 'ingredient 2', 15.99, 'INACTIVE', 200, 'GR',
+        current_timestamp, 2),
+       ('ede817d5-4239-43c4-ad27-a73f185ece47', 'product 3', 'ingredient 3', 25.99, 'ACTIVE', 150, 'ML',
+        current_timestamp, 3);
+
+insert into rma_dining_table (merge_id, status, size, created_at)
+values ('5948b7a4-d02a-4202-9ed9-4286d1140d29', 'OCCUPIED', 4, current_timestamp),
+       ('7acd098d-258d-4a24-ae68-dce0d3ec9319', 'AVAILABLE', 2, current_timestamp);
 
 
-INSERT INTO parameter (currency)
-VALUES ('TRY');
+insert into rma_parameter (name, currency, created_at)
+values ('Turkish lira', 'TRY', current_timestamp);
