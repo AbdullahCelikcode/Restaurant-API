@@ -1,0 +1,18 @@
+version: "4.27.2"
+
+services:
+  database:
+    container_name: my_database
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_DB: restaurant_app
+      POSTGRES_USER: restaurant_user
+      POSTGRES_PASSWORD: restaurant_user_pass
+      POSTGRES_ROOT_PASSWORD: rootpass
+      POSTGRES_ROOT_HOST: '%'
+      POSTGRES_PORT: 5432
+    volumes:
+      - ./db:/var/lib/postgresql
+    ports:
+      - "5432:5432"

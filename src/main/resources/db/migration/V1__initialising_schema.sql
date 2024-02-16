@@ -15,7 +15,7 @@ create table if not exists rma_category
 );
 
 
-create table if not exists  rma_product
+create table if not exists rma_product
 (
     id          uuid
         constraint pk__rma_product__id primary key,
