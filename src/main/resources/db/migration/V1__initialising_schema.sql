@@ -7,9 +7,11 @@ create type product_status as enum ('ACTIVE','INACTIVE');
 
 create table if not exists rma_category
 (
-    id         bigserial primary key,
+    id         bigserial
+        constraint pk__rma_category__id primary key,
     name       varchar(512)    not null,
-    status     category_status not null,
+    status varchar(20) not null
+            constraint c__rm_category__status check (status in ('ACTIVE', 'INACTIVE', 'DELETED')),
     created_at timestamp(0)    not null,
     updated_at timestamp(0)
 );
@@ -25,12 +27,11 @@ create table if not exists rma_product
     status      product_status not null,
     extent      integer        not null,
     extent_type extent_type    not null,
-    category_id bigint
-        constraint fk__rma_product__category_id not null,
+    category_id bigint         not null
+        constraint fk__rma_product__category_id references rma_category (id),
     created_at  timestamp(0)   not null,
-    updated_at  timestamp(0),
+    updated_at  timestamp(0)
 
-    foreign key (category_id) references rma_category (id)
 );
 
 
@@ -47,17 +48,17 @@ create table if not exists rma_order
 
 create table if not exists rma_order_item
 (
-    id         uuid primary key,
-    order_id   uuid
-        constraint fk__rma_order_item__order_id not null,
-    product_id uuid
-        constraint fk__rma_order_item__product_id not null,
+    id         uuid
+        constraint pk__rma_order_item__id primary key,
+    order_id   uuid              not null
+        constraint fk__rma_order_item__order_id references rma_order (id),
+    product_id uuid              not null
+        constraint fk__rma_order_item__product_id references rma_product (id),
     price      numeric(50, 8)    not null,
     status     order_item_status not null,
     created_at timestamp(3)      not null,
-    updated_at timestamp(3),
-    foreign key (order_id) references rma_order (id),
-    foreign key (product_id) references rma_product (id)
+    updated_at timestamp(3)
+
 );
 
 
@@ -80,7 +81,7 @@ create table if not exists rma_parameter
     id         bigserial
         constraint pk__rma_parameter__id primary key,
     name       varchar(52)  not null,
-    currency   char(3)      not null,
+    definition varchar(52)  not null,
     created_at timestamp(0) not null,
     updated_at timestamp(0)
 
@@ -105,5 +106,5 @@ values ('5948b7a4-d02a-4202-9ed9-4286d1140d29', 'OCCUPIED', 4, current_timestamp
        ('7acd098d-258d-4a24-ae68-dce0d3ec9319', 'AVAILABLE', 2, current_timestamp);
 
 
-insert into rma_parameter (name, currency, created_at)
-values ('Turkish lira', 'TRY', current_timestamp);
+insert into rma_parameter (name, definition, created_at)
+values ('Currency', 'TRY', current_timestamp);
