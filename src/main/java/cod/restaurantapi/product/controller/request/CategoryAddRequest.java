@@ -7,6 +7,6 @@ import lombok.Getter;
 @Getter
 public class CategoryAddRequest {
     @NotBlank
-    @Size(min = 3, max = 256)
+    @Size(min = 3, max = 255)
     private String name;
 }

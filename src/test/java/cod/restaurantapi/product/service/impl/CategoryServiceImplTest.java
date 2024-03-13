@@ -1,27 +1,24 @@
-package cod.restaurantapi.service;
+package cod.restaurantapi.product.service.impl;
 
 import cod.restaurantapi.product.model.enums.CategoryStatus;
 import cod.restaurantapi.product.repository.CategoryRepository;
 import cod.restaurantapi.product.repository.entity.CategoryEntity;
 import cod.restaurantapi.product.service.command.CategoryCreateCommand;
 import cod.restaurantapi.product.service.domain.Category;
-import cod.restaurantapi.product.service.impl.CategoryServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
-class CategoryServiceTest {
+class CategoryServiceImplTest {
     @Mock
     private CategoryRepository categoryRepository;
 
@@ -30,7 +27,7 @@ class CategoryServiceTest {
 
 
     @Test
-    void CategoryServiceCreateTest() {
+    void givenCreateCategory_thenSaveCategory() {
 
         CategoryCreateCommand categoryCreateCommand = CategoryCreateCommand.builder()
                 .name("CategoryTest")
@@ -38,31 +35,49 @@ class CategoryServiceTest {
 
         CategoryEntity categoryEntity = new CategoryEntity();
 
-        when(categoryRepository.save(any(CategoryEntity.class))).thenReturn(categoryEntity);
+        Mockito.when(categoryRepository.save(Mockito.any(CategoryEntity.class))).thenReturn(categoryEntity);
 
         categoryService.save(categoryCreateCommand);
 
-        verify(categoryRepository, times(1)).save(any(CategoryEntity.class));
+        Mockito.verify(categoryRepository, Mockito.times(1)).save(Mockito.any(CategoryEntity.class));
 
 
     }
 
+
     @Test
-    void CategoryServiceFindByIdTest() {
+    void givenValidCategoryId_whenCategoryExist_thenReturnCategory() {
         CategoryEntity categoryEntity = CategoryEntity.builder()
                 .id(1L)
                 .name("TestCategory")
                 .status(CategoryStatus.ACTIVE)
                 .build();
 
-        when(categoryRepository.findById(categoryEntity.getId())).thenReturn(Optional.of(categoryEntity));
+        Mockito.when(categoryRepository.findById(categoryEntity.getId())).thenReturn(Optional.of(categoryEntity));
 
         Category category = categoryService.findById(1L);
 
-        verify(categoryRepository, times(1)).findById(any(Long.class));
+        Mockito.verify(categoryRepository, Mockito.times(1)).findById(Mockito.any(Long.class));
         Assertions.assertEquals("TestCategory", category.getName());
         Assertions.assertEquals(1L, category.getId());
         Assertions.assertEquals(CategoryStatus.ACTIVE, category.getStatus());
+    }
+
+
+    @Test
+    void givenCategoryId_whenCategoryNotExist_thenThrowException() {
+
+        Long categoryId = 1L;
+
+
+        Mockito.when(categoryRepository.findById(Mockito.any(Long.class)))
+                .thenThrow(RuntimeException.class);
+
+
+        assertThrows(RuntimeException.class,
+                () -> categoryService.findById(categoryId));
+
+
     }
 
 }

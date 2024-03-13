@@ -1,5 +1,6 @@
 package cod.restaurantapi.product.service.impl;
 
+import cod.restaurantapi.product.controller.exceptions.CategoryNotFoundException;
 import cod.restaurantapi.product.model.enums.CategoryStatus;
 import cod.restaurantapi.product.model.mapper.CategoryCreateCommandToEntityMapper;
 import cod.restaurantapi.product.model.mapper.CategoryEntityToCategory;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class CategoryServiceImpl implements CategoryService {
+class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
     private static final CategoryCreateCommandToEntityMapper toEntity = CategoryCreateCommandToEntityMapper.INSTANCE;
@@ -29,7 +30,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category findById(Long id) {
-        CategoryEntity categoryEntity = categoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Category Is Not Exists"));
+        CategoryEntity categoryEntity = categoryRepository.findById(id).orElseThrow(() -> new CategoryNotFoundException());
+
         return toCategory.map(categoryEntity);
     }
 }

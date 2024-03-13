@@ -9,6 +9,8 @@ import cod.restaurantapi.product.service.CategoryService;
 import cod.restaurantapi.product.service.command.CategoryCreateCommand;
 import cod.restaurantapi.product.service.domain.Category;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,20 +19,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
+@Validated
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/category")
 class CategoryController {
     private final CategoryService categoryService;
     private static final CategoryCreateRequestToCommandMapper toCommand = CategoryCreateRequestToCommandMapper.INSTANCE;
     private static final CategoryToCategoryResponse toResponse = CategoryToCategoryResponse.INSTANCE;
 
-    CategoryController(CategoryService categoryService) {
-        this.categoryService = categoryService;
-    }
-
 
     @PostMapping
-    public BaseResponse<Void> categoryAdd(@Valid @RequestBody CategoryAddRequest categoryAddRequest) {
+    public BaseResponse<Void> categoryAdd(@RequestBody @Valid CategoryAddRequest categoryAddRequest) {
         CategoryCreateCommand categoryCreateCommand = toCommand.map(categoryAddRequest);
         categoryService.save(categoryCreateCommand);
         return BaseResponse.SUCCESS;
