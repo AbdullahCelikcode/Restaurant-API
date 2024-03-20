@@ -20,4 +20,9 @@ public class Category {
     private CategoryStatus status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    public void active() {
+        this.status = CategoryStatus.ACTIVE;
+    }
+
 }
