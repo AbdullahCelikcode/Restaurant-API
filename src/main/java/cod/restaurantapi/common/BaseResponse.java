@@ -15,8 +15,11 @@ public class BaseResponse<T> {
 
     @Builder.Default
     private LocalDateTime time = LocalDateTime.now();
+
     private HttpStatus httpStatus;
+
     private Boolean isSuccess;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private T response;
 
