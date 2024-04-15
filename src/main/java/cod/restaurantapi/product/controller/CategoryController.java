@@ -2,15 +2,20 @@ package cod.restaurantapi.product.controller;
 
 import cod.restaurantapi.common.BaseResponse;
 import cod.restaurantapi.product.controller.request.CategoryAddRequest;
+import cod.restaurantapi.product.controller.request.CategoryListRequest;
 import cod.restaurantapi.product.controller.request.CategoryUpdateRequest;
+import cod.restaurantapi.product.controller.response.CategoryListResponse;
 import cod.restaurantapi.product.controller.response.CategoryResponse;
 import cod.restaurantapi.product.model.mapper.CategoryCreateRequestToCommandMapper;
+import cod.restaurantapi.product.model.mapper.CategoryListRequestToCommandListMapper;
+import cod.restaurantapi.product.model.mapper.CategoryListToCategoryResponseListMapper;
 import cod.restaurantapi.product.model.mapper.CategoryToCategoryResponse;
 import cod.restaurantapi.product.model.mapper.CategoryUpdateRequestToCommandMapper;
 import cod.restaurantapi.product.service.CategoryService;
 import cod.restaurantapi.product.service.command.CategoryCreateCommand;
 import cod.restaurantapi.product.service.command.CategoryUpdateCommand;
 import cod.restaurantapi.product.service.domain.Category;
+import cod.restaurantapi.product.service.domain.CategoryList;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Positive;
@@ -37,6 +42,26 @@ class CategoryController {
 
     private static final CategoryUpdateRequestToCommandMapper updateRequestToCommandMapper = CategoryUpdateRequestToCommandMapper.INSTANCE;
 
+    private static final CategoryListRequestToCommandListMapper listRequestToCommandMapper = CategoryListRequestToCommandListMapper.INSTANCE;
+
+    private static final CategoryListToCategoryResponseListMapper categoryListToResponseList = CategoryListToCategoryResponseListMapper.INSTANCE;
+
+    @GetMapping("/{id}")
+    public BaseResponse<CategoryResponse> getCategoryById(@PathVariable @Positive @Max(999) Long id) {
+        Category category = categoryService.findById(id);
+        CategoryResponse categoryResponse = categoryToCategoryResponseMapper.map(category);
+        return BaseResponse.successOf(categoryResponse);
+    }
+
+    @PostMapping("/all")
+    public BaseResponse<CategoryListResponse> findAllCategories(
+            @RequestBody @Valid CategoryListRequest listRequest) {
+
+        CategoryList categoryList = categoryService.findAll(listRequestToCommandMapper.map(listRequest));
+        CategoryListResponse categoryListResponse = categoryListToResponseList.map(categoryList);
+        return BaseResponse.successOf(categoryListResponse);
+    }
+
 
     @PostMapping
     public BaseResponse<Void> categoryAdd(@RequestBody @Valid CategoryAddRequest categoryAddRequest) {
@@ -45,12 +70,6 @@ class CategoryController {
         return BaseResponse.SUCCESS;
     }
 
-    @GetMapping("/{id}")
-    public BaseResponse<CategoryResponse> getCategoryById(@PathVariable @Positive @Max(999) Long id) {
-        Category category = categoryService.findById(id);
-        CategoryResponse categoryResponse = categoryToCategoryResponseMapper.map(category);
-        return BaseResponse.successOf(categoryResponse);
-    }
 
     @PutMapping("/{id}")
     public BaseResponse<CategoryResponse> categoryUpdate(@PathVariable @Positive @Max(999) Long id,

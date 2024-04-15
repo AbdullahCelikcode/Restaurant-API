@@ -9,9 +9,13 @@ import cod.restaurantapi.product.repository.CategoryRepository;
 import cod.restaurantapi.product.repository.entity.CategoryEntity;
 import cod.restaurantapi.product.service.CategoryService;
 import cod.restaurantapi.product.service.command.CategoryCreateCommand;
+import cod.restaurantapi.product.service.command.CategoryListCommand;
 import cod.restaurantapi.product.service.command.CategoryUpdateCommand;
 import cod.restaurantapi.product.service.domain.Category;
+import cod.restaurantapi.product.service.domain.CategoryList;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,6 +29,34 @@ class CategoryServiceImpl implements CategoryService {
     private static final CategoryCreateCommandToCategoryMapper categoryCreateCommandToCategoryMapper = CategoryCreateCommandToCategoryMapper.INSTANCE;
 
     private static final CategoryToCategoryEntityMapper categoryToCategoryEntityMapper = CategoryToCategoryEntityMapper.INSTANCE;
+
+
+    @Override
+    public CategoryList findAll(CategoryListCommand categoryListCommand) {
+
+        Page<CategoryEntity> responseList;
+
+        if (categoryListCommand.getFilter() == null || categoryListCommand.getFilter().getName() == null) {
+            responseList = categoryRepository
+                    .findAll(PageRequest.of(categoryListCommand.getPagination().getPageNumber(),
+                            categoryListCommand.getPagination().getPageSize()));
+
+        } else {
+            responseList = categoryRepository
+                    .findAllByNameContainingIgnoreCase(categoryListCommand.getFilter().getName(),
+                            PageRequest.of(categoryListCommand.getPagination().getPageNumber(),
+                                    categoryListCommand.getPagination().getPageSize()));
+        }
+
+        return CategoryList.builder()
+                .categoryList(categoryEntityToCategoryMapper.map(responseList.getContent()))
+                .pageSize(responseList.getSize())
+                .pageNumber(responseList.getNumber())
+                .totalPageCount(responseList.getTotalPages())
+                .totalElementCount(responseList.getTotalElements())
+                .filteredBy(categoryListCommand.getFilter())
+                .build();
+    }
 
     @Override
     public void save(CategoryCreateCommand categoryCreateCommand) {
@@ -63,4 +95,11 @@ class CategoryServiceImpl implements CategoryService {
 
         categoryRepository.save(categoryEntity);
     }
+
+    public Page<CategoryEntity> findAll() {
+
+        return categoryRepository.findAll(PageRequest.of(3, 5));
+    }
+
+
 }
