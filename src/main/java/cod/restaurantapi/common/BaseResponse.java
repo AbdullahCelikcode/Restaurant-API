@@ -33,5 +33,8 @@ public class BaseResponse<T> {
                 .httpStatus(HttpStatus.OK)
                 .isSuccess(true)
                 .response(response).build();
+
     }
+
+
 }
