@@ -1,6 +1,5 @@
 package cod.restaurantapi.category.service.impl;
 
-import cod.restaurantapi.common.util.Pagination;
 import cod.restaurantapi.category.controller.exceptions.CategoryNotFoundException;
 import cod.restaurantapi.category.controller.request.CategoryListRequest;
 import cod.restaurantapi.category.model.enums.CategoryStatus;
@@ -11,6 +10,7 @@ import cod.restaurantapi.category.service.command.CategoryListCommand;
 import cod.restaurantapi.category.service.command.CategoryUpdateCommand;
 import cod.restaurantapi.category.service.domain.Category;
 import cod.restaurantapi.category.service.domain.CategoryList;
+import cod.restaurantapi.common.util.Pagination;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -150,10 +150,10 @@ class CategoryServiceImplTest {
                 .status(CategoryStatus.ACTIVE)
                 .build();
 
-        categoryService.delete(categoryId);
 
         // when
         Mockito.when(categoryRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.ofNullable(categoryEntity));
+        categoryService.delete(categoryId);
 
         // verify
         Mockito.verify(categoryRepository, Mockito.times(1)).save(Mockito.any(CategoryEntity.class));
