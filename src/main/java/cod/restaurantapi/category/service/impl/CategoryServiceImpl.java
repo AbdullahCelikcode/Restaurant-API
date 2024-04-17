@@ -35,17 +35,18 @@ class CategoryServiceImpl implements CategoryService {
     public CategoryList findAll(CategoryListCommand categoryListCommand) {
 
         Page<CategoryEntity> responseList;
+        PageRequest pageRequest = PageRequest.of(categoryListCommand.getPagination().getPageNumber() - 1
+                , categoryListCommand.getPagination().getPageSize());
+
 
         if (categoryListCommand.getFilter() == null || categoryListCommand.getFilter().getName() == null) {
             responseList = categoryRepository
-                    .findAll(PageRequest.of(categoryListCommand.getPagination().getPageNumber(),
-                            categoryListCommand.getPagination().getPageSize()));
+                    .findAll(pageRequest);
 
         } else {
             responseList = categoryRepository
                     .findAllByNameContainingIgnoreCase(categoryListCommand.getFilter().getName(),
-                            PageRequest.of(categoryListCommand.getPagination().getPageNumber(),
-                                    categoryListCommand.getPagination().getPageSize()));
+                            pageRequest);
         }
 
         return CategoryList.builder()
@@ -95,11 +96,5 @@ class CategoryServiceImpl implements CategoryService {
 
         categoryRepository.save(categoryEntity);
     }
-
-    public Page<CategoryEntity> findAll() {
-
-        return categoryRepository.findAll(PageRequest.of(3, 5));
-    }
-
 
 }
