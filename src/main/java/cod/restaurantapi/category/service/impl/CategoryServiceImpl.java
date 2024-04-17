@@ -35,8 +35,8 @@ class CategoryServiceImpl implements CategoryService {
     public CategoryList findAll(CategoryListCommand categoryListCommand) {
 
         Page<CategoryEntity> responseList;
-        PageRequest pageRequest = PageRequest.of(categoryListCommand.getPagination().getPageNumber() - 1
-                , categoryListCommand.getPagination().getPageSize());
+        PageRequest pageRequest = PageRequest.of(categoryListCommand.getPagination().getPageNumber() - 1,
+                categoryListCommand.getPagination().getPageSize());
 
 
         if (categoryListCommand.getFilter() == null || categoryListCommand.getFilter().getName() == null) {
