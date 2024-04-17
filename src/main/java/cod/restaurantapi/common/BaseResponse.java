@@ -35,6 +35,4 @@ public class BaseResponse<T> {
                 .response(response).build();
 
     }
-
-
 }

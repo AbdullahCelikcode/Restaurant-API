@@ -1,6 +1,5 @@
 package cod.restaurantapi.category.controller;
 
-import cod.restaurantapi.common.BaseResponse;
 import cod.restaurantapi.category.controller.request.CategoryAddRequest;
 import cod.restaurantapi.category.controller.request.CategoryListRequest;
 import cod.restaurantapi.category.controller.request.CategoryUpdateRequest;
@@ -16,6 +15,7 @@ import cod.restaurantapi.category.service.command.CategoryCreateCommand;
 import cod.restaurantapi.category.service.command.CategoryUpdateCommand;
 import cod.restaurantapi.category.service.domain.Category;
 import cod.restaurantapi.category.service.domain.CategoryList;
+import cod.restaurantapi.common.BaseResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Positive;
@@ -56,6 +56,7 @@ class CategoryController {
     @PostMapping("/all")
     public BaseResponse<CategoryListResponse> findAllCategories(
             @RequestBody @Valid CategoryListRequest listRequest) {
+
 
         CategoryList categoryList = categoryService.findAll(listRequestToCommandMapper.map(listRequest));
         CategoryListResponse categoryListResponse = categoryListToResponseList.map(categoryList);

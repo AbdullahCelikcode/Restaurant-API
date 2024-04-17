@@ -12,7 +12,6 @@ public class CategoryNotFoundException extends RMANotFoundException {
     public CategoryNotFoundException() {
 
         super("Category is not exists");
+
     }
-
-
 }
