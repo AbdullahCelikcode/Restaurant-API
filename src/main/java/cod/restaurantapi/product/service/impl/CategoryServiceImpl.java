@@ -1,10 +1,8 @@
 package cod.restaurantapi.product.service.impl;
 
+import cod.restaurantapi.common.util.Sorting;
 import cod.restaurantapi.product.controller.exceptions.CategoryNotFoundException;
 import cod.restaurantapi.product.model.enums.CategoryStatus;
-import cod.restaurantapi.product.model.mapper.CategoryCreateCommandToCategoryMapper;
-import cod.restaurantapi.product.model.mapper.CategoryEntityToCategory;
-import cod.restaurantapi.product.model.mapper.CategoryToCategoryEntityMapper;
 import cod.restaurantapi.product.repository.CategoryRepository;
 import cod.restaurantapi.product.repository.entity.CategoryEntity;
 import cod.restaurantapi.product.service.CategoryService;
@@ -13,9 +11,13 @@ import cod.restaurantapi.product.service.command.CategoryListCommand;
 import cod.restaurantapi.product.service.command.CategoryUpdateCommand;
 import cod.restaurantapi.product.service.domain.Category;
 import cod.restaurantapi.product.service.domain.CategoryList;
+import cod.restaurantapi.product.service.mapper.CategoryCreateCommandToCategoryMapper;
+import cod.restaurantapi.product.service.mapper.CategoryEntityToCategory;
+import cod.restaurantapi.product.service.mapper.CategoryToCategoryEntityMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -34,27 +36,23 @@ class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryList findAll(CategoryListCommand categoryListCommand) {
 
-        Page<CategoryEntity> responseList;
-        PageRequest pageRequest = PageRequest.of(categoryListCommand.getPagination().getPageNumber() - 1,
-                categoryListCommand.getPagination().getPageSize());
+
+        Specification<CategoryEntity> categorySpecification = categoryListCommand.toSpecification(CategoryEntity.class);
 
 
-        if (categoryListCommand.getFilter() == null || categoryListCommand.getFilter().getName() == null) {
-            responseList = categoryRepository
-                    .findAll(pageRequest);
+        PageRequest pageRequest = PageRequest.of(categoryListCommand.getPagination().getPageNumber(),
+                categoryListCommand.getPagination().getPageSize(), Sorting.of(categoryListCommand.getSort()));
 
-        } else {
-            responseList = categoryRepository
-                    .findAllByNameContainingIgnoreCase(categoryListCommand.getFilter().getName(),
-                            pageRequest);
-        }
+
+        Page<CategoryEntity> responseList = categoryRepository.findAll(categorySpecification, pageRequest);
 
         return CategoryList.builder()
-                .categoryList(categoryEntityToCategoryMapper.map(responseList.getContent()))
+                .content(categoryEntityToCategoryMapper.map(responseList.getContent()))
                 .pageSize(responseList.getSize())
                 .pageNumber(responseList.getNumber())
                 .totalPageCount(responseList.getTotalPages())
                 .totalElementCount(responseList.getTotalElements())
+                .sortedBy(categoryListCommand.getSort())
                 .filteredBy(categoryListCommand.getFilter())
                 .build();
     }
@@ -92,7 +90,7 @@ class CategoryServiceImpl implements CategoryService {
     @Override
     public void delete(Long id) {
         CategoryEntity categoryEntity = categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
-        categoryEntity.setStatus(CategoryStatus.INACTIVE);
+        categoryEntity.setStatus(CategoryStatus.DELETED);
 
         categoryRepository.save(categoryEntity);
     }

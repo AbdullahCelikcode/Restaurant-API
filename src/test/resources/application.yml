@@ -7,11 +7,8 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
-    defer-datasource-initialization: true
+    database: H2
 
   h2:
     console:
       enabled: true
-
-  flyway:
-    enabled: false

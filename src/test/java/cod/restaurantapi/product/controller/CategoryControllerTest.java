@@ -1,38 +1,25 @@
 package cod.restaurantapi.product.controller;
 
+import cod.restaurantapi.common.util.Pagination;
+import cod.restaurantapi.common.util.Sorting;
+import cod.restaurantapi.product.RMATest;
 import cod.restaurantapi.product.controller.request.CategoryAddRequest;
 import cod.restaurantapi.product.controller.request.CategoryListRequest;
 import cod.restaurantapi.product.controller.request.CategoryUpdateRequest;
 import cod.restaurantapi.product.model.enums.CategoryStatus;
 import cod.restaurantapi.product.service.CategoryService;
 import cod.restaurantapi.product.service.command.CategoryCreateCommand;
+import cod.restaurantapi.product.service.command.CategoryListCommand;
 import cod.restaurantapi.product.service.command.CategoryUpdateCommand;
 import cod.restaurantapi.product.service.domain.Category;
+import cod.restaurantapi.product.service.domain.CategoryList;
 import cod.restaurantapi.product.util.CategoryFilter;
-import cod.restaurantapi.common.util.Pagination;
-import cod.restaurantapi.category.controller.request.CategoryAddRequest;
-import cod.restaurantapi.category.controller.request.CategoryListRequest;
-import cod.restaurantapi.category.controller.request.CategoryUpdateRequest;
-import cod.restaurantapi.category.controller.response.CategoryListResponse;
-import cod.restaurantapi.category.model.enums.CategoryStatus;
-import cod.restaurantapi.category.model.mapper.CategoryListRequestToCommandListMapper;
-import cod.restaurantapi.category.model.mapper.CategoryListToCategoryResponseListMapper;
-import cod.restaurantapi.category.service.CategoryService;
-import cod.restaurantapi.category.service.command.CategoryCreateCommand;
-import cod.restaurantapi.category.service.command.CategoryListCommand;
-import cod.restaurantapi.category.service.command.CategoryUpdateCommand;
-import cod.restaurantapi.category.service.domain.Category;
-import cod.restaurantapi.category.service.domain.CategoryList;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.mapstruct.factory.Mappers;
 import org.mockito.Mockito;
-import org.mockito.Spy;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
@@ -40,28 +27,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @WebMvcTest(controllers = CategoryController.class)
-class CategoryControllerTest {
+class CategoryControllerTest extends RMATest {
 
     @MockBean
-    private CategoryService categoryService;
-
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-
-    @Spy
-    CategoryListRequestToCommandListMapper listRequestToCommandMapper = Mappers.getMapper(CategoryListRequestToCommandListMapper.class);
-
-    @Spy
-    CategoryListToCategoryResponseListMapper categoryListToResponseList = Mappers.getMapper(CategoryListToCategoryResponseListMapper.class);
-
-
+    protected CategoryService categoryService;
     private final static String BASE_URL = "/api/v1/category";
 
     @Test
@@ -141,16 +111,19 @@ class CategoryControllerTest {
 
         // given
         CategoryListRequest givenRequest = CategoryListRequest.builder()
-                .filter(CategoryListRequest.CategoryFilter.builder().name("Test").build())
-                .pagination(Pagination.builder().pageSize(1).pageNumber(1).build())
+                .filter(CategoryFilter.builder().name("Test").build())
+                .sort(Sorting.builder().direction(Sort.Direction.ASC).property("name").build())
+                .pagination(Pagination.builder().pageSize(1).pageNumber(2).build())
                 .build();
+
 
         // then
 
         CategoryListCommand categoryListCommand = CategoryListCommand.builder()
                 .pagination(Pagination.builder().pageNumber(1).pageSize(1).build())
-                .filter(CategoryListRequest.CategoryFilter.builder().name("test").build())
+                .filter(CategoryFilter.builder().name("test").build())
                 .build();
+
 
         List<Category> entityList = new ArrayList<>();
 
@@ -159,22 +132,16 @@ class CategoryControllerTest {
         entityList.add(Category.builder().name("category3").status(CategoryStatus.ACTIVE).id(3L).build());
 
         CategoryList categoryList = CategoryList.builder()
-                .categoryList(entityList)
-                .pageNumber(1)
+                .content(entityList)
+                .pageNumber(2)
                 .totalPageCount(1)
                 .totalElementCount(3L)
-                .filteredBy(CategoryListRequest.CategoryFilter.builder().name("Test").build())
+                .filteredBy(categoryListCommand.getFilter())
                 .build();
 
-        CategoryListResponse categoryListResponse = CategoryListResponse.builder()
-                .totalPageCount(1)
-                .totalElementCount(3L)
-                .pageNumber(1)
-                .build();
 
-        Mockito.when(listRequestToCommandMapper.map(Mockito.any(CategoryListRequest.class))).thenReturn(categoryListCommand);
         Mockito.when(categoryService.findAll(Mockito.any(CategoryListCommand.class))).thenReturn(categoryList);
-        Mockito.when(categoryListToResponseList.map(Mockito.any(CategoryList.class))).thenReturn(categoryListResponse);
+
 
         mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/all")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -190,8 +157,8 @@ class CategoryControllerTest {
                         .value(categoryList.getTotalPageCount()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.filteredBy.name")
                         .value(categoryList.getFilteredBy().getName()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.categoryList.size()").
-                        value(categoryList.getCategoryList().size()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content.size()").
+                        value(categoryList.getContent().size()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.httpStatus").value("OK"));
 
     }
@@ -201,15 +168,12 @@ class CategoryControllerTest {
 
         // given
         CategoryListRequest givenRequest = CategoryListRequest.builder()
-                .pagination(Pagination.builder().pageSize(1).pageNumber(1).build())
+                .pagination(Pagination.builder().pageSize(1).pageNumber(2).build())
+                .sort(Sorting.builder().direction(Sort.Direction.ASC).property("name").build())
                 .build();
 
         // then
 
-        CategoryListCommand categoryListCommand = CategoryListCommand.builder()
-                .pagination(Pagination.builder().pageNumber(1).pageSize(1).build())
-                .filter(CategoryListRequest.CategoryFilter.builder().name("test").build())
-                .build();
 
         List<Category> entityList = new ArrayList<>();
 
@@ -218,22 +182,15 @@ class CategoryControllerTest {
         entityList.add(Category.builder().name("category3").status(CategoryStatus.ACTIVE).id(3L).build());
 
         CategoryList categoryList = CategoryList.builder()
-                .categoryList(entityList)
+                .content(entityList)
                 .pageNumber(1)
                 .totalPageCount(1)
                 .totalElementCount(3L)
-                .filteredBy(CategoryListRequest.CategoryFilter.builder().name("Test").build())
+                .filteredBy(CategoryFilter.builder().name("Test").build())
                 .build();
 
-        CategoryListResponse categoryListResponse = CategoryListResponse.builder()
-                .totalPageCount(1)
-                .totalElementCount(3L)
-                .pageNumber(1)
-                .build();
 
-        Mockito.when(listRequestToCommandMapper.map(Mockito.any(CategoryListRequest.class))).thenReturn(categoryListCommand);
         Mockito.when(categoryService.findAll(Mockito.any(CategoryListCommand.class))).thenReturn(categoryList);
-        Mockito.when(categoryListToResponseList.map(Mockito.any(CategoryList.class))).thenReturn(categoryListResponse);
 
         mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/all")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -249,8 +206,8 @@ class CategoryControllerTest {
                         .value(categoryList.getTotalPageCount()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.filteredBy.name")
                         .value(categoryList.getFilteredBy().getName()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.categoryList.size()").
-                        value(categoryList.getCategoryList().size()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content.size()").
+                        value(categoryList.getContent().size()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.httpStatus").value("OK"));
     }
 
@@ -259,16 +216,13 @@ class CategoryControllerTest {
 
         // given
         CategoryListRequest givenRequest = CategoryListRequest.builder()
-                .pagination(Pagination.builder().pageSize(1).pageNumber(1).build())
-                .filter(CategoryListRequest.CategoryFilter.builder().build())
+                .pagination(Pagination.builder().pageSize(1).pageNumber(2).build())
+                .sort(Sorting.builder().direction(Sort.Direction.ASC).property("name").build())
+                .filter(CategoryFilter.builder().build())
                 .build();
 
         // then
 
-        CategoryListCommand categoryListCommand = CategoryListCommand.builder()
-                .pagination(Pagination.builder().pageNumber(1).pageSize(1).build())
-                .filter(CategoryListRequest.CategoryFilter.builder().name("test").build())
-                .build();
 
         List<Category> entityList = new ArrayList<>();
 
@@ -277,22 +231,15 @@ class CategoryControllerTest {
         entityList.add(Category.builder().name("category3").status(CategoryStatus.ACTIVE).id(3L).build());
 
         CategoryList categoryList = CategoryList.builder()
-                .categoryList(entityList)
+                .content(entityList)
                 .pageNumber(1)
                 .totalPageCount(1)
                 .totalElementCount(3L)
-                .filteredBy(CategoryListRequest.CategoryFilter.builder().name("Test").build())
+                .filteredBy(CategoryFilter.builder().build())
                 .build();
 
-        CategoryListResponse categoryListResponse = CategoryListResponse.builder()
-                .totalPageCount(1)
-                .totalElementCount(3L)
-                .pageNumber(1)
-                .build();
 
-        Mockito.when(listRequestToCommandMapper.map(Mockito.any(CategoryListRequest.class))).thenReturn(categoryListCommand);
         Mockito.when(categoryService.findAll(Mockito.any(CategoryListCommand.class))).thenReturn(categoryList);
-        Mockito.when(categoryListToResponseList.map(Mockito.any(CategoryList.class))).thenReturn(categoryListResponse);
 
         mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/all")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -307,11 +254,30 @@ class CategoryControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.totalPageCount")
                         .value(categoryList.getTotalPageCount()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.filteredBy.name")
-                        .value(categoryList.getFilteredBy().getName()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.categoryList.size()").
-                        value(categoryList.getCategoryList().size()))
+                        .doesNotExist())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content.size()").
+                        value(categoryList.getContent().size()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.httpStatus").value("OK"));
 
+
+    }
+
+    @Test
+    void givenCategoryListRequestWithOutSorting_whenValidInput_thenReturnBadRequest() throws Exception {
+
+        // given
+        CategoryListRequest givenRequest = CategoryListRequest.builder()
+                .pagination(Pagination.builder().pageSize(1).pageNumber(2).build())
+                .filter(CategoryFilter.builder().build())
+                .build();
+
+        // then
+
+
+        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/all")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(givenRequest)))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
     }
 
@@ -321,7 +287,7 @@ class CategoryControllerTest {
         // given
 
         CategoryListRequest givenRequest = CategoryListRequest.builder()
-                .filter(CategoryListRequest.CategoryFilter.builder().build())
+                .filter(CategoryFilter.builder().build())
                 .build();
 
         // then
@@ -338,7 +304,7 @@ class CategoryControllerTest {
         // given
         CategoryListRequest givenRequest = CategoryListRequest.builder()
                 .pagination(Pagination.builder().pageSize(-1).pageNumber(1).build())
-                .filter(CategoryListRequest.CategoryFilter.builder().build())
+                .filter(CategoryFilter.builder().build())
                 .build();
 
         // then
@@ -355,7 +321,7 @@ class CategoryControllerTest {
         // given
         CategoryListRequest givenRequest = CategoryListRequest.builder()
                 .pagination(Pagination.builder().pageSize(1).pageNumber(-1).build())
-                .filter(CategoryListRequest.CategoryFilter.builder().build())
+                .filter(CategoryFilter.builder().build())
                 .build();
 
         // then

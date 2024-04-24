@@ -1,7 +1,8 @@
 package cod.restaurantapi.product.controller.request;
 
-import cod.restaurantapi.product.util.CategoryFilter;
 import cod.restaurantapi.common.util.Pagination;
+import cod.restaurantapi.common.util.Sorting;
+import cod.restaurantapi.product.util.CategoryFilter;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -17,12 +18,7 @@ public class CategoryListRequest {
 
     private CategoryFilter filter;
 
-    @Getter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class CategoryFilter {
-        private String name;
+    @NotNull
+    private Sorting sort;
 
-    }
 }

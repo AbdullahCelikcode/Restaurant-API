@@ -1,4 +1,4 @@
-package cod.restaurantapi.category.service.domain;
+package cod.restaurantapi.product.service.domain;
 
 import cod.restaurantapi.product.model.enums.CategoryStatus;
 import lombok.AllArgsConstructor;

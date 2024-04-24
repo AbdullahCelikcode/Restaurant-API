@@ -1,5 +1,7 @@
 package cod.restaurantapi.product.service.impl;
 
+import cod.restaurantapi.common.util.Pagination;
+import cod.restaurantapi.common.util.Sorting;
 import cod.restaurantapi.product.controller.exceptions.CategoryNotFoundException;
 import cod.restaurantapi.product.model.enums.CategoryStatus;
 import cod.restaurantapi.product.repository.CategoryRepository;
@@ -10,7 +12,6 @@ import cod.restaurantapi.product.service.command.CategoryUpdateCommand;
 import cod.restaurantapi.product.service.domain.Category;
 import cod.restaurantapi.product.service.domain.CategoryList;
 import cod.restaurantapi.product.util.CategoryFilter;
-import cod.restaurantapi.common.util.Pagination;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,6 +22,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -157,6 +160,7 @@ class CategoryServiceImplTest {
 
         // verify
         Mockito.verify(categoryRepository, Mockito.times(1)).save(Mockito.any(CategoryEntity.class));
+        Assertions.assertEquals(CategoryStatus.DELETED, categoryEntity.getStatus());
 
     }
 
@@ -184,7 +188,8 @@ class CategoryServiceImplTest {
         int pageSize = 3;
 
         CategoryListCommand givenCategoryListCommand = CategoryListCommand.builder()
-                .filter(CategoryListRequest.CategoryFilter.builder().name("Test").build())
+                .filter(CategoryFilter.builder().name("Test").build())
+                .sort(Sorting.builder().direction(Sort.Direction.ASC).property("name").build())
                 .pagination(Pagination.builder().pageNumber(pageSize).pageSize(pageNumber).build())
                 .build();
 
@@ -211,7 +216,7 @@ class CategoryServiceImplTest {
         Page<CategoryEntity> returnedList = new PageImpl<>(pageList);
 
 
-        Mockito.when(categoryRepository.findAllByNameContainingIgnoreCase(Mockito.any(String.class),
+        Mockito.when(categoryRepository.findAll(Mockito.any(Specification.class),
                 Mockito.any(Pageable.class))).thenReturn(returnedList);
 
         CategoryList exceptedList = categoryService.findAll(givenCategoryListCommand);
@@ -220,13 +225,13 @@ class CategoryServiceImplTest {
         // verify
 
         Mockito.verify(categoryRepository, Mockito.times(1))
-                .findAllByNameContainingIgnoreCase(Mockito.any(String.class), Mockito.any(Pageable.class));
+                .findAll(Mockito.any(Specification.class), Mockito.any(Pageable.class));
 
         Mockito.verify(categoryRepository, Mockito.never()).findAll();
 
-        Assertions.assertEquals(exceptedList.getCategoryList().get(0).getName(), pageList.get(0).getName());
-        Assertions.assertEquals(exceptedList.getCategoryList().get(1).getName(), pageList.get(1).getName());
-        Assertions.assertEquals(exceptedList.getCategoryList().get(2).getName(), pageList.get(2).getName());
+        Assertions.assertEquals(exceptedList.getContent().get(0).getName(), pageList.get(0).getName());
+        Assertions.assertEquals(exceptedList.getContent().get(1).getName(), pageList.get(1).getName());
+        Assertions.assertEquals(exceptedList.getContent().get(2).getName(), pageList.get(2).getName());
 
 
         Assertions.assertEquals(exceptedList.getPageSize(), pageSize);
@@ -243,6 +248,7 @@ class CategoryServiceImplTest {
 
         CategoryListCommand givenCategoryListCommand = CategoryListCommand.builder()
                 .pagination(Pagination.builder().pageNumber(pageSize).pageSize(pageNumber).build())
+                .sort(Sorting.builder().direction(Sort.Direction.ASC).property("name").build())
                 .build();
 
         // then
@@ -268,21 +274,18 @@ class CategoryServiceImplTest {
         Page<CategoryEntity> returnedList = new PageImpl<>(pageList);
 
 
-        Mockito.when(categoryRepository.findAll(Mockito.any(Pageable.class))).thenReturn(returnedList);
+        Mockito.when(categoryRepository.findAll(Mockito.any(Specification.class), Mockito.any(Pageable.class))).thenReturn(returnedList);
 
         CategoryList exceptedList = categoryService.findAll(givenCategoryListCommand);
 
         // verify
 
         Mockito.verify(categoryRepository, Mockito.times(1))
-                .findAll(Mockito.any(Pageable.class));
+                .findAll(Mockito.any(Specification.class), Mockito.any(Pageable.class));
 
-        Mockito.verify(categoryRepository, Mockito.never()).findAllByNameContainingIgnoreCase(Mockito.any(), Mockito.any());
-
-        Assertions.assertEquals(exceptedList.getCategoryList().get(0).getName(), pageList.get(0).getName());
-        Assertions.assertEquals(exceptedList.getCategoryList().get(1).getName(), pageList.get(1).getName());
-        Assertions.assertEquals(exceptedList.getCategoryList().get(2).getName(), pageList.get(2).getName());
-
+        Assertions.assertEquals(exceptedList.getContent().get(0).getName(), pageList.get(0).getName());
+        Assertions.assertEquals(exceptedList.getContent().get(1).getName(), pageList.get(1).getName());
+        Assertions.assertEquals(exceptedList.getContent().get(2).getName(), pageList.get(2).getName());
 
         Assertions.assertEquals(exceptedList.getPageSize(), pageSize);
         Assertions.assertEquals(exceptedList.getTotalElementCount(), pageList.size());

@@ -1,8 +1,8 @@
 package cod.restaurantapi.common.exception.handler;
 
+import cod.restaurantapi.product.controller.exceptions.CategoryNotFoundException;
 import cod.restaurantapi.common.exception.RMANotFoundException;
 import cod.restaurantapi.common.exception.model.RMAError;
-import cod.restaurantapi.category.controller.exceptions.CategoryNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 @Slf4j
@@ -90,6 +91,19 @@ public class GlobalExceptionHandler {
                 .build();
 
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(IOException.class)
+    public ResponseEntity<RMAError> handleIOException(final IOException exception) {
+
+        log.error(exception.getMessage(), exception);
+
+        RMAError error = RMAError.builder()
+                .status(HttpStatus.BAD_REQUEST)
+                .message(exception.getMessage())
+                .build();
+
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
 

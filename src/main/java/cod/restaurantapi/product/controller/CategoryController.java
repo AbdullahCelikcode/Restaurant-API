@@ -1,21 +1,21 @@
 package cod.restaurantapi.product.controller;
 
+import cod.restaurantapi.common.BaseResponse;
+import cod.restaurantapi.product.controller.mapper.CategoryCreateRequestToCommandMapper;
+import cod.restaurantapi.product.controller.mapper.CategoryListRequestToCommandListMapper;
+import cod.restaurantapi.product.controller.mapper.CategoryListToCategoryResponseListMapper;
+import cod.restaurantapi.product.controller.mapper.CategoryToCategoryResponse;
+import cod.restaurantapi.product.controller.mapper.CategoryUpdateRequestToCommandMapper;
 import cod.restaurantapi.product.controller.request.CategoryAddRequest;
 import cod.restaurantapi.product.controller.request.CategoryListRequest;
 import cod.restaurantapi.product.controller.request.CategoryUpdateRequest;
 import cod.restaurantapi.product.controller.response.CategoryListResponse;
 import cod.restaurantapi.product.controller.response.CategoryResponse;
-import cod.restaurantapi.product.model.mapper.CategoryCreateRequestToCommandMapper;
-import cod.restaurantapi.product.model.mapper.CategoryListRequestToCommandListMapper;
-import cod.restaurantapi.product.model.mapper.CategoryListToCategoryResponseListMapper;
-import cod.restaurantapi.product.model.mapper.CategoryToCategoryResponse;
-import cod.restaurantapi.product.model.mapper.CategoryUpdateRequestToCommandMapper;
 import cod.restaurantapi.product.service.CategoryService;
 import cod.restaurantapi.product.service.command.CategoryCreateCommand;
 import cod.restaurantapi.product.service.command.CategoryUpdateCommand;
 import cod.restaurantapi.product.service.domain.Category;
 import cod.restaurantapi.product.service.domain.CategoryList;
-import cod.restaurantapi.common.BaseResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Positive;
@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/category")
-class CategoryController {
+public class CategoryController {
     private final CategoryService categoryService;
     private static final CategoryCreateRequestToCommandMapper createCategoryRequestToCommandMapper = CategoryCreateRequestToCommandMapper.INSTANCE;
     private static final CategoryToCategoryResponse categoryToCategoryResponseMapper = CategoryToCategoryResponse.INSTANCE;
@@ -59,7 +59,9 @@ class CategoryController {
 
 
         CategoryList categoryList = categoryService.findAll(listRequestToCommandMapper.map(listRequest));
+
         CategoryListResponse categoryListResponse = categoryListToResponseList.map(categoryList);
+
         return BaseResponse.successOf(categoryListResponse);
     }
 

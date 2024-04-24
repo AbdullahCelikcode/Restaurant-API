@@ -6,17 +6,23 @@ import lombok.Builder;
 import lombok.Getter;
 import org.hibernate.validator.constraints.Range;
 
-@Getter
+
 @Builder
 public class Pagination {
 
     @NotNull
     @Positive
     @Range(max = Integer.MAX_VALUE)
-    int pageNumber;
+    private int pageNumber;
 
+    @Getter
     @NotNull
     @Positive
     @Range(max = Integer.MAX_VALUE)
-    int pageSize;
+    private int pageSize;
+
+    public int getPageNumber() {
+        return this.pageNumber - 1;
+    }
+
 }

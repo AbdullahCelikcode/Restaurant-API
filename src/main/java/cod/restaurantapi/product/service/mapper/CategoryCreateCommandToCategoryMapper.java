@@ -1,4 +1,4 @@
-package cod.restaurantapi.product.model.mapper;
+package cod.restaurantapi.product.service.mapper;
 
 import cod.restaurantapi.common.model.mapper.BaseMapper;
 import cod.restaurantapi.product.service.command.CategoryCreateCommand;

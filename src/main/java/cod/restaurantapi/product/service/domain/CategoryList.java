@@ -1,5 +1,6 @@
 package cod.restaurantapi.product.service.domain;
 
+import cod.restaurantapi.common.util.Sorting;
 import cod.restaurantapi.product.util.CategoryFilter;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,10 +13,9 @@ import java.util.List;
 @Builder
 public class CategoryList {
 
-    private List<Category> categoryList;
+    private List<Category> content;
 
     private Integer pageNumber;
-
 
     private Integer pageSize;
 
@@ -23,6 +23,12 @@ public class CategoryList {
 
     private Long totalElementCount;
 
-    private CategoryListRequest.CategoryFilter filteredBy;
+    private CategoryFilter filteredBy;
+
+    private Sorting sortedBy;
+
+    public Integer getPageNumber() {
+        return pageNumber + 1;
+    }
 
 }
