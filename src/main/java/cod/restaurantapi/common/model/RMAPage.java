@@ -29,7 +29,7 @@ public class RMAPage<T> {
 
     private Sorting sortedBy;
 
-
+    @SuppressWarnings("unused")
     public static class RMAPageBuilder<T> {
 
         private RMAPageBuilder() {

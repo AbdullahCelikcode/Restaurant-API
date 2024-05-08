@@ -30,7 +30,7 @@ public class RMAPageResponse<T> {
 
     private Sorting sortedBy;
 
-
+    @SuppressWarnings("unused")
     public static class RMAPageResponseBuilder<T> {
         private RMAPageResponseBuilder() {
 
