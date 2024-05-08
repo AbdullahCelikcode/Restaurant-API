@@ -1,7 +1,7 @@
 package cod.restaurantapi.product.controller;
 
-import cod.restaurantapi.common.util.Pagination;
-import cod.restaurantapi.common.util.Sorting;
+import cod.restaurantapi.common.model.Pagination;
+import cod.restaurantapi.common.model.Sorting;
 import cod.restaurantapi.product.RMATest;
 import cod.restaurantapi.product.controller.exceptions.CategoryNotFoundException;
 import cod.restaurantapi.product.controller.request.CategoryAddRequest;
@@ -103,16 +103,17 @@ class CategoryTestIT extends RMATest {
 
         CategoryEntity categoryEntity = categoryTestRepository.findById(categoryId)
                 .orElseThrow(CategoryNotFoundException::new);
-        Assertions.assertEquals(categoryEntity.getStatus(), CategoryStatus.DELETED);
+        Assertions.assertEquals(CategoryStatus.DELETED, categoryEntity.getStatus());
 
     }
 
 
     @Test
     void testGetCategoryListWithFilter() throws Exception {
+
         CategoryListRequest categoryListRequest = CategoryListRequest.builder()
-                .pagination(Pagination.builder().pageSize(3).pageNumber(2).build())
-                .sort(Sorting.builder().property("name").direction(Sort.Direction.ASC).build())
+                .pagination(Pagination.builder().pageSize(3).pageNumber(1).build())
+                .sorting(Sorting.builder().property("name").direction(Sort.Direction.ASC).build())
                 .filter(CategoryFilter.builder().name("e").build())
                 .build();
 
@@ -137,8 +138,8 @@ class CategoryTestIT extends RMATest {
     @Test
     void testGetCategoryListWithoutFilter() throws Exception {
         CategoryListRequest categoryListRequest = CategoryListRequest.builder()
-                .pagination(Pagination.builder().pageSize(3).pageNumber(2).build())
-                .sort(Sorting.builder().direction(Sort.Direction.ASC).property("name").build())
+                .pagination(Pagination.builder().pageSize(3).pageNumber(1).build())
+                .sorting(Sorting.builder().direction(Sort.Direction.ASC).property("name").build())
                 .build();
         mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/all")
                         .contentType(MediaType.APPLICATION_JSON)

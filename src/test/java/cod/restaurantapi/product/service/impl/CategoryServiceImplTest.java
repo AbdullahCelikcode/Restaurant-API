@@ -1,7 +1,7 @@
 package cod.restaurantapi.product.service.impl;
 
-import cod.restaurantapi.common.util.Pagination;
-import cod.restaurantapi.common.util.Sorting;
+import cod.restaurantapi.common.model.Pagination;
+import cod.restaurantapi.common.model.Sorting;
 import cod.restaurantapi.product.controller.exceptions.CategoryNotFoundException;
 import cod.restaurantapi.product.model.enums.CategoryStatus;
 import cod.restaurantapi.product.repository.CategoryRepository;
@@ -10,7 +10,7 @@ import cod.restaurantapi.product.service.command.CategoryCreateCommand;
 import cod.restaurantapi.product.service.command.CategoryListCommand;
 import cod.restaurantapi.product.service.command.CategoryUpdateCommand;
 import cod.restaurantapi.product.service.domain.Category;
-import cod.restaurantapi.product.service.domain.CategoryList;
+import cod.restaurantapi.common.model.RMAPageResponse;
 import cod.restaurantapi.product.util.CategoryFilter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -186,11 +186,10 @@ class CategoryServiceImplTest {
         //given
         int pageNumber = 1;
         int pageSize = 3;
-
         CategoryListCommand givenCategoryListCommand = CategoryListCommand.builder()
                 .filter(CategoryFilter.builder().name("Test").build())
-                .sort(Sorting.builder().direction(Sort.Direction.ASC).property("name").build())
                 .pagination(Pagination.builder().pageNumber(pageSize).pageSize(pageNumber).build())
+                .sorting(Sorting.builder().direction(Sort.Direction.ASC).property("name").build())
                 .build();
 
         // then
@@ -219,7 +218,7 @@ class CategoryServiceImplTest {
         Mockito.when(categoryRepository.findAll(Mockito.any(Specification.class),
                 Mockito.any(Pageable.class))).thenReturn(returnedList);
 
-        CategoryList exceptedList = categoryService.findAll(givenCategoryListCommand);
+        RMAPageResponse<Category> exceptedList = categoryService.findAll(givenCategoryListCommand);
 
 
         // verify
@@ -248,8 +247,9 @@ class CategoryServiceImplTest {
 
         CategoryListCommand givenCategoryListCommand = CategoryListCommand.builder()
                 .pagination(Pagination.builder().pageNumber(pageSize).pageSize(pageNumber).build())
-                .sort(Sorting.builder().direction(Sort.Direction.ASC).property("name").build())
+                .sorting(Sorting.builder().direction(Sort.Direction.ASC).property("name").build())
                 .build();
+
 
         // then
 
@@ -276,7 +276,7 @@ class CategoryServiceImplTest {
 
         Mockito.when(categoryRepository.findAll(Mockito.any(Specification.class), Mockito.any(Pageable.class))).thenReturn(returnedList);
 
-        CategoryList exceptedList = categoryService.findAll(givenCategoryListCommand);
+        RMAPageResponse<Category> exceptedList = categoryService.findAll(givenCategoryListCommand);
 
         // verify
 

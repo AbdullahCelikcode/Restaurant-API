@@ -1,8 +1,8 @@
 package cod.restaurantapi.common.exception.handler;
 
-import cod.restaurantapi.product.controller.exceptions.CategoryNotFoundException;
 import cod.restaurantapi.common.exception.RMANotFoundException;
 import cod.restaurantapi.common.exception.model.RMAError;
+import cod.restaurantapi.product.controller.exceptions.CategoryNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -22,8 +22,8 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<RMAError> handleMethodArgumentException(
             final MethodArgumentNotValidException exception) {
-        log.error(exception.getMessage(), exception);
 
+        log.error(exception.getMessage(), exception);
 
         RMAError error = RMAError.builder()
                 .status(HttpStatus.BAD_REQUEST)

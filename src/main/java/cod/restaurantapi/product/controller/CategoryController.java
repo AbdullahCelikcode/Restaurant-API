@@ -1,21 +1,20 @@
 package cod.restaurantapi.product.controller;
 
 import cod.restaurantapi.common.BaseResponse;
+import cod.restaurantapi.common.model.RMAPage;
 import cod.restaurantapi.product.controller.mapper.CategoryCreateRequestToCommandMapper;
 import cod.restaurantapi.product.controller.mapper.CategoryListRequestToCommandListMapper;
-import cod.restaurantapi.product.controller.mapper.CategoryListToCategoryResponseListMapper;
 import cod.restaurantapi.product.controller.mapper.CategoryToCategoryResponse;
 import cod.restaurantapi.product.controller.mapper.CategoryUpdateRequestToCommandMapper;
 import cod.restaurantapi.product.controller.request.CategoryAddRequest;
 import cod.restaurantapi.product.controller.request.CategoryListRequest;
 import cod.restaurantapi.product.controller.request.CategoryUpdateRequest;
-import cod.restaurantapi.product.controller.response.CategoryListResponse;
 import cod.restaurantapi.product.controller.response.CategoryResponse;
 import cod.restaurantapi.product.service.CategoryService;
 import cod.restaurantapi.product.service.command.CategoryCreateCommand;
 import cod.restaurantapi.product.service.command.CategoryUpdateCommand;
 import cod.restaurantapi.product.service.domain.Category;
-import cod.restaurantapi.product.service.domain.CategoryList;
+import cod.restaurantapi.common.model.RMAPageResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Positive;
@@ -36,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/category")
 public class CategoryController {
+
     private final CategoryService categoryService;
     private static final CategoryCreateRequestToCommandMapper createCategoryRequestToCommandMapper = CategoryCreateRequestToCommandMapper.INSTANCE;
     private static final CategoryToCategoryResponse categoryToCategoryResponseMapper = CategoryToCategoryResponse.INSTANCE;
@@ -44,7 +44,6 @@ public class CategoryController {
 
     private static final CategoryListRequestToCommandListMapper listRequestToCommandMapper = CategoryListRequestToCommandListMapper.INSTANCE;
 
-    private static final CategoryListToCategoryResponseListMapper categoryListToResponseList = CategoryListToCategoryResponseListMapper.INSTANCE;
 
     @GetMapping("/{id}")
     public BaseResponse<CategoryResponse> getCategoryById(@PathVariable @Positive @Max(999) Long id) {
@@ -54,13 +53,15 @@ public class CategoryController {
     }
 
     @PostMapping("/all")
-    public BaseResponse<CategoryListResponse> findAllCategories(
+    public BaseResponse<RMAPage<CategoryResponse>> findAllCategories(
             @RequestBody @Valid CategoryListRequest listRequest) {
 
 
-        CategoryList categoryList = categoryService.findAll(listRequestToCommandMapper.map(listRequest));
+        RMAPageResponse categoryList = categoryService.findAll(listRequestToCommandMapper.map(listRequest));
 
-        CategoryListResponse categoryListResponse = categoryListToResponseList.map(categoryList);
+        RMAPage<CategoryResponse> categoryListResponse = RMAPage.<CategoryResponse>builder()
+                .map(categoryToCategoryResponseMapper.map(categoryList.getContent()), categoryList)
+                .build();
 
         return BaseResponse.successOf(categoryListResponse);
     }

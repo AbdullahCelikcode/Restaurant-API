@@ -1,7 +1,7 @@
 package cod.restaurantapi.product.controller.request;
 
-import cod.restaurantapi.common.util.Pagination;
-import cod.restaurantapi.common.util.Sorting;
+import cod.restaurantapi.common.model.Pagination;
+import cod.restaurantapi.common.model.Sorting;
 import cod.restaurantapi.product.util.CategoryFilter;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -16,9 +16,8 @@ public class CategoryListRequest {
     @Valid
     private Pagination pagination;
 
-    private CategoryFilter filter;
+    private Sorting sorting;
 
-    @NotNull
-    private Sorting sort;
+    private CategoryFilter filter;
 
 }

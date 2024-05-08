@@ -1,6 +1,6 @@
 package cod.restaurantapi.product.util;
 
-import cod.restaurantapi.common.util.RMAFilter;
+import cod.restaurantapi.common.model.RMAFilter;
 import cod.restaurantapi.product.model.enums.CategoryStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

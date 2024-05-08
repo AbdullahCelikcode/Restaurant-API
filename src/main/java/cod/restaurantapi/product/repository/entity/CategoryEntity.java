@@ -1,7 +1,7 @@
 package cod.restaurantapi.product.repository.entity;
 
+import cod.restaurantapi.common.model.BaseEntity;
 import cod.restaurantapi.product.model.enums.CategoryStatus;
-import cod.restaurantapi.common.util.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -15,6 +15,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 
 @Entity
 @Getter

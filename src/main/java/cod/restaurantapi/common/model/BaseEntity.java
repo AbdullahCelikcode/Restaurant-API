@@ -1,4 +1,4 @@
-package cod.restaurantapi.common.util;
+package cod.restaurantapi.common.model;
 
 
 import jakarta.persistence.Column;

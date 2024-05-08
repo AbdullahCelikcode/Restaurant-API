@@ -4,11 +4,11 @@ import cod.restaurantapi.product.service.command.CategoryCreateCommand;
 import cod.restaurantapi.product.service.command.CategoryListCommand;
 import cod.restaurantapi.product.service.command.CategoryUpdateCommand;
 import cod.restaurantapi.product.service.domain.Category;
-import cod.restaurantapi.product.service.domain.CategoryList;
+import cod.restaurantapi.common.model.RMAPageResponse;
 
 public interface CategoryService {
 
-    CategoryList findAll(CategoryListCommand categoryListCommand);
+    RMAPageResponse findAll(CategoryListCommand categoryListCommand);
 
     void save(CategoryCreateCommand categoryCreateCommand);
 

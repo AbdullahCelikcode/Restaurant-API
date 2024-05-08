@@ -1,13 +1,16 @@
-package cod.restaurantapi.common.util;
+package cod.restaurantapi.common.model;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
 
 
 @Builder
+@Getter
+@Setter
 public class Pagination {
 
     @NotNull
@@ -15,14 +18,11 @@ public class Pagination {
     @Range(max = Integer.MAX_VALUE)
     private int pageNumber;
 
-    @Getter
+
     @NotNull
     @Positive
     @Range(max = Integer.MAX_VALUE)
     private int pageSize;
 
-    public int getPageNumber() {
-        return this.pageNumber - 1;
-    }
 
 }
