@@ -2,7 +2,7 @@ package cod.restaurantapi.product.controller;
 
 import cod.restaurantapi.common.model.Pagination;
 import cod.restaurantapi.common.model.Sorting;
-import cod.restaurantapi.product.RMATest;
+import cod.restaurantapi.product.RMASystemTest;
 import cod.restaurantapi.product.controller.exceptions.CategoryNotFoundException;
 import cod.restaurantapi.product.controller.request.CategoryAddRequest;
 import cod.restaurantapi.product.controller.request.CategoryListRequest;
@@ -14,18 +14,13 @@ import cod.restaurantapi.product.util.CategoryFilter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("test")
-class CategoryTestIT extends RMATest {
+
+class CategorySystemTest extends RMASystemTest {
 
     @Autowired
     protected CategoryTestRepository categoryTestRepository;

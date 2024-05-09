@@ -1,8 +1,9 @@
 package cod.restaurantapi.product.controller;
 
 import cod.restaurantapi.common.model.Pagination;
+import cod.restaurantapi.common.model.RMAPageResponse;
 import cod.restaurantapi.common.model.Sorting;
-import cod.restaurantapi.product.RMATest;
+import cod.restaurantapi.product.RMAControllerTest;
 import cod.restaurantapi.product.controller.request.CategoryAddRequest;
 import cod.restaurantapi.product.controller.request.CategoryListRequest;
 import cod.restaurantapi.product.controller.request.CategoryUpdateRequest;
@@ -12,7 +13,6 @@ import cod.restaurantapi.product.service.command.CategoryCreateCommand;
 import cod.restaurantapi.product.service.command.CategoryListCommand;
 import cod.restaurantapi.product.service.command.CategoryUpdateCommand;
 import cod.restaurantapi.product.service.domain.Category;
-import cod.restaurantapi.common.model.RMAPageResponse;
 import cod.restaurantapi.product.util.CategoryFilter;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -28,10 +28,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @WebMvcTest(controllers = CategoryController.class)
-class CategoryControllerTest extends RMATest {
+class CategoryControllerTest extends RMAControllerTest {
 
     @MockBean
     protected CategoryService categoryService;
+
     private final static String BASE_URL = "/api/v1/category";
 
     @Test

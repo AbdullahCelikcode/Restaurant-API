@@ -1,7 +1,9 @@
 package cod.restaurantapi.product.service.impl;
 
 import cod.restaurantapi.common.model.Pagination;
+import cod.restaurantapi.common.model.RMAPageResponse;
 import cod.restaurantapi.common.model.Sorting;
+import cod.restaurantapi.product.RMAServiceTest;
 import cod.restaurantapi.product.controller.exceptions.CategoryNotFoundException;
 import cod.restaurantapi.product.model.enums.CategoryStatus;
 import cod.restaurantapi.product.repository.CategoryRepository;
@@ -10,15 +12,12 @@ import cod.restaurantapi.product.service.command.CategoryCreateCommand;
 import cod.restaurantapi.product.service.command.CategoryListCommand;
 import cod.restaurantapi.product.service.command.CategoryUpdateCommand;
 import cod.restaurantapi.product.service.domain.Category;
-import cod.restaurantapi.common.model.RMAPageResponse;
 import cod.restaurantapi.product.util.CategoryFilter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -32,8 +31,8 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@ExtendWith(MockitoExtension.class)
-class CategoryServiceImplTest {
+
+class CategoryServiceImplTest extends RMAServiceTest {
     @Mock
     private CategoryRepository categoryRepository;
 
