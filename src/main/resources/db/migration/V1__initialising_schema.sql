@@ -1,8 +1,7 @@
 create type dining_table_status as enum ('OCCUPIED','AVAILABLE','RESERVED');
 create type order_status as enum ('PENDING','PROCESSING','COMPLETED','CANCELLED','PAID');
 create type order_item_status as enum ('UNPAID','PAID');
-create type extent_type as enum ('ML','GR');
-create type product_status as enum ('ACTIVE','INACTIVE','DELETED');
+
 
 create table if not exists rma_category
 (
@@ -10,7 +9,7 @@ create table if not exists rma_category
         constraint pk__rma_category__id primary key,
     name       varchar(512) not null,
     status     varchar(20)  not null
-        constraint c__rm_category__status check (status in ('ACTIVE', 'INACTIVE', 'DELETED')),
+        constraint c__rma_category__status check (status in ('ACTIVE', 'INACTIVE', 'DELETED')),
     created_at timestamp(0) not null,
     updated_at timestamp(0)
 );
@@ -23,9 +22,11 @@ create table if not exists rma_product
     name        varchar(512)   not null,
     ingredient  varchar(2048)  not null,
     price       numeric(50, 8) not null,
-    status      product_status not null,
+    status      varchar(20)    not null
+        constraint c__rma_product__status check (status in ('ACTIVE', 'INACTIVE', 'DELETED')),
     extent      integer        not null,
-    extent_type extent_type    not null,
+    extent_type varchar(20)    not null
+        constraint c__rma_product__extent_type check (extent_type in ('ML', 'GR')),
     category_id bigint         not null
         constraint fk__rma_product__category_id references rma_category (id),
     created_at  timestamp(0)   not null,

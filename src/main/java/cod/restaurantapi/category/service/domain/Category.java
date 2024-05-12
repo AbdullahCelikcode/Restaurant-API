@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 public class Category {
+
     private Long id;
     private String name;
     private CategoryStatus status;
