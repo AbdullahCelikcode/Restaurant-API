@@ -2,17 +2,16 @@ create type dining_table_status as enum ('OCCUPIED','AVAILABLE','RESERVED');
 create type order_status as enum ('PENDING','PROCESSING','COMPLETED','CANCELLED','PAID');
 create type order_item_status as enum ('UNPAID','PAID');
 create type extent_type as enum ('ML','GR');
-create type category_status as enum ('ACTIVE','INACTIVE');
-create type product_status as enum ('ACTIVE','INACTIVE');
+create type product_status as enum ('ACTIVE','INACTIVE','DELETED');
 
 create table if not exists rma_category
 (
     id         bigserial
         constraint pk__rma_category__id primary key,
-    name       varchar(512)    not null,
-    status varchar(20) not null
-            constraint c__rm_category__status check (status in ('ACTIVE', 'INACTIVE', 'DELETED')),
-    created_at timestamp(0)    not null,
+    name       varchar(512) not null,
+    status     varchar(20)  not null
+        constraint c__rm_category__status check (status in ('ACTIVE', 'INACTIVE', 'DELETED')),
+    created_at timestamp(0) not null,
     updated_at timestamp(0)
 );
 
