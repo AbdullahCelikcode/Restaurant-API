@@ -2,7 +2,7 @@ package cod.restaurantapi.common.exception.handler;
 
 import cod.restaurantapi.common.exception.RMANotFoundException;
 import cod.restaurantapi.common.exception.model.RMAError;
-import cod.restaurantapi.product.controller.exceptions.CategoryNotFoundException;
+import cod.restaurantapi.category.controller.exceptions.CategoryNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
