@@ -2,7 +2,6 @@ package cod.restaurantapi.common.exception.handler;
 
 import cod.restaurantapi.common.exception.RMANotFoundException;
 import cod.restaurantapi.common.exception.model.RMAError;
-import cod.restaurantapi.category.controller.exceptions.CategoryNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -81,7 +80,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RMANotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<RMAError> handleMethodArgumentException(
-            final CategoryNotFoundException exception) {
+            final RMANotFoundException exception) {
 
         log.error(exception.getMessage(), exception);
 
