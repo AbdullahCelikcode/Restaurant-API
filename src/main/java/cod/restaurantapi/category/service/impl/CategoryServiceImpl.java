@@ -1,6 +1,5 @@
 package cod.restaurantapi.category.service.impl;
 
-import cod.restaurantapi.common.model.RMAPageResponse;
 import cod.restaurantapi.category.controller.exceptions.CategoryNotFoundException;
 import cod.restaurantapi.category.model.enums.CategoryStatus;
 import cod.restaurantapi.category.repository.CategoryRepository;
@@ -13,6 +12,8 @@ import cod.restaurantapi.category.service.domain.Category;
 import cod.restaurantapi.category.service.mapper.CategoryCreateCommandToCategoryMapper;
 import cod.restaurantapi.category.service.mapper.CategoryEntityToCategory;
 import cod.restaurantapi.category.service.mapper.CategoryToCategoryEntityMapper;
+import cod.restaurantapi.category.service.mapper.CategoryUpdateCommandToCategoryEntityMapper;
+import cod.restaurantapi.common.model.RMAPageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ class CategoryServiceImpl implements CategoryService {
     private static final CategoryCreateCommandToCategoryMapper categoryCreateCommandToCategoryMapper = CategoryCreateCommandToCategoryMapper.INSTANCE;
 
     private static final CategoryToCategoryEntityMapper categoryToCategoryEntityMapper = CategoryToCategoryEntityMapper.INSTANCE;
+    private static final CategoryUpdateCommandToCategoryEntityMapper categoryUpdateCommandToCategoryEntityMapper = CategoryUpdateCommandToCategoryEntityMapper.INSTANCE;
 
 
     @Override
@@ -66,11 +68,9 @@ class CategoryServiceImpl implements CategoryService {
     @Override
     public Category update(Long id, CategoryUpdateCommand categoryUpdateCommand) {
         CategoryEntity categoryEntity = categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
-        categoryEntity.setName(categoryUpdateCommand.getName());
-        categoryEntity.setStatus(categoryUpdateCommand.getStatus());
 
+        categoryUpdateCommandToCategoryEntityMapper.update(categoryEntity, categoryUpdateCommand);
         categoryRepository.save(categoryEntity);
-
 
         return categoryEntityToCategoryMapper.map(categoryEntity);
     }
