@@ -18,6 +18,10 @@ public abstract class RMAListCommand {
     private Sorting sorting;
 
     public PageRequest toPageable() {
+        if (this.sorting == null) {
+            return PageRequest.of(pagination.getPageNumber() - 1, pagination.getPageSize());
+        }
+
         return PageRequest.of((pagination.getPageNumber() - 1), pagination.getPageSize(), sorting.direction, sorting.property);
 
     }

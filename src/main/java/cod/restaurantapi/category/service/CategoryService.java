@@ -8,7 +8,7 @@ import cod.restaurantapi.common.model.RMAPageResponse;
 
 public interface CategoryService {
 
-    RMAPageResponse findAll(CategoryListCommand categoryListCommand);
+    RMAPageResponse<Category> findAll(CategoryListCommand categoryListCommand);
 
     void save(CategoryCreateCommand categoryCreateCommand);
 

@@ -1,4 +1,4 @@
-package cod.restaurantapi.category;
+package cod.restaurantapi;
 
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;

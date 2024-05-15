@@ -1,9 +1,9 @@
 package cod.restaurantapi.category.service.command;
 
+import cod.restaurantapi.category.model.enums.CategoryStatus;
 import cod.restaurantapi.common.model.RMAFilter;
 import cod.restaurantapi.common.model.RMASpecification;
 import cod.restaurantapi.common.service.command.RMAListCommand;
-import cod.restaurantapi.category.model.enums.CategoryStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

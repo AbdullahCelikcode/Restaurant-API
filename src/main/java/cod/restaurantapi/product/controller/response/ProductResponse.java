@@ -1,4 +1,4 @@
-package cod.restaurantapi.product.service.domain;
+package cod.restaurantapi.product.controller.response;
 
 import cod.restaurantapi.product.model.enums.ExtentType;
 import cod.restaurantapi.product.model.enums.ProductStatus;
@@ -14,10 +14,10 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
-public class Product {
+@NoArgsConstructor
+@AllArgsConstructor
+public class ProductResponse {
 
     private UUID id;
 
@@ -39,7 +39,4 @@ public class Product {
 
     private LocalDateTime updatedAt;
 
-    public void active() {
-        this.status = ProductStatus.ACTIVE;
-    }
 }

@@ -1,8 +1,6 @@
 package cod.restaurantapi.category.controller;
 
-import cod.restaurantapi.common.model.Pagination;
-import cod.restaurantapi.common.model.Sorting;
-import cod.restaurantapi.category.RMASystemTest;
+import cod.restaurantapi.RMASystemTest;
 import cod.restaurantapi.category.controller.exceptions.CategoryNotFoundException;
 import cod.restaurantapi.category.controller.request.CategoryAddRequest;
 import cod.restaurantapi.category.controller.request.CategoryListRequest;
@@ -10,6 +8,8 @@ import cod.restaurantapi.category.controller.request.CategoryUpdateRequest;
 import cod.restaurantapi.category.model.enums.CategoryStatus;
 import cod.restaurantapi.category.repository.CategoryTestRepository;
 import cod.restaurantapi.category.repository.entity.CategoryEntity;
+import cod.restaurantapi.common.model.Pagination;
+import cod.restaurantapi.common.model.Sorting;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ class CategorySystemTest extends RMASystemTest {
 
     @Test
     void testAddCategory() throws Exception {
-        CategoryAddRequest categoryAddRequest = CategoryAddRequest.builder().name("H2CategoryTest").build();
+        CategoryAddRequest categoryAddRequest = CategoryAddRequest.builder().name("CategoryTest").build();
 
         mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL)
                         .contentType(MediaType.APPLICATION_JSON)

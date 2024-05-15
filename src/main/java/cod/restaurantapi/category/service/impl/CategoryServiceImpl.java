@@ -33,7 +33,7 @@ class CategoryServiceImpl implements CategoryService {
 
 
     @Override
-    public RMAPageResponse findAll(CategoryListCommand categoryListCommand) {
+    public RMAPageResponse<Category> findAll(CategoryListCommand categoryListCommand) {
 
         Page<CategoryEntity> responseList = categoryRepository.findAll(
                 categoryListCommand.toSpecification(CategoryEntity.class),

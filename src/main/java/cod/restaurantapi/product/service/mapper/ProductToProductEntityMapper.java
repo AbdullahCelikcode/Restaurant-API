@@ -7,7 +7,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 @Mapper
-public interface ProductDtoToProductEntityMapper extends BaseMapper<Product, ProductEntity> {
-    ProductDtoToProductEntityMapper INSTANCE = Mappers.getMapper(ProductDtoToProductEntityMapper.class);
+public interface ProductToProductEntityMapper extends BaseMapper<Product, ProductEntity> {
+    ProductToProductEntityMapper INSTANCE = Mappers.getMapper(ProductToProductEntityMapper.class);
 
 }

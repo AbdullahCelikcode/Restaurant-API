@@ -57,7 +57,7 @@ public class CategoryController {
             @RequestBody @Valid CategoryListRequest listRequest) {
 
 
-        RMAPageResponse categoryList = categoryService.findAll(listRequestToCommandMapper.map(listRequest));
+        RMAPageResponse<Category> categoryList = categoryService.findAll(listRequestToCommandMapper.map(listRequest));
 
         RMAPage<CategoryResponse> categoryListResponse = RMAPage.<CategoryResponse>builder()
                 .map(categoryToCategoryResponseMapper.map(categoryList.getContent()), categoryList)

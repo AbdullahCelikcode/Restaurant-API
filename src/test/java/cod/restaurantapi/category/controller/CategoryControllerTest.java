@@ -1,6 +1,6 @@
 package cod.restaurantapi.category.controller;
 
-import cod.restaurantapi.category.RMAControllerTest;
+import cod.restaurantapi.RMAControllerTest;
 import cod.restaurantapi.category.controller.request.CategoryAddRequest;
 import cod.restaurantapi.category.controller.request.CategoryListRequest;
 import cod.restaurantapi.category.controller.request.CategoryUpdateRequest;
@@ -37,14 +37,14 @@ class CategoryControllerTest extends RMAControllerTest {
     @Test
     void givenCreateCategory_whenValidInput_thenReturnSuccess() throws Exception {
         // Given
-        CategoryCreateCommand categoryCreateCommand = CategoryCreateCommand.builder()
+        CategoryAddRequest categoryAddRequest = CategoryAddRequest.builder()
                 .name("TestCategory")
                 .build();
 
         // Then
         mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(categoryCreateCommand)))
+                        .content(objectMapper.writeValueAsString(categoryAddRequest)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
 

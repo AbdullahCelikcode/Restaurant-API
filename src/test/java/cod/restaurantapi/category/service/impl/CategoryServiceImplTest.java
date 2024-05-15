@@ -1,9 +1,6 @@
 package cod.restaurantapi.category.service.impl;
 
-import cod.restaurantapi.common.model.Pagination;
-import cod.restaurantapi.common.model.RMAPageResponse;
-import cod.restaurantapi.common.model.Sorting;
-import cod.restaurantapi.category.RMAServiceTest;
+import cod.restaurantapi.RMAServiceTest;
 import cod.restaurantapi.category.controller.exceptions.CategoryNotFoundException;
 import cod.restaurantapi.category.model.enums.CategoryStatus;
 import cod.restaurantapi.category.repository.CategoryRepository;
@@ -12,6 +9,9 @@ import cod.restaurantapi.category.service.command.CategoryCreateCommand;
 import cod.restaurantapi.category.service.command.CategoryListCommand;
 import cod.restaurantapi.category.service.command.CategoryUpdateCommand;
 import cod.restaurantapi.category.service.domain.Category;
+import cod.restaurantapi.common.model.Pagination;
+import cod.restaurantapi.common.model.RMAPageResponse;
+import cod.restaurantapi.common.model.Sorting;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -45,10 +45,6 @@ class CategoryServiceImplTest extends RMAServiceTest {
         CategoryCreateCommand categoryCreateCommand = CategoryCreateCommand.builder()
                 .name("CategoryTest")
                 .build();
-
-        CategoryEntity categoryEntity = new CategoryEntity();
-
-        Mockito.when(categoryRepository.save(Mockito.any(CategoryEntity.class))).thenReturn(categoryEntity);
 
         categoryService.save(categoryCreateCommand);
 

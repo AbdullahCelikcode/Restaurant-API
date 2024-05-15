@@ -1,6 +1,7 @@
 package cod.restaurantapi.product.service.command;
 
 import cod.restaurantapi.product.model.enums.ExtentType;
+import cod.restaurantapi.product.model.enums.ProductStatus;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,11 +11,20 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @Builder
-public class ProductAddCommand {
+public class ProductUpdateCommand {
+
     private String name;
+
     private String ingredient;
+
+    private ProductStatus status;
+
     private BigDecimal price;
+
     private BigDecimal extent;
+
     private ExtentType extentType;
-    private long categoryId;
+
+    private Long categoryId;
+
 }

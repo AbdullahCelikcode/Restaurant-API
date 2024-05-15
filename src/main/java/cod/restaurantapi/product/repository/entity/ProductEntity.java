@@ -17,6 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity
@@ -40,14 +41,14 @@ public class ProductEntity extends BaseEntity {
     private String ingredient;
 
     @Column(name = "price")
-    private double price;
+    private BigDecimal price;
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private ProductStatus status;
 
     @Column(name = "extent")
-    private double extent;
+    private BigDecimal extent;
 
     @Column(name = "extent_type")
     @Enumerated(EnumType.STRING)

@@ -1,8 +1,8 @@
 package cod.restaurantapi.category.controller.request;
 
+import cod.restaurantapi.category.model.enums.CategoryStatus;
 import cod.restaurantapi.common.controller.request.RMAListRequest;
 import cod.restaurantapi.common.model.RMAFilter;
-import cod.restaurantapi.category.model.enums.CategoryStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
