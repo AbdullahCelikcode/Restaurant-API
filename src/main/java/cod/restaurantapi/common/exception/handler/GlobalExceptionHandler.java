@@ -1,7 +1,9 @@
 package cod.restaurantapi.common.exception.handler;
 
+import cod.restaurantapi.common.exception.RMAAlreadyExistException;
 import cod.restaurantapi.common.exception.RMANotFoundException;
 import cod.restaurantapi.common.exception.model.RMAError;
+import jakarta.validation.ConstraintDefinitionException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -79,8 +81,23 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RMANotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<RMAError> handleMethodArgumentException(
+    public ResponseEntity<RMAError> RMANotFoundEException(
             final RMANotFoundException exception) {
+
+        log.error(exception.getMessage(), exception);
+
+        RMAError error = RMAError.builder()
+                .message(exception.getMessage())
+                .status(HttpStatus.NOT_FOUND)
+                .build();
+
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(RMAAlreadyExistException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<RMAError> RMAAlreadyExistException(
+            final RMAAlreadyExistException exception) {
 
         log.error(exception.getMessage(), exception);
 
@@ -94,6 +111,19 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IOException.class)
     public ResponseEntity<RMAError> handleIOException(final IOException exception) {
+
+        log.error(exception.getMessage(), exception);
+
+        RMAError error = RMAError.builder()
+                .status(HttpStatus.BAD_REQUEST)
+                .message(exception.getMessage())
+                .build();
+
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ConstraintDefinitionException.class)
+    public ResponseEntity<RMAError> handleConstraintDefinitionException(final ConstraintDefinitionException exception) {
 
         log.error(exception.getMessage(), exception);
 

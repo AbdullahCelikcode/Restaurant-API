@@ -4,12 +4,10 @@ import cod.restaurantapi.product.model.enums.ExtentType;
 import cod.restaurantapi.product.model.enums.ProductStatus;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.math.BigDecimal;
 
 @Getter
-@Setter
 @Builder
 public class ProductUpdateCommand {
 

@@ -1,8 +1,5 @@
 package cod.restaurantapi.category.controller;
 
-import cod.restaurantapi.common.BaseResponse;
-import cod.restaurantapi.common.model.RMAPage;
-import cod.restaurantapi.common.model.RMAPageResponse;
 import cod.restaurantapi.category.controller.mapper.CategoryCreateRequestToCommandMapper;
 import cod.restaurantapi.category.controller.mapper.CategoryListRequestToCommandListMapper;
 import cod.restaurantapi.category.controller.mapper.CategoryToCategoryResponse;
@@ -15,6 +12,9 @@ import cod.restaurantapi.category.service.CategoryService;
 import cod.restaurantapi.category.service.command.CategoryCreateCommand;
 import cod.restaurantapi.category.service.command.CategoryUpdateCommand;
 import cod.restaurantapi.category.service.domain.Category;
+import cod.restaurantapi.common.BaseResponse;
+import cod.restaurantapi.common.model.RMAPage;
+import cod.restaurantapi.common.model.RMAPageResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Positive;
@@ -81,9 +81,8 @@ public class CategoryController {
 
         CategoryUpdateCommand categoryUpdateCommand = updateRequestToCommandMapper.map(categoryUpdateRequest);
         Category category = categoryService.update(id, categoryUpdateCommand);
-        CategoryResponse categoryResponse = categoryToCategoryResponseMapper.map(category);
 
-        return BaseResponse.successOf(categoryResponse);
+        return BaseResponse.successOf(categoryToCategoryResponseMapper.map(category));
     }
 
     @DeleteMapping("/{id}")

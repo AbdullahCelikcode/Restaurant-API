@@ -1,8 +1,10 @@
 package cod.restaurantapi.product.service.impl;
 
 import cod.restaurantapi.category.controller.exceptions.CategoryNotFoundException;
+import cod.restaurantapi.category.model.enums.CategoryStatus;
 import cod.restaurantapi.category.repository.CategoryRepository;
 import cod.restaurantapi.common.model.RMAPageResponse;
+import cod.restaurantapi.product.controller.exceptions.ProductAlreadyExistException;
 import cod.restaurantapi.product.controller.exceptions.ProductNotFoundException;
 import cod.restaurantapi.product.model.enums.ProductStatus;
 import cod.restaurantapi.product.repository.ProductRepository;
@@ -38,6 +40,7 @@ public class ProductServiceImpl implements ProductService {
 
     private static final ProductUpdateCommandToProductEntity productUpdateCommandToProductEntity = ProductUpdateCommandToProductEntity.INSTANCE;
 
+
     @Override
     public Product findById(UUID id) {
         ProductEntity productEntity = productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
@@ -64,9 +67,14 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void save(ProductAddCommand productAddCommand) {
 
-        if (!categoryRepository.existsById(productAddCommand.getCategoryId())) {
-            throw new CategoryNotFoundException();
+        if (productRepository.findByName(productAddCommand.getName()).isPresent()) {
+            throw new ProductAlreadyExistException();
         }
+
+        categoryRepository.findById(productAddCommand.getCategoryId())
+                .filter(categoryEntity -> !categoryEntity.getStatus().equals(CategoryStatus.DELETED))
+                .orElseThrow(CategoryNotFoundException::new);
+
 
         Product product = productAddCommandToProduct.map(productAddCommand);
         product.active();
@@ -81,9 +89,13 @@ public class ProductServiceImpl implements ProductService {
     public Product update(UUID id, ProductUpdateCommand productUpdateCommand) {
         ProductEntity productEntity = productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
 
-        if (!categoryRepository.existsById(productUpdateCommand.getCategoryId())) {
-            throw new CategoryNotFoundException();
+        if (productRepository.findByName(productUpdateCommand.getName()).isPresent() && !productUpdateCommand.getName().equals(productEntity.getName())) {
+            throw new ProductAlreadyExistException();
         }
+
+        categoryRepository.findById(productUpdateCommand.getCategoryId())
+                .filter(categoryEntity -> !categoryEntity.getStatus().equals(CategoryStatus.DELETED))
+                .orElseThrow(CategoryNotFoundException::new);
 
         productUpdateCommandToProductEntity.update(productEntity, productUpdateCommand);
 

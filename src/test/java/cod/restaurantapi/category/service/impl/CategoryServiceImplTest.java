@@ -70,7 +70,8 @@ class CategoryServiceImplTest extends RMAServiceTest {
         categoryEntity.setUpdatedAt(LocalDateTime.now());
 
 
-        Mockito.when(categoryRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(categoryEntity));
+        Mockito.when(categoryRepository.findById(Mockito.any(Long.class)))
+                .thenReturn(Optional.of(categoryEntity));
 
         Category category = categoryService.update(categoryId, categoryUpdateCommand);
 
@@ -106,7 +107,8 @@ class CategoryServiceImplTest extends RMAServiceTest {
                 .status(CategoryStatus.ACTIVE)
                 .build();
 
-        Mockito.when(categoryRepository.findById(categoryEntity.getId())).thenReturn(Optional.of(categoryEntity));
+        Mockito.when(categoryRepository.findById(categoryEntity.getId()))
+                .thenReturn(Optional.of(categoryEntity));
 
         Category category = categoryService.findById(1L);
 
@@ -149,7 +151,8 @@ class CategoryServiceImplTest extends RMAServiceTest {
 
 
         // when
-        Mockito.when(categoryRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.ofNullable(categoryEntity));
+        Mockito.when(categoryRepository.findById(Mockito.any(Long.class)))
+                .thenReturn(Optional.ofNullable(categoryEntity));
         categoryService.delete(categoryId);
 
         // verify
@@ -181,9 +184,18 @@ class CategoryServiceImplTest extends RMAServiceTest {
         int pageNumber = 1;
         int pageSize = 3;
         CategoryListCommand givenCategoryListCommand = CategoryListCommand.builder()
-                .filter(CategoryListCommand.CategoryFilter.builder().name("Test").build())
-                .pagination(Pagination.builder().pageNumber(pageSize).pageSize(pageNumber).build())
-                .sorting(Sorting.builder().direction(Sort.Direction.ASC).property("name").build())
+                .filter(CategoryListCommand.CategoryFilter
+                        .builder()
+                        .name("Test")
+                        .build())
+                .pagination(Pagination.builder()
+                        .pageNumber(pageSize)
+                        .pageSize(pageNumber)
+                        .build())
+                .sorting(Sorting.builder()
+                        .direction(Sort.Direction.ASC)
+                        .property("name")
+                        .build())
                 .build();
 
         // then
@@ -240,8 +252,14 @@ class CategoryServiceImplTest extends RMAServiceTest {
         int pageSize = 3;
 
         CategoryListCommand givenCategoryListCommand = CategoryListCommand.builder()
-                .pagination(Pagination.builder().pageNumber(pageSize).pageSize(pageNumber).build())
-                .sorting(Sorting.builder().direction(Sort.Direction.ASC).property("name").build())
+                .pagination(Pagination.builder()
+                        .pageNumber(pageSize)
+                        .pageSize(pageNumber)
+                        .build())
+                .sorting(Sorting.builder()
+                        .direction(Sort.Direction.ASC)
+                        .property("name")
+                        .build())
                 .build();
 
 
@@ -268,7 +286,8 @@ class CategoryServiceImplTest extends RMAServiceTest {
         Page<CategoryEntity> returnedList = new PageImpl<>(pageList);
 
 
-        Mockito.when(categoryRepository.findAll(Mockito.any(Specification.class), Mockito.any(Pageable.class))).thenReturn(returnedList);
+        Mockito.when(categoryRepository.findAll(Mockito.any(Specification.class), Mockito.any(Pageable.class)))
+                .thenReturn(returnedList);
 
         RMAPageResponse<Category> exceptedList = categoryService.findAll(givenCategoryListCommand);
 

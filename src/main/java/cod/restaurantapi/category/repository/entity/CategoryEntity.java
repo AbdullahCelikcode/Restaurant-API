@@ -1,7 +1,7 @@
 package cod.restaurantapi.category.repository.entity;
 
-import cod.restaurantapi.common.model.BaseEntity;
 import cod.restaurantapi.category.model.enums.CategoryStatus;
+import cod.restaurantapi.common.model.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -37,7 +37,6 @@ public class CategoryEntity extends BaseEntity {
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private CategoryStatus status;
-
 
 
 }

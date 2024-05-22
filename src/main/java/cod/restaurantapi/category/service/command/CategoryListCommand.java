@@ -7,8 +7,6 @@ import cod.restaurantapi.common.service.command.RMAListCommand;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.CollectionUtils;
@@ -17,7 +15,6 @@ import org.springframework.util.StringUtils;
 import java.util.Set;
 
 @Getter
-@Setter
 @SuperBuilder
 public class CategoryListCommand extends RMAListCommand implements RMASpecification {
 
@@ -25,9 +22,7 @@ public class CategoryListCommand extends RMAListCommand implements RMASpecificat
 
 
     @Getter
-    @Setter
     @Builder
-    @NoArgsConstructor
     @AllArgsConstructor
     public static class CategoryFilter implements RMAFilter {
 

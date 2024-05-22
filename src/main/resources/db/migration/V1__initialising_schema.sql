@@ -67,10 +67,11 @@ create table if not exists rma_dining_table
 (
     id         bigserial
         constraint pk__rma_dining_table__id primary key,
-    merge_id   uuid                not null,
-    status     dining_table_status not null,
-    size       int                 not null,
-    created_at timestamp(0)        not null,
+    merge_id   uuid         not null,
+    status     varchar(20)  not null
+        constraint c__rma_dining_table__status check (status in ('OCCUPIED', 'AVAILABLE', 'RESERVED', 'DELETED')),
+    size       int          not null,
+    created_at timestamp(0) not null,
     updated_at timestamp(0)
 );
 

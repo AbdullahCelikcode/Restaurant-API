@@ -1,5 +1,6 @@
 package cod.restaurantapi.category.service.impl;
 
+import cod.restaurantapi.category.controller.exceptions.CategoryAlreadyExistException;
 import cod.restaurantapi.category.controller.exceptions.CategoryNotFoundException;
 import cod.restaurantapi.category.model.enums.CategoryStatus;
 import cod.restaurantapi.category.repository.CategoryRepository;
@@ -51,6 +52,11 @@ class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void save(CategoryCreateCommand categoryCreateCommand) {
+
+        if (categoryRepository.findByName(categoryCreateCommand.getName()).isPresent()) {
+            throw new CategoryAlreadyExistException();
+        }
+
         Category category = categoryCreateCommandToCategoryMapper.map(categoryCreateCommand);
         category.active();
         CategoryEntity categoryEntity = categoryToCategoryEntityMapper.map(category);
@@ -68,6 +74,11 @@ class CategoryServiceImpl implements CategoryService {
     @Override
     public Category update(Long id, CategoryUpdateCommand categoryUpdateCommand) {
         CategoryEntity categoryEntity = categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
+
+        if (categoryRepository.findByName(categoryUpdateCommand.getName()).isPresent()
+                && !categoryUpdateCommand.getName().equals(categoryEntity.getName())) {
+            throw new CategoryAlreadyExistException();
+        }
 
         categoryUpdateCommandToCategoryEntityMapper.update(categoryEntity, categoryUpdateCommand);
         categoryRepository.save(categoryEntity);

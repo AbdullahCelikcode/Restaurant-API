@@ -50,7 +50,8 @@ class CategoryControllerTest extends RMAControllerTest {
 
         // Verify
 
-        Mockito.verify(categoryService, Mockito.times(1)).save(Mockito.any(CategoryCreateCommand.class));
+        Mockito.verify(categoryService, Mockito.times(1))
+                .save(Mockito.any(CategoryCreateCommand.class));
 
     }
 
@@ -59,7 +60,9 @@ class CategoryControllerTest extends RMAControllerTest {
 
         // Given
 
-        CategoryAddRequest categoryAddRequest = CategoryAddRequest.builder().name("aa").build();
+        CategoryAddRequest categoryAddRequest = CategoryAddRequest.builder()
+                .name("aa")
+                .build();
 
         // Then
 
@@ -111,9 +114,17 @@ class CategoryControllerTest extends RMAControllerTest {
 
         // given
         CategoryListRequest givenRequest = CategoryListRequest.builder()
-                .filter(CategoryListRequest.CategoryFilter.builder().name("Test").build())
-                .sorting(Sorting.builder().direction(Sort.Direction.ASC).property("name").build())
-                .pagination(Pagination.builder().pageSize(1).pageNumber(1).build())
+                .filter(CategoryListRequest.CategoryFilter.builder()
+                        .name("Test")
+                        .build())
+                .sorting(Sorting.builder()
+                        .direction(Sort.Direction.ASC)
+                        .property("name")
+                        .build())
+                .pagination(Pagination.builder()
+                        .pageSize(1)
+                        .pageNumber(1)
+                        .build())
                 .build();
 
 
@@ -122,11 +133,26 @@ class CategoryControllerTest extends RMAControllerTest {
         List<Category> entityList = new ArrayList<>();
 
 
-        entityList.add(Category.builder().name("category1").status(CategoryStatus.ACTIVE).id(1L).build());
-        entityList.add(Category.builder().name("category2").status(CategoryStatus.ACTIVE).id(2L).build());
-        entityList.add(Category.builder().name("category3").status(CategoryStatus.ACTIVE).id(3L).build());
+        entityList.add(Category.builder()
+                .name("category1")
+                .status(CategoryStatus.ACTIVE)
+                .id(1L)
+                .build());
+        entityList.add(Category.builder()
+                .name("category2")
+                .status(CategoryStatus.ACTIVE)
+                .id(2L)
+                .build());
+        entityList.add(Category.builder()
+                .name("category3")
+                .status(CategoryStatus.ACTIVE)
+                .id(3L)
+                .build());
 
-        CategoryListCommand.CategoryFilter filter = CategoryListCommand.CategoryFilter.builder().name("Test").build();
+        CategoryListCommand.CategoryFilter filter = CategoryListCommand.CategoryFilter
+                .builder()
+                .name("Test")
+                .build();
 
         RMAPageResponse<Category> categoryList = RMAPageResponse.<Category>builder()
                 .content(entityList)
@@ -138,7 +164,8 @@ class CategoryControllerTest extends RMAControllerTest {
                 .filteredBy(filter)
                 .build();
 
-        Mockito.when(categoryService.findAll(Mockito.any(CategoryListCommand.class))).thenReturn(categoryList);
+        Mockito.when(categoryService.findAll(Mockito.any(CategoryListCommand.class)))
+                .thenReturn(categoryList);
 
 
         mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/all")
@@ -166,8 +193,14 @@ class CategoryControllerTest extends RMAControllerTest {
 
         // given
         CategoryListRequest givenRequest = CategoryListRequest.builder()
-                .pagination(Pagination.builder().pageSize(1).pageNumber(2).build())
-                .sorting(Sorting.builder().direction(Sort.Direction.ASC).property("name").build())
+                .pagination(Pagination.builder()
+                        .pageSize(1)
+                        .pageNumber(2)
+                        .build())
+                .sorting(Sorting.builder()
+                        .direction(Sort.Direction.ASC)
+                        .property("name")
+                        .build())
                 .build();
 
         // then
@@ -175,11 +208,26 @@ class CategoryControllerTest extends RMAControllerTest {
 
         List<Category> entityList = new ArrayList<>();
 
-        entityList.add(Category.builder().name("category1").status(CategoryStatus.ACTIVE).id(1L).build());
-        entityList.add(Category.builder().name("category2").status(CategoryStatus.ACTIVE).id(2L).build());
-        entityList.add(Category.builder().name("category3").status(CategoryStatus.ACTIVE).id(3L).build());
+        entityList.add(Category.builder()
+                .name("category1")
+                .status(CategoryStatus.ACTIVE)
+                .id(1L)
+                .build());
+        entityList.add(Category.builder()
+                .name("category2")
+                .status(CategoryStatus.ACTIVE)
+                .id(2L)
+                .build());
+        entityList.add(Category.builder()
+                .name("category3")
+                .status(CategoryStatus.ACTIVE)
+                .id(3L)
+                .build());
 
-        CategoryListCommand.CategoryFilter filter = CategoryListCommand.CategoryFilter.builder().name("Test").build();
+        CategoryListCommand.CategoryFilter filter = CategoryListCommand.CategoryFilter
+                .builder()
+                .name("Test")
+                .build();
 
         RMAPageResponse<Category> categoryList = RMAPageResponse.<Category>builder()
                 .content(entityList)
@@ -190,7 +238,8 @@ class CategoryControllerTest extends RMAControllerTest {
                 .build();
 
 
-        Mockito.when(categoryService.findAll(Mockito.any(CategoryListCommand.class))).thenReturn(categoryList);
+        Mockito.when(categoryService.findAll(Mockito.any(CategoryListCommand.class)))
+                .thenReturn(categoryList);
 
         mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/all")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -218,8 +267,14 @@ class CategoryControllerTest extends RMAControllerTest {
 
         // given
         CategoryListRequest givenRequest = CategoryListRequest.builder()
-                .pagination(Pagination.builder().pageSize(1).pageNumber(2).build())
-                .sorting(Sorting.builder().direction(Sort.Direction.ASC).property("name").build())
+                .pagination(Pagination.builder()
+                        .pageSize(1)
+                        .pageNumber(2)
+                        .build())
+                .sorting(Sorting.builder()
+                        .direction(Sort.Direction.ASC)
+                        .property("name")
+                        .build())
                 .filter(CategoryListRequest.CategoryFilter.builder().build())
                 .build();
 
@@ -228,9 +283,20 @@ class CategoryControllerTest extends RMAControllerTest {
 
         List<Category> entityList = new ArrayList<>();
 
-        entityList.add(Category.builder().name("category1").status(CategoryStatus.ACTIVE).id(1L).build());
-        entityList.add(Category.builder().name("category2").status(CategoryStatus.ACTIVE).id(2L).build());
-        entityList.add(Category.builder().name("category3").status(CategoryStatus.ACTIVE).id(3L).build());
+        entityList.add(Category.builder()
+                .name("category1")
+                .status(CategoryStatus.ACTIVE)
+                .id(1L).build());
+        entityList.add(Category
+                .builder()
+                .name("category2")
+                .status(CategoryStatus.ACTIVE)
+                .id(2L).build());
+        entityList.add(Category.builder()
+                .name("category3")
+                .status(CategoryStatus.ACTIVE)
+                .id(3L)
+                .build());
 
 
         RMAPageResponse<Category> categoryList = RMAPageResponse.<Category>builder()
@@ -269,16 +335,31 @@ class CategoryControllerTest extends RMAControllerTest {
 
         // given
         CategoryListRequest givenRequest = CategoryListRequest.builder()
-                .pagination(Pagination.builder().pageSize(3).pageNumber(1).build())
+                .pagination(Pagination.builder()
+                        .pageSize(3)
+                        .pageNumber(1)
+                        .build())
                 .filter(CategoryListRequest.CategoryFilter.builder().build())
                 .build();
 
         // then
         List<Category> entityList = new ArrayList<>();
 
-        entityList.add(Category.builder().name("category1").status(CategoryStatus.ACTIVE).id(1L).build());
-        entityList.add(Category.builder().name("category2").status(CategoryStatus.ACTIVE).id(2L).build());
-        entityList.add(Category.builder().name("category3").status(CategoryStatus.ACTIVE).id(3L).build());
+        entityList.add(Category.builder()
+                .name("category1")
+                .status(CategoryStatus.ACTIVE).
+                id(1L)
+                .build());
+        entityList.add(Category.builder()
+                .name("category2")
+                .status(CategoryStatus.ACTIVE)
+                .id(2L)
+                .build());
+        entityList.add(Category.builder()
+                .name("category3")
+                .status(CategoryStatus.ACTIVE)
+                .id(3L)
+                .build());
 
         RMAPageResponse categoryList = RMAPageResponse.<Category>builder()
                 .content(entityList)
@@ -335,7 +416,10 @@ class CategoryControllerTest extends RMAControllerTest {
 
         // given
         CategoryListRequest givenRequest = CategoryListRequest.builder()
-                .pagination(Pagination.builder().pageSize(-1).pageNumber(1).build())
+                .pagination(Pagination.builder()
+                        .pageSize(-1)
+                        .pageNumber(1)
+                        .build())
                 .filter(CategoryListRequest.CategoryFilter.builder().build())
                 .build();
 
@@ -352,7 +436,9 @@ class CategoryControllerTest extends RMAControllerTest {
 
         // given
         CategoryListRequest givenRequest = CategoryListRequest.builder()
-                .pagination(Pagination.builder().pageSize(1).pageNumber(-1).build())
+                .pagination(Pagination.builder()
+                        .pageSize(1)
+                        .pageNumber(-1).build())
                 .filter(CategoryListRequest.CategoryFilter.builder().build())
                 .build();
 
@@ -381,7 +467,8 @@ class CategoryControllerTest extends RMAControllerTest {
 
         // When
 
-        Mockito.when(categoryService.findById(categoryId)).thenReturn(category);
+        Mockito.when(categoryService.findById(categoryId))
+                .thenReturn(category);
 
         // Then
 
@@ -446,7 +533,8 @@ class CategoryControllerTest extends RMAControllerTest {
 
         //When
 
-        Mockito.when(categoryService.update(Mockito.any(Long.class), Mockito.any(CategoryUpdateCommand.class))).thenReturn(category);
+        Mockito.when(categoryService.update(Mockito.any(Long.class), Mockito.any(CategoryUpdateCommand.class)))
+                .thenReturn(category);
 
         //Then
 

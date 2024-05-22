@@ -16,5 +16,5 @@ public class ProductAddCommand {
     private BigDecimal price;
     private BigDecimal extent;
     private ExtentType extentType;
-    private long categoryId;
+    private Long categoryId;
 }

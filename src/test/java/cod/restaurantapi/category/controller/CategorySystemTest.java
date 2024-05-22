@@ -29,7 +29,9 @@ class CategorySystemTest extends RMASystemTest {
 
     @Test
     void testAddCategory() throws Exception {
-        CategoryAddRequest categoryAddRequest = CategoryAddRequest.builder().name("CategoryTest").build();
+        CategoryAddRequest categoryAddRequest = CategoryAddRequest.builder()
+                .name("CategoryTest")
+                .build();
 
         mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -106,9 +108,17 @@ class CategorySystemTest extends RMASystemTest {
     void testGetCategoryListWithFilter() throws Exception {
 
         CategoryListRequest categoryListRequest = CategoryListRequest.builder()
-                .pagination(Pagination.builder().pageSize(3).pageNumber(1).build())
-                .sorting(Sorting.builder().property("name").direction(Sort.Direction.ASC).build())
-                .filter(CategoryListRequest.CategoryFilter.builder().name("e").build())
+                .pagination(Pagination.builder()
+                        .pageSize(3)
+                        .pageNumber(1)
+                        .build())
+                .sorting(Sorting.builder()
+                        .property("name")
+                        .direction(Sort.Direction.ASC)
+                        .build())
+                .filter(CategoryListRequest.CategoryFilter.builder()
+                        .name("e")
+                        .build())
                 .build();
 
         mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/all")
@@ -132,8 +142,14 @@ class CategorySystemTest extends RMASystemTest {
     @Test
     void testGetCategoryListWithoutFilter() throws Exception {
         CategoryListRequest categoryListRequest = CategoryListRequest.builder()
-                .pagination(Pagination.builder().pageSize(3).pageNumber(1).build())
-                .sorting(Sorting.builder().direction(Sort.Direction.ASC).property("name").build())
+                .pagination(Pagination.builder()
+                        .pageSize(3)
+                        .pageNumber(1)
+                        .build())
+                .sorting(Sorting.builder()
+                        .direction(Sort.Direction.ASC)
+                        .property("name")
+                        .build())
                 .build();
         mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/all")
                         .contentType(MediaType.APPLICATION_JSON)

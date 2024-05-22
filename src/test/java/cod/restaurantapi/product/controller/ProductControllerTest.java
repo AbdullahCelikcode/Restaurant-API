@@ -337,16 +337,34 @@ class ProductControllerTest extends RMAControllerTest {
                 .build();
 
         ProductListRequest productListRequest = ProductListRequest.builder()
-                .pagination(Pagination.builder().pageNumber(1).pageSize(3).build())
-                .sorting(Sorting.builder().direction(Sort.Direction.ASC).property("price").build())
+                .pagination(Pagination.builder()
+                        .pageNumber(1)
+                        .pageSize(3)
+                        .build())
+                .sorting(Sorting.builder()
+                        .direction(Sort.Direction.ASC)
+                        .property("price")
+                        .build())
                 .filter(filter)
                 .build();
 
         // When
         List<Product> products = new ArrayList<>();
-        products.add(Product.builder().id(UUID.randomUUID()).name("product 1").status(ProductStatus.ACTIVE).build());
-        products.add(Product.builder().id(UUID.randomUUID()).name("product 2").status(ProductStatus.ACTIVE).build());
-        products.add(Product.builder().id(UUID.randomUUID()).name("product 3").status(ProductStatus.INACTIVE).build());
+        products.add(Product.builder()
+                .id(UUID.randomUUID())
+                .name("product 1")
+                .status(ProductStatus.ACTIVE)
+                .build());
+        products.add(Product.builder()
+                .id(UUID.randomUUID())
+                .name("product 2")
+                .status(ProductStatus.ACTIVE)
+                .build());
+        products.add(Product.builder()
+                .id(UUID.randomUUID())
+                .name("product 3")
+                .status(ProductStatus.INACTIVE)
+                .build());
 
         RMAPageResponse<Product> rmaPage = RMAPageResponse.<Product>builder()
                 .content(products)
@@ -390,9 +408,21 @@ class ProductControllerTest extends RMAControllerTest {
 
         // When
         List<Product> products = new ArrayList<>();
-        products.add(Product.builder().id(UUID.randomUUID()).name("product 1").status(ProductStatus.ACTIVE).build());
-        products.add(Product.builder().id(UUID.randomUUID()).name("product 2").status(ProductStatus.ACTIVE).build());
-        products.add(Product.builder().id(UUID.randomUUID()).name("product 3").status(ProductStatus.INACTIVE).build());
+        products.add(Product.builder()
+                .id(UUID.randomUUID())
+                .name("product 1")
+                .status(ProductStatus.ACTIVE)
+                .build());
+        products.add(Product.builder()
+                .id(UUID.randomUUID())
+                .name("product 2")
+                .status(ProductStatus.ACTIVE)
+                .build());
+        products.add(Product.builder()
+                .id(UUID.randomUUID())
+                .name("product 3")
+                .status(ProductStatus.INACTIVE)
+                .build());
 
         RMAPageResponse<Product> rmaPage = RMAPageResponse.<Product>builder()
                 .content(products)
@@ -439,9 +469,21 @@ class ProductControllerTest extends RMAControllerTest {
 
         // When
         List<Product> products = new ArrayList<>();
-        products.add(Product.builder().id(UUID.randomUUID()).name("product 1").status(ProductStatus.ACTIVE).build());
-        products.add(Product.builder().id(UUID.randomUUID()).name("product 2").status(ProductStatus.ACTIVE).build());
-        products.add(Product.builder().id(UUID.randomUUID()).name("product 3").status(ProductStatus.INACTIVE).build());
+        products.add(Product.builder()
+                .id(UUID.randomUUID())
+                .name("product 1")
+                .status(ProductStatus.ACTIVE)
+                .build());
+        products.add(Product.builder()
+                .id(UUID.randomUUID())
+                .name("product 2")
+                .status(ProductStatus.ACTIVE)
+                .build());
+        products.add(Product.builder()
+                .id(UUID.randomUUID())
+                .name("product 3")
+                .status(ProductStatus.INACTIVE)
+                .build());
 
         RMAPageResponse<Product> rmaPage = RMAPageResponse.<Product>builder()
                 .content(products)
@@ -484,8 +526,12 @@ class ProductControllerTest extends RMAControllerTest {
                 .build();
 
         ProductListRequest productListRequest = ProductListRequest.builder()
-                .sorting(Sorting.builder().direction(Sort.Direction.ASC).property("price").build())
-                .pagination(Pagination.builder().pageNumber(-1).pageSize(3).build())
+                .sorting(Sorting.builder()
+                        .direction(Sort.Direction.ASC)
+                        .property("price")
+                        .build())
+                .pagination(Pagination.builder()
+                        .pageSize(3).build())
                 .filter(filter)
                 .build();
 
@@ -509,8 +555,13 @@ class ProductControllerTest extends RMAControllerTest {
                 .build();
 
         ProductListRequest productListRequest = ProductListRequest.builder()
-                .sorting(Sorting.builder().direction(Sort.Direction.ASC).property("price").build())
-                .pagination(Pagination.builder().pageNumber(1).pageSize(-1).build())
+                .sorting(Sorting.builder()
+                        .direction(Sort.Direction.ASC)
+                        .property("price")
+                        .build())
+                .pagination(Pagination.builder()
+                        .pageNumber(1)
+                        .build())
                 .filter(filter)
                 .build();
 
@@ -563,7 +614,10 @@ class ProductControllerTest extends RMAControllerTest {
     void givenGetAllProduct_whenInvalidNegativePageSize_thenReturnBadRequest() throws Exception {
         // Given
         ProductListRequest productListRequest = ProductListRequest.builder()
-                .pagination(Pagination.builder().pageSize(-1).pageNumber(1).build())
+                .pagination(Pagination.builder()
+                        .pageSize(-1)
+                        .pageNumber(1)
+                        .build())
                 .build();
 
         // Then
@@ -577,7 +631,10 @@ class ProductControllerTest extends RMAControllerTest {
     void givenGetAllProducts_whenInvalidNegativePageNumber_thenReturnBadRequest() throws Exception {
         // Given
         ProductListRequest productListRequest = ProductListRequest.builder()
-                .pagination(Pagination.builder().pageSize(1).pageNumber(-1).build())
+                .pagination(Pagination.builder()
+                        .pageSize(1)
+                        .pageNumber(-1)
+                        .build())
                 .build();
 
         // Then
@@ -615,7 +672,8 @@ class ProductControllerTest extends RMAControllerTest {
                 .categoryId(1L)
                 .build();
 
-        Mockito.when(productService.update(Mockito.any(UUID.class), Mockito.any(ProductUpdateCommand.class))).thenReturn(product);
+        Mockito.when(productService.update(Mockito.any(UUID.class), Mockito.any(ProductUpdateCommand.class)))
+                .thenReturn(product);
 
         //Then
 
