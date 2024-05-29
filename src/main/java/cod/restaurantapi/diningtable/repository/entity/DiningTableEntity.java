@@ -32,13 +32,15 @@ public class DiningTableEntity extends BaseEntity {
     private Long id;
 
     @Column(name = "merge_id")
-    private UUID mergeId;
+    @Builder.Default
+    private UUID mergeId = UUID.randomUUID();
 
     @Column(name = "size")
     private Integer size;
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    private DiningTableStatus status;
+    @Builder.Default
+    private DiningTableStatus status = DiningTableStatus.AVAILABLE;
 
 }
