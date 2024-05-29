@@ -48,21 +48,16 @@ public class ProductServiceImpl implements ProductService {
         return productEntityToProductMapper.map(productEntity);
     }
 
+
     @Override
     public RMAPageResponse<Product> findAll(ProductListCommand productListCommand) {
 
-        Page<ProductEntity> responseList = productRepository.findAll(
-                productListCommand.toSpecification(ProductEntity.class),
-                productListCommand.toPageable());
+        Page<ProductEntity> responseList = productRepository.findAll(productListCommand.toSpecification(ProductEntity.class), productListCommand.toPageable());
 
 
-        return RMAPageResponse.<Product>builder()
-                .page(responseList)
-                .content(productEntityToProductMapper.map(responseList.getContent()))
-                .sortedBy(productListCommand.getSorting())
-                .filteredBy(productListCommand.getFilter())
-                .build();
+        return RMAPageResponse.<Product>builder().page(responseList).content(productEntityToProductMapper.map(responseList.getContent())).sortedBy(productListCommand.getSorting()).filteredBy(productListCommand.getFilter()).build();
     }
+
 
     @Override
     public void save(ProductAddCommand productAddCommand) {
@@ -71,9 +66,7 @@ public class ProductServiceImpl implements ProductService {
             throw new ProductAlreadyExistException();
         }
 
-        categoryRepository.findById(productAddCommand.getCategoryId())
-                .filter(categoryEntity -> !categoryEntity.getStatus().equals(CategoryStatus.DELETED))
-                .orElseThrow(CategoryNotFoundException::new);
+        this.checkExistingOfCategory(productAddCommand.getCategoryId());
 
 
         Product product = productAddCommandToProduct.map(productAddCommand);
@@ -85,23 +78,41 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
+
     @Override
     public Product update(UUID id, ProductUpdateCommand productUpdateCommand) {
         ProductEntity productEntity = productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
 
-        if (productRepository.findByName(productUpdateCommand.getName()).isPresent() && !productUpdateCommand.getName().equals(productEntity.getName())) {
-            throw new ProductAlreadyExistException();
-        }
+        this.checkExistingOfProductNameIfChanged(productUpdateCommand, productEntity);
 
-        categoryRepository.findById(productUpdateCommand.getCategoryId())
-                .filter(categoryEntity -> !categoryEntity.getStatus().equals(CategoryStatus.DELETED))
-                .orElseThrow(CategoryNotFoundException::new);
+        this.checkExistingOfCategory(productUpdateCommand.getCategoryId());
 
         productUpdateCommandToProductEntity.update(productEntity, productUpdateCommand);
 
         productRepository.save(productEntity);
 
         return productEntityToProductMapper.map(productEntity);
+    }
+
+    private void checkExistingOfCategory(Long categoryId) {
+        boolean categoryIsNotExist = categoryRepository.existsByIdAndStatusIsNot(categoryId, CategoryStatus.DELETED);
+
+        if (!categoryIsNotExist) {
+            throw new CategoryNotFoundException();
+        }
+    }
+
+    private void checkExistingOfProductNameIfChanged(ProductUpdateCommand productUpdateCommand, ProductEntity productEntity) {
+        if (!productEntity.getName().equalsIgnoreCase(productUpdateCommand.getName())) {
+            checkExistingOfProductName(productUpdateCommand);
+        }
+    }
+
+    private void checkExistingOfProductName(ProductUpdateCommand productUpdateCommand) {
+        boolean isProductExistByName = productRepository.findByName(productUpdateCommand.getName()).isPresent();
+        if (isProductExistByName) {
+            throw new ProductAlreadyExistException();
+        }
     }
 
 

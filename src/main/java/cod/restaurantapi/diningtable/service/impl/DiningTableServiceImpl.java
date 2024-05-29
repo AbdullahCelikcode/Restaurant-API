@@ -16,7 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -52,18 +53,17 @@ public class DiningTableServiceImpl implements DiningTableService {
 
     @Override
     public void save(DiningTableAddCommand diningTableAddCommand) {
-
+        List<DiningTableEntity> diningTableEntityList = new ArrayList<>();
         diningTableAddCommand.getDiningTablesList()
                 .forEach(diningTables -> {
                     for (int i = 0; i < diningTables.getCount(); i++) {
-                        diningTableRepository.save(
+                        diningTableEntityList.add(
                                 DiningTableEntity.builder()
                                         .size(diningTables.getSize())
-                                        .status(DiningTableStatus.AVAILABLE)
-                                        .mergeId(UUID.randomUUID())
                                         .build());
                     }
                 });
+        diningTableRepository.saveAll(diningTableEntityList);
     }
 
     @Override
@@ -81,6 +81,8 @@ public class DiningTableServiceImpl implements DiningTableService {
     public void deleteById(Long id) {
         DiningTableEntity diningTableEntity = diningTableRepository.findById(id).orElseThrow(DiningTableNotExistException::new);
         diningTableEntity.setStatus(DiningTableStatus.DELETED);
+
+        diningTableRepository.save(diningTableEntity);
     }
 
 

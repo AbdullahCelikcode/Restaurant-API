@@ -353,8 +353,8 @@ class ProductServiceImplTest extends RMAServiceTest {
                 .id(productAddCommand.getCategoryId())
                 .build();
 
-        Mockito.when(categoryRepository.findById(Mockito.anyLong()))
-                .thenReturn(Optional.of(categoryEntity));
+        Mockito.when(categoryRepository.existsByIdAndStatusIsNot(Mockito.anyLong(), Mockito.any(CategoryStatus.class)))
+                .thenReturn(true);
 
         productService.save(productAddCommand);
 
@@ -379,7 +379,7 @@ class ProductServiceImplTest extends RMAServiceTest {
                 .build();
         //then
 
-        Mockito.when(categoryRepository.findById(Mockito.anyLong()))
+        Mockito.when(categoryRepository.existsByIdAndStatusIsNot(Mockito.anyLong(), Mockito.any(CategoryStatus.class)))
                 .thenThrow(CategoryNotFoundException.class);
 
         assertThrows(CategoryNotFoundException.class,
@@ -392,6 +392,7 @@ class ProductServiceImplTest extends RMAServiceTest {
         //given
 
         UUID productId = UUID.randomUUID();
+        Long categoryId = 1L;
 
         ProductUpdateCommand productUpdateCommand = ProductUpdateCommand.builder()
                 .name("ProductUpdate")
@@ -400,7 +401,7 @@ class ProductServiceImplTest extends RMAServiceTest {
                 .price(BigDecimal.valueOf(55))
                 .extent(BigDecimal.valueOf(55))
                 .extentType(ExtentType.ML)
-                .categoryId(3L)
+                .categoryId(categoryId)
                 .build();
 
         //when
@@ -412,18 +413,23 @@ class ProductServiceImplTest extends RMAServiceTest {
                 .price(BigDecimal.valueOf(100))
                 .extent(BigDecimal.valueOf(100))
                 .extentType(ExtentType.GR)
-                .categoryId(1L)
+                .categoryId(categoryId)
                 .build();
+
         productEntity.setUpdatedAt(LocalDateTime.now());
 
         CategoryEntity categoryEntity = CategoryEntity.builder()
+                .id(1L)
+                .name("TestCategory")
                 .status(CategoryStatus.ACTIVE)
                 .build();
 
         Mockito.when(productRepository.findById(Mockito.any(UUID.class)))
                 .thenReturn(Optional.of(productEntity));
-        Mockito.when(categoryRepository.findById(Mockito.anyLong()))
-                .thenReturn(Optional.of(categoryEntity));
+        Mockito.when(productRepository.findByName(Mockito.any(String.class)))
+                .thenReturn(Optional.ofNullable(null));
+        Mockito.when(categoryRepository.existsByIdAndStatusIsNot(Mockito.anyLong(), Mockito.any(CategoryStatus.class)))
+                .thenReturn(true);
 
         //then
 
@@ -481,14 +487,15 @@ class ProductServiceImplTest extends RMAServiceTest {
                 .build();
         //when
 
-        CategoryEntity categoryEntity = CategoryEntity.builder()
-                .status(CategoryStatus.ACTIVE)
+
+        ProductEntity productEntity = ProductEntity.builder()
+                .name("TestProductForUpdate")
                 .build();
 
-        Mockito.when(categoryRepository.findById(Mockito.any(Long.class)))
+        Mockito.when(categoryRepository.existsByIdAndStatusIsNot(Mockito.any(Long.class), Mockito.any(CategoryStatus.class)))
                 .thenThrow(CategoryNotFoundException.class);
         Mockito.when(productRepository.findById(Mockito.any(UUID.class)))
-                .thenReturn(Optional.of(ProductEntity.builder().build()));
+                .thenReturn(Optional.of(productEntity));
 
         //then
         assertThrows(CategoryNotFoundException.class,
