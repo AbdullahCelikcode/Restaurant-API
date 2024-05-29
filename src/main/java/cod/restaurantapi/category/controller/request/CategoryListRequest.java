@@ -18,9 +18,7 @@ import java.util.Set;
 @NoArgsConstructor
 public class CategoryListRequest extends RMAListRequest {
 
-
     private CategoryFilter filter;
-
 
     @Getter
     @Setter
@@ -30,7 +28,6 @@ public class CategoryListRequest extends RMAListRequest {
     public static class CategoryFilter implements RMAFilter {
 
         private String name;
-
         private Set<CategoryStatus> statuses;
 
     }

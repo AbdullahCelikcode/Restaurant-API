@@ -52,6 +52,7 @@ public class CategoryController {
         return BaseResponse.successOf(categoryResponse);
     }
 
+
     @PostMapping("/all")
     public BaseResponse<RMAPage<CategoryResponse>> findAllCategories(
             @RequestBody @Valid CategoryListRequest listRequest) {
@@ -84,6 +85,7 @@ public class CategoryController {
 
         return BaseResponse.successOf(categoryToCategoryResponseMapper.map(category));
     }
+
 
     @DeleteMapping("/{id}")
     public BaseResponse<Void> categoryDelete(@PathVariable @Positive @Max(999) Long id) {

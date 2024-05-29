@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 public class CategoryResponse {
+
     private Long id;
     private String name;
     private CategoryStatus status;

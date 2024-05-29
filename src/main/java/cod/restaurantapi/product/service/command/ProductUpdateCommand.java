@@ -12,17 +12,11 @@ import java.math.BigDecimal;
 public class ProductUpdateCommand {
 
     private String name;
-
     private String ingredient;
-
     private ProductStatus status;
-
     private BigDecimal price;
-
     private BigDecimal extent;
-
     private ExtentType extentType;
-
     private Long categoryId;
 
 }

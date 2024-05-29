@@ -7,5 +7,4 @@ public interface CategoryTestRepository extends CategoryRepository {
 
     Boolean existsByName(String name);
 
-
 }
