@@ -53,9 +53,7 @@ class CategoryServiceImpl implements CategoryService {
     @Override
     public void save(CategoryCreateCommand categoryCreateCommand) {
 
-        if (categoryRepository.findByName(categoryCreateCommand.getName()).isPresent()) {
-            throw new CategoryAlreadyExistException();
-        }
+        this.checkIfExistingOfCategory(categoryCreateCommand);
 
         Category category = categoryCreateCommandToCategoryMapper.map(categoryCreateCommand);
         category.active();
@@ -64,6 +62,13 @@ class CategoryServiceImpl implements CategoryService {
 
     }
 
+    private void checkIfExistingOfCategory(CategoryCreateCommand categoryCreateCommand) {
+        if (categoryRepository.findByName(categoryCreateCommand.getName()).isPresent()) {
+            throw new CategoryAlreadyExistException();
+        }
+    }
+
+
     @Override
     public Category findById(Long id) {
         CategoryEntity categoryEntity = categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
@@ -71,19 +76,24 @@ class CategoryServiceImpl implements CategoryService {
         return categoryEntityToCategoryMapper.map(categoryEntity);
     }
 
+
     @Override
     public Category update(Long id, CategoryUpdateCommand categoryUpdateCommand) {
         CategoryEntity categoryEntity = categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
 
-        if (categoryRepository.findByName(categoryUpdateCommand.getName()).isPresent()
-                && !categoryUpdateCommand.getName().equals(categoryEntity.getName())) {
-            throw new CategoryAlreadyExistException();
-        }
+        this.checkExistingOfCategoryNameIfChanged(categoryUpdateCommand, categoryEntity);
 
         categoryUpdateCommandToCategoryEntityMapper.update(categoryEntity, categoryUpdateCommand);
         categoryRepository.save(categoryEntity);
 
         return categoryEntityToCategoryMapper.map(categoryEntity);
+    }
+
+    private void checkExistingOfCategoryNameIfChanged(CategoryUpdateCommand categoryUpdateCommand, CategoryEntity categoryEntity) {
+        if (categoryRepository.findByName(categoryUpdateCommand.getName()).isPresent()
+                && !categoryUpdateCommand.getName().equals(categoryEntity.getName())) {
+            throw new CategoryAlreadyExistException();
+        }
     }
 
 

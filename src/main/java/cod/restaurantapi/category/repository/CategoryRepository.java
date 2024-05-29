@@ -1,5 +1,6 @@
 package cod.restaurantapi.category.repository;
 
+import cod.restaurantapi.category.model.enums.CategoryStatus;
 import cod.restaurantapi.category.repository.entity.CategoryEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -10,6 +11,9 @@ import java.util.Optional;
 @Repository
 public interface CategoryRepository extends JpaRepository<CategoryEntity, Long>, JpaSpecificationExecutor<CategoryEntity> {
 
-
     Optional<CategoryEntity> findByName(String name);
+
+    boolean existsByIdAndStatusIsNot(Long categoryId, CategoryStatus categoryStatus);
+
+
 }
