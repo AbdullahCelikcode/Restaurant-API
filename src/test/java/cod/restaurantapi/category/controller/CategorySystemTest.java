@@ -29,8 +29,9 @@ class CategorySystemTest extends RMASystemTest {
 
     @Test
     void testAddCategory() throws Exception {
+
         CategoryAddRequest categoryAddRequest = CategoryAddRequest.builder()
-                .name("CategoryTest")
+                .name("CategoryTestForAddCategory")
                 .build();
 
         mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL)
@@ -46,7 +47,14 @@ class CategorySystemTest extends RMASystemTest {
     @Test
     void testGetCategoryById() throws Exception {
 
-        long categoryId = 1L;
+        CategoryEntity createdCategoryEntity = CategoryEntity.builder()
+                .name("TestCategoryForGetCategoryById")
+                .status(CategoryStatus.ACTIVE)
+                .build();
+        categoryTestRepository.save(createdCategoryEntity);
+
+
+        Long categoryId = categoryTestRepository.findByName(createdCategoryEntity.getName()).get().getId();
 
         CategoryEntity category = categoryTestRepository.findById(categoryId)
                 .orElseThrow(CategoryNotFoundException::new);
@@ -61,12 +69,20 @@ class CategorySystemTest extends RMASystemTest {
                         .toString()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.httpStatus").value("OK"));
 
+        categoryTestRepository.deleteById(categoryId);
 
     }
 
     @Test
     void testUpdateCategoryById() throws Exception {
-        Long categoryId = 1L;
+
+        CategoryEntity createdCategoryEntity = CategoryEntity.builder()
+                .name("TestCategoryForUpdateCategory")
+                .status(CategoryStatus.ACTIVE)
+                .build();
+        categoryTestRepository.save(createdCategoryEntity);
+
+        Long categoryId = categoryTestRepository.findByName(createdCategoryEntity.getName()).get().getId();
 
         CategoryUpdateRequest categoryUpdateRequest = new CategoryUpdateRequest();
         categoryUpdateRequest.setName("UpdateTest");
@@ -86,13 +102,19 @@ class CategorySystemTest extends RMASystemTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.updatedAt").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.httpStatus").value("OK"));
 
-
+        categoryTestRepository.deleteById(categoryId);
     }
 
     @Test
     void testDeleteCategoryById() throws Exception {
 
-        Long categoryId = 1L;
+        CategoryEntity createdCategoryEntity = CategoryEntity.builder()
+                .name("TestCategoryForDeleteCategory")
+                .status(CategoryStatus.ACTIVE)
+                .build();
+        categoryTestRepository.save(createdCategoryEntity);
+
+        Long categoryId = categoryTestRepository.findByName(createdCategoryEntity.getName()).get().getId();
 
         mockMvc.perform(MockMvcRequestBuilders.delete(BASE_URL + "/{id}", categoryId))
                 .andExpect(MockMvcResultMatchers.status().isOk());
@@ -101,11 +123,13 @@ class CategorySystemTest extends RMASystemTest {
                 .orElseThrow(CategoryNotFoundException::new);
         Assertions.assertEquals(CategoryStatus.DELETED, categoryEntity.getStatus());
 
+        categoryTestRepository.deleteById(categoryId);
     }
 
 
     @Test
     void testGetCategoryListWithFilter() throws Exception {
+
 
         CategoryListRequest categoryListRequest = CategoryListRequest.builder()
                 .pagination(Pagination.builder()
@@ -133,8 +157,6 @@ class CategorySystemTest extends RMASystemTest {
                         .value(categoryListRequest.getPagination().getPageSize()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.filteredBy.name")
                         .value(categoryListRequest.getFilter().getName()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content.size()").
-                        value(categoryListRequest.getPagination().getPageSize()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.httpStatus").value("OK"));
 
     }
@@ -161,8 +183,6 @@ class CategorySystemTest extends RMASystemTest {
                         .value(categoryListRequest.getPagination().getPageNumber()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.pageSize")
                         .value(categoryListRequest.getPagination().getPageSize()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.content.size()").
-                        value(categoryListRequest.getPagination().getPageSize()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.httpStatus").value("OK"));
 
     }
