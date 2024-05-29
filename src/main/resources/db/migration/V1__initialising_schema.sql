@@ -1,8 +1,3 @@
-create type dining_table_status as enum ('OCCUPIED','AVAILABLE','RESERVED');
-create type order_status as enum ('PENDING','PROCESSING','COMPLETED','CANCELLED','PAID');
-create type order_item_status as enum ('UNPAID','PAID');
-
-
 create table if not exists rma_category
 (
     id         bigserial
@@ -40,7 +35,8 @@ create table if not exists rma_order
     id                    uuid
         constraint pk__rma_order__id primary key,
     dining_table_merge_id uuid           not null,
-    status                order_status   not null,
+    status                varchar(20)    not null
+        constraint c__rma_order__status check (status in ('PENDING', 'PROCESSING', 'COMPLETED', 'CANCELLED', 'PAID')),
     price                 numeric(50, 8) not null,
     created_at            timestamp(3)   not null,
     updated_at            timestamp(3)
@@ -50,13 +46,14 @@ create table if not exists rma_order_item
 (
     id         uuid
         constraint pk__rma_order_item__id primary key,
-    order_id   uuid              not null
+    order_id   uuid           not null
         constraint fk__rma_order_item__order_id references rma_order (id),
-    product_id uuid              not null
+    product_id uuid           not null
         constraint fk__rma_order_item__product_id references rma_product (id),
-    price      numeric(50, 8)    not null,
-    status     order_item_status not null,
-    created_at timestamp(3)      not null,
+    price      numeric(50, 8) not null,
+    status     varchar(20)    not null
+        constraint c__rma_order_item__status check (status in ('UNPAID', 'PAID')),
+    created_at timestamp(3)   not null,
     updated_at timestamp(3)
 
 );
