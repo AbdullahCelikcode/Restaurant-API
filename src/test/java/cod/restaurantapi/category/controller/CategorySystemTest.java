@@ -92,15 +92,8 @@ class CategorySystemTest extends RMASystemTest {
         mockMvc.perform(MockMvcRequestBuilders.put(BASE_URL + "/{id}", categoryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(categoryUpdateRequest)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response").exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.id").value(categoryId))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.name").value(categoryUpdateRequest.getName()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.status").value(categoryUpdateRequest.getStatus()
-                        .toString()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.updatedAt").exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.httpStatus").value("OK"));
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
 
         categoryTestRepository.deleteById(categoryId);
     }
@@ -145,7 +138,7 @@ class CategorySystemTest extends RMASystemTest {
                         .build())
                 .build();
 
-        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/all")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/categories")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(categoryListRequest)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -173,7 +166,7 @@ class CategorySystemTest extends RMASystemTest {
                         .property("name")
                         .build())
                 .build();
-        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/all")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/categories")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(categoryListRequest)))
                 .andExpect(MockMvcResultMatchers.status().isOk())

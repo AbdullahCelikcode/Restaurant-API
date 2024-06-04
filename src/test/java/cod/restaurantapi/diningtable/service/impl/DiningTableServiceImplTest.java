@@ -323,14 +323,12 @@ class DiningTableServiceImplTest extends RMAServiceTest {
 
         //then
 
-        DiningTable updatedDiningTable = diningTableService.update(diningTableId, diningTableUpdateCommand);
+        diningTableService.update(diningTableId, diningTableUpdateCommand);
 
         //verify
 
         Mockito.verify(diningTableRepository, Mockito.times(1)).findById(Mockito.any(Long.class));
 
-        Assertions.assertEquals(diningTableUpdateCommand.getSize(), updatedDiningTable.getSize());
-        Assertions.assertEquals(diningTableUpdateCommand.getStatus(), updatedDiningTable.getStatus());
 
     }
 

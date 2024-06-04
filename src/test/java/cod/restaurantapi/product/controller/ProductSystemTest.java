@@ -150,15 +150,8 @@ class ProductSystemTest extends RMASystemTest {
         mockMvc.perform(MockMvcRequestBuilders.put(BASE_URL + "/{id}", productId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(productUpdateRequest)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response").exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.id").value(productId.toString()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.name").value(productUpdateRequest.getName()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.status").value(productUpdateRequest.getStatus()
-                        .toString()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.updatedAt").exists())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.httpStatus").value("OK"));
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
 
         productTestRepository.deleteById(productId);
         categoryTestRepository.deleteById(categoryId);
@@ -222,7 +215,7 @@ class ProductSystemTest extends RMASystemTest {
                 .filter(filter)
                 .build();
 
-        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/all")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(productListRequest)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -252,7 +245,7 @@ class ProductSystemTest extends RMASystemTest {
                         .build())
                 .build();
 
-        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/all")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(productListRequest)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -276,7 +269,7 @@ class ProductSystemTest extends RMASystemTest {
                         .build())
                 .build();
 
-        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/all")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(productListRequest)))
                 .andExpect(MockMvcResultMatchers.status().isOk())

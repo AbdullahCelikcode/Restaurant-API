@@ -433,18 +433,11 @@ class ProductServiceImplTest extends RMAServiceTest {
 
         //then
 
-        Product product = productService.update(productId, productUpdateCommand);
+        productService.update(productId, productUpdateCommand);
 
         //verify
 
-        Assertions.assertEquals(productUpdateCommand.getName(), product.getName());
-        Assertions.assertEquals(productUpdateCommand.getStatus(), product.getStatus());
-        Assertions.assertEquals(productEntity.getIngredient(), product.getIngredient());
-        Assertions.assertEquals(productEntity.getPrice(), product.getPrice());
-        Assertions.assertEquals(productEntity.getExtentType(), product.getExtentType());
-        Assertions.assertEquals(productEntity.getExtent(), product.getExtent());
-        Assertions.assertEquals(productEntity.getCategoryId(), product.getCategoryId());
-        Assertions.assertEquals(productEntity.getUpdatedAt(), product.getUpdatedAt());
+        Mockito.verify(productRepository, Mockito.times(1)).save(Mockito.any(ProductEntity.class));
 
     }
 

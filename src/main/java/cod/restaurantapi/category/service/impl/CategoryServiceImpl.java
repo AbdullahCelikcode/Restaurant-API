@@ -14,7 +14,9 @@ import cod.restaurantapi.category.service.mapper.CategoryCreateCommandToCategory
 import cod.restaurantapi.category.service.mapper.CategoryEntityToCategory;
 import cod.restaurantapi.category.service.mapper.CategoryToCategoryEntityMapper;
 import cod.restaurantapi.category.service.mapper.CategoryUpdateCommandToCategoryEntityMapper;
+import cod.restaurantapi.common.exception.RMAStatusAlreadyChangedException;
 import cod.restaurantapi.common.model.RMAPageResponse;
+import cod.restaurantapi.common.model.Sorting;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -40,10 +42,11 @@ class CategoryServiceImpl implements CategoryService {
                 categoryListCommand.toSpecification(CategoryEntity.class),
                 categoryListCommand.toPageable());
 
+
         return RMAPageResponse.<Category>builder()
                 .page(responseList)
                 .content(categoryEntityToCategoryMapper.map(responseList.getContent()))
-                .sortedBy(categoryListCommand.getSorting())
+                .sortedBy(Sorting.of(responseList.getSort()))
                 .filteredBy(categoryListCommand.getFilter())
                 .build();
 
@@ -78,7 +81,7 @@ class CategoryServiceImpl implements CategoryService {
 
 
     @Override
-    public Category update(Long id, CategoryUpdateCommand categoryUpdateCommand) {
+    public void update(Long id, CategoryUpdateCommand categoryUpdateCommand) {
         CategoryEntity categoryEntity = categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
 
         this.checkExistingOfCategoryNameIfChanged(categoryUpdateCommand, categoryEntity);
@@ -86,7 +89,6 @@ class CategoryServiceImpl implements CategoryService {
         categoryUpdateCommandToCategoryEntityMapper.update(categoryEntity, categoryUpdateCommand);
         categoryRepository.save(categoryEntity);
 
-        return categoryEntityToCategoryMapper.map(categoryEntity);
     }
 
     private void checkExistingOfCategoryNameIfChanged(CategoryUpdateCommand categoryUpdateCommand, CategoryEntity categoryEntity) {
@@ -104,7 +106,6 @@ class CategoryServiceImpl implements CategoryService {
         this.checkIfStatusChanged(categoryEntity.getStatus(), CategoryStatus.DELETED);
 
         categoryEntity.setStatus(CategoryStatus.DELETED);
-
         categoryRepository.save(categoryEntity);
     }
 

@@ -137,7 +137,7 @@ class DiningTableControllerTest extends RMAControllerTest {
 
         //then
 
-        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/all")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/dining-tables")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(diningTableListRequest)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -203,7 +203,7 @@ class DiningTableControllerTest extends RMAControllerTest {
 
         //then
 
-        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/all")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/dining-tables")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(diningTableListRequest)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -266,7 +266,7 @@ class DiningTableControllerTest extends RMAControllerTest {
 
         //then
 
-        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/all")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/dining-tables")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(diningTableListRequest)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -325,7 +325,7 @@ class DiningTableControllerTest extends RMAControllerTest {
 
         //then
 
-        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/all")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/dining-tables")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(diningTableListRequest)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -356,12 +356,11 @@ class DiningTableControllerTest extends RMAControllerTest {
         DiningTableListRequest diningTableListRequest = DiningTableListRequest.builder()
                 .filter(diningTableFilter)
                 .sorting(sorting)
-
                 .build();
 
         //then
 
-        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/all")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/dining-tables")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(diningTableListRequest)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
@@ -393,7 +392,7 @@ class DiningTableControllerTest extends RMAControllerTest {
 
         //then
 
-        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/all")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/dining-tables")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(diningTableListRequest)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
@@ -424,7 +423,7 @@ class DiningTableControllerTest extends RMAControllerTest {
 
         //then
 
-        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/all")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/dining-tables")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(diningTableListRequest)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
@@ -612,21 +611,13 @@ class DiningTableControllerTest extends RMAControllerTest {
                 .build();
 
 
-        Mockito.when(diningTableService.update(Mockito.any(Long.class), Mockito.any(DiningTableUpdateCommand.class)))
-                .thenReturn(diningTable);
-
         //Then
 
 
         mockMvc.perform(MockMvcRequestBuilders.put(BASE_URL + "/{id}", diningTableId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(diningTableUpdateRequest)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.id").value(diningTable.getId()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.size").value(diningTableUpdateRequest.getSize()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.status").value(diningTableUpdateRequest.getStatus().toString()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.httpStatus").value("OK"));
+                .andExpect(MockMvcResultMatchers.status().isOk());
 
         // Verify
 

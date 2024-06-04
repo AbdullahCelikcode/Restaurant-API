@@ -168,7 +168,7 @@ class CategoryControllerTest extends RMAControllerTest {
                 .thenReturn(categoryList);
 
 
-        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/all")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/categories")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(givenRequest)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -241,7 +241,7 @@ class CategoryControllerTest extends RMAControllerTest {
         Mockito.when(categoryService.findAll(Mockito.any(CategoryListCommand.class)))
                 .thenReturn(categoryList);
 
-        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/all")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/categories")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(givenRequest)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -308,7 +308,7 @@ class CategoryControllerTest extends RMAControllerTest {
 
         Mockito.when(categoryService.findAll(Mockito.any(CategoryListCommand.class))).thenReturn(categoryList);
 
-        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/all")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/categories")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(givenRequest)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -372,7 +372,7 @@ class CategoryControllerTest extends RMAControllerTest {
 
         Mockito.when(categoryService.findAll(Mockito.any(CategoryListCommand.class))).thenReturn(categoryList);
 
-        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/all")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/categories")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(givenRequest)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -405,7 +405,7 @@ class CategoryControllerTest extends RMAControllerTest {
 
         // then
 
-        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/all")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/categories")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(givenRequest)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
@@ -425,7 +425,7 @@ class CategoryControllerTest extends RMAControllerTest {
 
         // then
 
-        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/all")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/categories")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(givenRequest)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
@@ -444,7 +444,7 @@ class CategoryControllerTest extends RMAControllerTest {
 
         // then
 
-        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/all")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/categories")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(givenRequest)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
@@ -531,10 +531,6 @@ class CategoryControllerTest extends RMAControllerTest {
                 .status(CategoryStatus.INACTIVE)
                 .build();
 
-        //When
-
-        Mockito.when(categoryService.update(Mockito.any(Long.class), Mockito.any(CategoryUpdateCommand.class)))
-                .thenReturn(category);
 
         //Then
 
@@ -542,12 +538,8 @@ class CategoryControllerTest extends RMAControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.put(BASE_URL + "/{id}", categoryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(categoryUpdateRequest)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.id").value(category.getId()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.name").value(category.getName()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.status").value(category.getStatus().toString()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.httpStatus").value("OK"));
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
 
         // Verify
 

@@ -24,13 +24,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Validated
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/dining-table")
 class DiningTableController {
     private final DiningTableService diningTableService;
 
@@ -39,7 +37,7 @@ class DiningTableController {
     private static final DiningTableUpdateRequestToCommandMapper diningTableUpdateRequestToCommandMapper = DiningTableUpdateRequestToCommandMapper.INSTANCE;
     private static final DiningTableListRequestToCommandMapper diningTableListRequestToCommandMapper = DiningTableListRequestToCommandMapper.INSTANCE;
 
-    @GetMapping("/{id}")
+    @GetMapping("/api/v1/dining-table/{id}")
     public BaseResponse<DiningTableResponse> getDiningTableById(@PathVariable @Positive Long id) {
 
         DiningTable diningTable = diningTableService.findById(id);
@@ -48,7 +46,7 @@ class DiningTableController {
         return BaseResponse.successOf(diningTableResponse);
     }
 
-    @PostMapping("/all")
+    @PostMapping("/api/v1/dining-tables")
     public BaseResponse<RMAPage<DiningTableResponse>> findAllDiningTables(
             @RequestBody @Valid DiningTableListRequest diningTableListRequest) {
 
@@ -62,7 +60,7 @@ class DiningTableController {
     }
 
 
-    @PostMapping
+    @PostMapping("/api/v1/dining-table")
     public BaseResponse<Void> diningTableAdd(@RequestBody @Valid DiningTableAddRequest diningTableAddRequest) {
 
         diningTableService.save(diningTableAddRequestToCommandMapper.map(diningTableAddRequest));
@@ -70,17 +68,17 @@ class DiningTableController {
         return BaseResponse.SUCCESS;
     }
 
-    @PutMapping("/{id}")
-    public BaseResponse<DiningTableResponse> diningTableUpdate(@PathVariable @Positive Long id,
-                                                               @RequestBody @Valid DiningTableUpdateRequest diningTableUpdateRequest
+    @PutMapping("/api/v1/dining-table/{id}")
+    public BaseResponse<Void> diningTableUpdate(@PathVariable @Positive Long id,
+                                                @RequestBody @Valid DiningTableUpdateRequest diningTableUpdateRequest
     ) {
         DiningTableUpdateCommand diningTableUpdateCommand = diningTableUpdateRequestToCommandMapper.map(diningTableUpdateRequest);
-        DiningTable diningTable = diningTableService.update(id, diningTableUpdateCommand);
+        diningTableService.update(id, diningTableUpdateCommand);
 
-        return BaseResponse.successOf(diningTableToDiningTableResponseMapper.map(diningTable));
+        return BaseResponse.SUCCESS;
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/api/v1/dining-table/{id}")
     public BaseResponse<Void> diningTableDelete(@PathVariable @Positive Long id) {
         diningTableService.deleteById(id);
         return BaseResponse.SUCCESS;

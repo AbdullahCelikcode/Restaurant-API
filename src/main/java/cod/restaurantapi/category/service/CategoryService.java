@@ -14,7 +14,7 @@ public interface CategoryService {
 
     Category findById(Long id);
 
-    Category update(Long id, CategoryUpdateCommand categoryUpdateCommand);
+    void update(Long id, CategoryUpdateCommand categoryUpdateCommand);
 
     void delete(Long id);
 }

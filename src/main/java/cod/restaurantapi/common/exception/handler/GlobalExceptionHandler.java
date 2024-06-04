@@ -2,6 +2,7 @@ package cod.restaurantapi.common.exception.handler;
 
 import cod.restaurantapi.common.exception.RMAAlreadyExistException;
 import cod.restaurantapi.common.exception.RMANotFoundException;
+import cod.restaurantapi.common.exception.RMAStatusAlreadyChangedException;
 import cod.restaurantapi.common.exception.model.RMAError;
 import jakarta.validation.ConstraintDefinitionException;
 import jakarta.validation.ConstraintViolationException;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<RMAError> handleMethodArgumentException(
@@ -41,6 +43,7 @@ public class GlobalExceptionHandler {
 
     }
 
+
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<RMAError> handleIllegalArgumentException(
@@ -56,6 +59,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
 
     }
+
 
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -79,6 +83,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
+
     @ExceptionHandler(RMANotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<RMAError> RMANotFoundEException(
@@ -93,6 +98,7 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
+
 
     @ExceptionHandler(RMAAlreadyExistException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -109,6 +115,21 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
+
+    @ExceptionHandler(RMAStatusAlreadyChangedException.class)
+    public ResponseEntity<RMAError> handleConstraintDefinitionException(final RMAStatusAlreadyChangedException exception) {
+
+        log.error(exception.getMessage(), exception);
+
+        RMAError error = RMAError.builder()
+                .status(HttpStatus.UNPROCESSABLE_ENTITY)
+                .message(exception.getMessage())
+                .build();
+
+        return new ResponseEntity<>(error, HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+
+
     @ExceptionHandler(IOException.class)
     public ResponseEntity<RMAError> handleIOException(final IOException exception) {
 
@@ -121,6 +142,7 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
+
 
     @ExceptionHandler(ConstraintDefinitionException.class)
     public ResponseEntity<RMAError> handleConstraintDefinitionException(final ConstraintDefinitionException exception) {

@@ -16,7 +16,7 @@ public interface ProductService {
 
     void delete(UUID id);
 
-    Product update(UUID id, ProductUpdateCommand productUpdateCommand);
+    void update(UUID id, ProductUpdateCommand productUpdateCommand);
 
     RMAPageResponse<Product> findAll(ProductListCommand productListCommand);
 }

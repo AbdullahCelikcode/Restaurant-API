@@ -1,6 +1,8 @@
 package cod.restaurantapi.diningtable.service.impl;
 
+import cod.restaurantapi.common.exception.RMAStatusAlreadyChangedException;
 import cod.restaurantapi.common.model.RMAPageResponse;
+import cod.restaurantapi.common.model.Sorting;
 import cod.restaurantapi.diningtable.controller.exceptions.DiningTableNotExistException;
 import cod.restaurantapi.diningtable.model.enums.DiningTableStatus;
 import cod.restaurantapi.diningtable.repository.DiningTableRepository;
@@ -43,13 +45,15 @@ public class DiningTableServiceImpl implements DiningTableService {
                 diningTableListCommand.toSpecification(DiningTableEntity.class),
                 diningTableListCommand.toPageable());
 
+
         return RMAPageResponse.<DiningTable>builder()
                 .page(diningTableEntityPage)
                 .content(diningTableEntityToDiningTableMapper.map(diningTableEntityPage.getContent()))
-                .sortedBy(diningTableListCommand.getSorting())
+                .sortedBy(Sorting.of(diningTableEntityPage.getSort()))
                 .filteredBy(diningTableListCommand.getFilter())
                 .build();
     }
+
 
     @Override
     public void save(DiningTableAddCommand diningTableAddCommand) {
@@ -66,16 +70,17 @@ public class DiningTableServiceImpl implements DiningTableService {
         diningTableRepository.saveAll(diningTableEntityList);
     }
 
+
     @Override
-    public DiningTable update(Long id, DiningTableUpdateCommand diningTableUpdateCommand) {
+    public void update(Long id, DiningTableUpdateCommand diningTableUpdateCommand) {
 
         DiningTableEntity diningTableEntity = diningTableRepository.findById(id).orElseThrow(DiningTableNotExistException::new);
 
         diningTableUpdateCommandToDiningTableEntityMapper.update(diningTableEntity, diningTableUpdateCommand);
         diningTableRepository.save(diningTableEntity);
 
-        return diningTableEntityToDiningTableMapper.map(diningTableEntity);
     }
+
 
     @Override
     public void deleteById(Long id) {

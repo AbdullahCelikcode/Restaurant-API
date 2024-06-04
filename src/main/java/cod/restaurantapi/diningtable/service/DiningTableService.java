@@ -12,7 +12,7 @@ public interface DiningTableService {
 
     DiningTable findById(Long id);
 
-    DiningTable update(Long id, DiningTableUpdateCommand diningTableUpdateCommand);
+    void update(Long id, DiningTableUpdateCommand diningTableUpdateCommand);
 
     void deleteById(Long id);
 

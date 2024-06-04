@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
@@ -32,7 +31,6 @@ import java.util.UUID;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/product")
 public class ProductController {
 
     private static final ProductAddRequestToCommandMapper productAddRequestToCommandMapper = ProductAddRequestToCommandMapper.INSTANCE;
@@ -44,7 +42,7 @@ public class ProductController {
 
     private final ProductService productService;
 
-    @GetMapping("/{id}")
+    @GetMapping("/api/v1/product/{id}")
     public BaseResponse<ProductResponse> getProductById(@PathVariable UUID id) {
 
         Product product = productService.findById(id);
@@ -53,7 +51,7 @@ public class ProductController {
         return BaseResponse.successOf(productResponse);
     }
 
-    @PostMapping("/all")
+    @PostMapping("/api/v1/products")
     public BaseResponse<RMAPage<ProductResponse>> findAllProducts(@RequestBody @Valid ProductListRequest productListRequest) {
         RMAPageResponse<Product> productList = productService.findAll(productListRequestToProductListCommandMapper.map(productListRequest));
 
@@ -65,7 +63,7 @@ public class ProductController {
     }
 
 
-    @PostMapping
+    @PostMapping("/api/v1/product")
     public BaseResponse<Void> productAdd(@RequestBody @Valid ProductAddRequest productAddRequest) {
 
         ProductAddCommand productAddCommand = productAddRequestToCommandMapper.map(productAddRequest);
@@ -74,18 +72,17 @@ public class ProductController {
         return BaseResponse.SUCCESS;
     }
 
-    @PutMapping("/{id}")
-    public BaseResponse<ProductResponse> productUpdate(@PathVariable UUID id,
-                                                       @RequestBody @Valid ProductUpdateRequest productUpdateRequest) {
+    @PutMapping("/api/v1/product/{id}")
+    public BaseResponse<Void> productUpdate(@PathVariable UUID id,
+                                            @RequestBody @Valid ProductUpdateRequest productUpdateRequest) {
 
         ProductUpdateCommand productUpdateCommand = productUpdateRequestToCommand.map(productUpdateRequest);
-        Product product = productService.update(id, productUpdateCommand);
-        ProductResponse productResponse = productToProductResponse.map(product);
+        productService.update(id, productUpdateCommand);
 
-        return BaseResponse.successOf(productResponse);
+        return BaseResponse.SUCCESS;
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/api/v1/product/{id}")
     public BaseResponse<Void> productDelete(@PathVariable UUID id) {
         productService.delete(id);
         return BaseResponse.SUCCESS;

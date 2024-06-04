@@ -17,4 +17,13 @@ public class Sorting {
     public Sort.Direction direction;
 
 
+    public static Sorting of(Sort sort) {
+        return sort.stream().findFirst()
+                .map(order -> Sorting.builder()
+                        .property(order.getProperty())
+                        .direction(order.getDirection())
+                        .build())
+                .orElse(null);
+    }
 }
+

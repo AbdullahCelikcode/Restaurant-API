@@ -73,11 +73,9 @@ class CategoryServiceImplTest extends RMAServiceTest {
         Mockito.when(categoryRepository.findById(Mockito.any(Long.class)))
                 .thenReturn(Optional.of(categoryEntity));
 
-        Category category = categoryService.update(categoryId, categoryUpdateCommand);
+        categoryService.update(categoryId, categoryUpdateCommand);
 
-        Assertions.assertEquals(categoryUpdateCommand.getName(), category.getName());
-        Assertions.assertEquals(categoryUpdateCommand.getStatus(), category.getStatus());
-        Assertions.assertEquals(categoryEntity.getUpdatedAt(), category.getUpdatedAt());
+        Mockito.verify(categoryRepository, Mockito.times(1)).save(Mockito.any(CategoryEntity.class));
 
     }
 

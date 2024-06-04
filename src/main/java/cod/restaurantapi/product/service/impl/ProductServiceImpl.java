@@ -3,7 +3,9 @@ package cod.restaurantapi.product.service.impl;
 import cod.restaurantapi.category.controller.exceptions.CategoryNotFoundException;
 import cod.restaurantapi.category.model.enums.CategoryStatus;
 import cod.restaurantapi.category.repository.CategoryRepository;
+import cod.restaurantapi.common.exception.RMAStatusAlreadyChangedException;
 import cod.restaurantapi.common.model.RMAPageResponse;
+import cod.restaurantapi.common.model.Sorting;
 import cod.restaurantapi.product.controller.exceptions.ProductAlreadyExistException;
 import cod.restaurantapi.product.controller.exceptions.ProductNotFoundException;
 import cod.restaurantapi.product.model.enums.ProductStatus;
@@ -52,10 +54,16 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public RMAPageResponse<Product> findAll(ProductListCommand productListCommand) {
 
-        Page<ProductEntity> responseList = productRepository.findAll(productListCommand.toSpecification(ProductEntity.class), productListCommand.toPageable());
+        Page<ProductEntity> responseList = productRepository.findAll(
+                productListCommand.toSpecification(ProductEntity.class),
+                productListCommand.toPageable());
 
 
-        return RMAPageResponse.<Product>builder().page(responseList).content(productEntityToProductMapper.map(responseList.getContent())).sortedBy(productListCommand.getSorting()).filteredBy(productListCommand.getFilter()).build();
+        return RMAPageResponse.<Product>builder()
+                .page(responseList)
+                .content(productEntityToProductMapper.map(responseList.getContent()))
+                .sortedBy(Sorting.of(responseList.getSort()))
+                .filteredBy(productListCommand.getFilter()).build();
     }
 
 
@@ -80,7 +88,7 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
-    public Product update(UUID id, ProductUpdateCommand productUpdateCommand) {
+    public void update(UUID id, ProductUpdateCommand productUpdateCommand) {
         ProductEntity productEntity = productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
 
         this.checkExistingOfProductNameIfChanged(productUpdateCommand, productEntity);
@@ -88,10 +96,8 @@ public class ProductServiceImpl implements ProductService {
         this.checkExistingOfCategory(productUpdateCommand.getCategoryId());
 
         productUpdateCommandToProductEntity.update(productEntity, productUpdateCommand);
-
         productRepository.save(productEntity);
 
-        return productEntityToProductMapper.map(productEntity);
     }
 
     private void checkExistingOfCategory(Long categoryId) {

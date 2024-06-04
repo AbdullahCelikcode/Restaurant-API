@@ -379,7 +379,7 @@ class ProductControllerTest extends RMAControllerTest {
         Mockito.when(productService.findAll(Mockito.any(ProductListCommand.class))).thenReturn(rmaPage);
 
         // Then
-        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/all")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(productListRequest)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -437,7 +437,7 @@ class ProductControllerTest extends RMAControllerTest {
         Mockito.when(productService.findAll(Mockito.any(ProductListCommand.class))).thenReturn(rmaPage);
 
         // Then
-        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/all")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(productListRequest)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -498,7 +498,7 @@ class ProductControllerTest extends RMAControllerTest {
         Mockito.when(productService.findAll(Mockito.any(ProductListCommand.class))).thenReturn(rmaPage);
 
         // Then
-        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/all")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(productListRequest)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -537,7 +537,7 @@ class ProductControllerTest extends RMAControllerTest {
 
 
         // Then
-        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/all")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(productListRequest)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
@@ -567,7 +567,7 @@ class ProductControllerTest extends RMAControllerTest {
 
 
         // Then
-        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/all")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(productListRequest)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
@@ -591,7 +591,7 @@ class ProductControllerTest extends RMAControllerTest {
 
 
         // Then
-        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/all")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(productListRequest)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
@@ -604,7 +604,7 @@ class ProductControllerTest extends RMAControllerTest {
         ProductListRequest productListRequest = ProductListRequest.builder().build();
 
         // Then
-        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/all")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(productListRequest)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
@@ -621,7 +621,7 @@ class ProductControllerTest extends RMAControllerTest {
                 .build();
 
         // Then
-        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/all")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(productListRequest)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
@@ -638,7 +638,7 @@ class ProductControllerTest extends RMAControllerTest {
                 .build();
 
         // Then
-        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/all")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(productListRequest)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
@@ -672,8 +672,6 @@ class ProductControllerTest extends RMAControllerTest {
                 .categoryId(1L)
                 .build();
 
-        Mockito.when(productService.update(Mockito.any(UUID.class), Mockito.any(ProductUpdateCommand.class)))
-                .thenReturn(product);
 
         //Then
 
@@ -681,17 +679,7 @@ class ProductControllerTest extends RMAControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.put(BASE_URL + "/{id}", productId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(productUpdateRequest)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.id").value(product.getId().toString()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.name").value(product.getName()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.ingredient").value(product.getIngredient()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.status").value(product.getStatus().toString()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.price").value(product.getPrice()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.extent").value(product.getExtent()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.extentType").value(product.getExtentType().toString()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.categoryId").value(product.getCategoryId()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.httpStatus").value("OK"));
+                .andExpect(MockMvcResultMatchers.status().isOk());
 
         // Verify
 

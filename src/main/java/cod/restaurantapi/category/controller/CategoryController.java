@@ -26,14 +26,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/category")
+
 public class CategoryController {
 
     private final CategoryService categoryService;
@@ -45,7 +44,7 @@ public class CategoryController {
     private static final CategoryListRequestToCommandListMapper listRequestToCommandMapper = CategoryListRequestToCommandListMapper.INSTANCE;
 
 
-    @GetMapping("/{id}")
+    @GetMapping("/api/v1/category/{id}")
     public BaseResponse<CategoryResponse> getCategoryById(@PathVariable @Positive @Max(999) Long id) {
         Category category = categoryService.findById(id);
         CategoryResponse categoryResponse = categoryToCategoryResponseMapper.map(category);
@@ -53,7 +52,7 @@ public class CategoryController {
     }
 
 
-    @PostMapping("/all")
+    @PostMapping("/api/v1/categories")
     public BaseResponse<RMAPage<CategoryResponse>> findAllCategories(
             @RequestBody @Valid CategoryListRequest listRequest) {
 
@@ -68,7 +67,7 @@ public class CategoryController {
     }
 
 
-    @PostMapping
+    @PostMapping("/api/v1/category")
     public BaseResponse<Void> categoryAdd(@RequestBody @Valid CategoryAddRequest categoryAddRequest) {
         CategoryCreateCommand categoryCreateCommand = createCategoryRequestToCommandMapper.map(categoryAddRequest);
         categoryService.save(categoryCreateCommand);
@@ -76,18 +75,18 @@ public class CategoryController {
     }
 
 
-    @PutMapping("/{id}")
-    public BaseResponse<CategoryResponse> categoryUpdate(@PathVariable @Positive @Max(999) Long id,
-                                                         @RequestBody @Valid CategoryUpdateRequest categoryUpdateRequest) {
+    @PutMapping("/api/v1/category/{id}")
+    public BaseResponse<Void> categoryUpdate(@PathVariable @Positive @Max(999) Long id,
+                                             @RequestBody @Valid CategoryUpdateRequest categoryUpdateRequest) {
 
         CategoryUpdateCommand categoryUpdateCommand = updateRequestToCommandMapper.map(categoryUpdateRequest);
-        Category category = categoryService.update(id, categoryUpdateCommand);
+        categoryService.update(id, categoryUpdateCommand);
 
-        return BaseResponse.successOf(categoryToCategoryResponseMapper.map(category));
+        return BaseResponse.SUCCESS;
     }
 
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/api/v1/category/{id}")
     public BaseResponse<Void> categoryDelete(@PathVariable @Positive @Max(999) Long id) {
         categoryService.delete(id);
         return BaseResponse.SUCCESS;
