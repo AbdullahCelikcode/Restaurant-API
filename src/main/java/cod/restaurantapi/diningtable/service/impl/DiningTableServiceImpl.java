@@ -80,10 +80,18 @@ public class DiningTableServiceImpl implements DiningTableService {
     @Override
     public void deleteById(Long id) {
         DiningTableEntity diningTableEntity = diningTableRepository.findById(id).orElseThrow(DiningTableNotExistException::new);
+
+        this.checkIfStatusChanged(diningTableEntity.getStatus(), DiningTableStatus.DELETED);
+
         diningTableEntity.setStatus(DiningTableStatus.DELETED);
 
         diningTableRepository.save(diningTableEntity);
     }
 
+    private void checkIfStatusChanged(DiningTableStatus entityStatus, DiningTableStatus status) {
+        if (entityStatus == status) {
+            throw new RMAStatusAlreadyChangedException();
+        }
+    }
 
 }

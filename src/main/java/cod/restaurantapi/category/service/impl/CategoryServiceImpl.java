@@ -100,9 +100,19 @@ class CategoryServiceImpl implements CategoryService {
     @Override
     public void delete(Long id) {
         CategoryEntity categoryEntity = categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new);
+
+        this.checkIfStatusChanged(categoryEntity.getStatus(), CategoryStatus.DELETED);
+
         categoryEntity.setStatus(CategoryStatus.DELETED);
 
         categoryRepository.save(categoryEntity);
     }
 
+
+    private void checkIfStatusChanged(CategoryStatus entityStatus, CategoryStatus status) {
+        if (entityStatus == status) {
+            throw new RMAStatusAlreadyChangedException();
+        }
+
+    }
 }

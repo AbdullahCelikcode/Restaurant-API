@@ -119,9 +119,17 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void delete(UUID id) {
         ProductEntity productEntity = productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
+
+        this.checkIfStatusChanged(productEntity.getStatus(), ProductStatus.DELETED);
         productEntity.setStatus(ProductStatus.DELETED);
 
         productRepository.save(productEntity);
+    }
+
+    private void checkIfStatusChanged(ProductStatus entityStatus, ProductStatus status) {
+        if (entityStatus == status) {
+            throw new RMAStatusAlreadyChangedException();
+        }
     }
 
 }
