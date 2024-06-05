@@ -1,7 +1,12 @@
 package cod.restaurantapi.product.controller.response;
 
+import cod.restaurantapi.category.service.domain.Category;
 import cod.restaurantapi.product.model.enums.ExtentType;
 import cod.restaurantapi.product.model.enums.ProductStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,5 +43,14 @@ public class ProductResponse {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Category category;
+
+    @JsonSerialize(using = ToStringSerializer.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    public String getPrice() {
+        return String.format("%.2f", price);
+    }
 
 }
