@@ -39,13 +39,13 @@ public class DiningTableListCommand extends RMAListCommand implements RMASpecifi
         Specification<C> specification = Specification.where(null);
 
         if ((this.filter.getSize() != null)) {
-            Specification<C> statusSpecification = (root, _, _) ->
+            Specification<C> statusSpecification = (root, query,criteriaBuilder) ->
                     root.get("size").in(this.filter.getSize());
             specification = specification.and(statusSpecification);
         }
 
         if (!CollectionUtils.isEmpty(this.filter.getStatus())) {
-            Specification<C> statusSpecification = (root, _, _) ->
+            Specification<C> statusSpecification = (root, query,criteriaBuilder) ->
                     root.get("status").in(this.filter.getStatus());
             specification = specification.and(statusSpecification);
         }

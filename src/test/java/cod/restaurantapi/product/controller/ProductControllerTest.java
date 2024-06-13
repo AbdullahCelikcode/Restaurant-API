@@ -1,6 +1,7 @@
 package cod.restaurantapi.product.controller;
 
 import cod.restaurantapi.RMAControllerTest;
+import cod.restaurantapi.category.service.domain.Category;
 import cod.restaurantapi.common.model.Pagination;
 import cod.restaurantapi.common.model.RMAPageResponse;
 import cod.restaurantapi.common.model.Sorting;
@@ -43,16 +44,20 @@ class ProductControllerTest extends RMAControllerTest {
         UUID productId = UUID.randomUUID();
 
         //when
+        Category category = Category.builder()
+                .id(1L)
+                .name("CategoryTest")
+                .build();
 
         Product product = Product.builder()
                 .id(productId)
                 .name("Product 1")
                 .ingredient("ingredients")
                 .status(ProductStatus.ACTIVE)
-                .price(BigDecimal.valueOf(100))
+                .price(BigDecimal.valueOf(25.99000))
                 .extent(BigDecimal.valueOf(100))
                 .extentType(ExtentType.GR)
-                .categoryId(1L)
+                .category(category)
                 .build();
 
         Mockito.when(productService.findById(productId)).thenReturn(product);
@@ -70,7 +75,8 @@ class ProductControllerTest extends RMAControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.price").value(product.getPrice()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.extent").value(product.getExtent()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.extentType").value(product.getExtentType().toString()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.categoryId").value(product.getCategoryId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.category.id").value(product.getCategory().getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.category.name").value(product.getCategory().getName()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.httpStatus").value("OK"));
     }
 
@@ -661,19 +667,6 @@ class ProductControllerTest extends RMAControllerTest {
                 .build();
 
         //when
-        Product product = Product.builder()
-                .id(productId)
-                .name("test")
-                .ingredient("test")
-                .status(ProductStatus.ACTIVE)
-                .price(BigDecimal.valueOf(100))
-                .extent(BigDecimal.valueOf(100))
-                .extentType(ExtentType.GR)
-                .categoryId(1L)
-                .build();
-
-
-        //Then
 
 
         mockMvc.perform(MockMvcRequestBuilders.put(BASE_URL + "/{id}", productId)

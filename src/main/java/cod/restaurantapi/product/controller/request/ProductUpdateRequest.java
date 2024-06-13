@@ -31,11 +31,11 @@ public class ProductUpdateRequest {
     private ProductStatus status;
 
     @NotNull
-    @Range(min = 0, max = Integer.MAX_VALUE)
+    @Range(min = 0, max = 10000)
     private BigDecimal price;
 
     @NotNull
-    @Range(min = 0, max = Integer.MAX_VALUE)
+    @Range(min = 0, max = 10000)
     private BigDecimal extent;
 
     @NotNull

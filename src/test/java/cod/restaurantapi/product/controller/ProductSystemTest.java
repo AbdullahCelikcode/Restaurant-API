@@ -104,7 +104,7 @@ class ProductSystemTest extends RMASystemTest {
                         .getIngredient()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.response.extentType").value(productEntity.
                         getExtentType().toString()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.response.categoryId").value(productEntity
+                .andExpect(MockMvcResultMatchers.jsonPath("$.response.category.id").value(productEntity
                         .getCategoryId()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.httpStatus").value("OK"));
 

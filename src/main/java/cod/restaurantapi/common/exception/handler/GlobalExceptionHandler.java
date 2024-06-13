@@ -86,7 +86,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RMANotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<RMAError> RMANotFoundEException(
+    public ResponseEntity<RMAError> handleRMANotFoundException(
             final RMANotFoundException exception) {
 
         log.error(exception.getMessage(), exception);
@@ -102,7 +102,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RMAAlreadyExistException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<RMAError> RMAAlreadyExistException(
+    public ResponseEntity<RMAError> handleRMAAlreadyExistException(
             final RMAAlreadyExistException exception) {
 
         log.error(exception.getMessage(), exception);
@@ -117,7 +117,8 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler(RMAStatusAlreadyChangedException.class)
-    public ResponseEntity<RMAError> handleConstraintDefinitionException(final RMAStatusAlreadyChangedException exception) {
+    public ResponseEntity<RMAError> handleConstraintDefinitionException(
+            final RMAStatusAlreadyChangedException exception) {
 
         log.error(exception.getMessage(), exception);
 

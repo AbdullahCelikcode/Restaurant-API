@@ -86,7 +86,7 @@ class CategoryServiceImpl implements CategoryService {
 
         this.checkExistingOfCategoryNameIfChanged(categoryUpdateCommand, categoryEntity);
 
-        categoryUpdateCommandToCategoryEntityMapper.update(categoryEntity, categoryUpdateCommand);
+        categoryUpdateCommandToCategoryEntityMapper.update(categoryUpdateCommand, categoryEntity);
         categoryRepository.save(categoryEntity);
 
     }

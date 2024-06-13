@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
@@ -17,7 +16,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductResponse {
+public class ProductListResponse {
 
     private UUID id;
     private String name;
@@ -27,8 +26,6 @@ public class ProductResponse {
     private BigDecimal extent;
     private ExtentType extentType;
     private Category category;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 
     @Getter
     @Setter
@@ -40,3 +37,5 @@ public class ProductResponse {
     }
 
 }
+
+

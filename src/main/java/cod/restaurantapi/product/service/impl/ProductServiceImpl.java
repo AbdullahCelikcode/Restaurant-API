@@ -3,9 +3,6 @@ package cod.restaurantapi.product.service.impl;
 import cod.restaurantapi.category.controller.exceptions.CategoryNotFoundException;
 import cod.restaurantapi.category.model.enums.CategoryStatus;
 import cod.restaurantapi.category.repository.CategoryRepository;
-import cod.restaurantapi.category.repository.entity.CategoryEntity;
-import cod.restaurantapi.category.service.domain.Category;
-import cod.restaurantapi.category.service.mapper.CategoryEntityToCategory;
 import cod.restaurantapi.common.exception.RMAStatusAlreadyChangedException;
 import cod.restaurantapi.common.model.RMAPageResponse;
 import cod.restaurantapi.common.model.Sorting;
@@ -34,31 +31,18 @@ import java.util.UUID;
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
-
     private final CategoryRepository categoryRepository;
-
     private static final ProductAddCommandToProductMapper productAddCommandToProduct = ProductAddCommandToProductMapper.INSTANCE;
-
     private static final ProductToProductEntityMapper productDtoToProductEntity = ProductToProductEntityMapper.INSTANCE;
-
     private static final ProductEntityToProductMapper productEntityToProductMapper = ProductEntityToProductMapper.INSTANCE;
-
     private static final ProductUpdateCommandToProductEntity productUpdateCommandToProductEntity = ProductUpdateCommandToProductEntity.INSTANCE;
-
-    private static final CategoryEntityToCategory categoryEntityToCategory = CategoryEntityToCategory.INSTANCE;
 
     @Override
     public Product findById(UUID id) {
+
         ProductEntity productEntity = productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
-        CategoryEntity categoryEntity = categoryRepository.findById(productEntity.getCategoryId()).orElseThrow(CategoryNotFoundException::new);
 
-        Product productDto = productEntityToProductMapper.map(productEntity);
-        Category category = categoryEntityToCategory.map(categoryEntity);
-
-        productDto.setCategory(category);
-
-
-        return productDto;
+        return productEntityToProductMapper.map(productEntity);
     }
 
 
@@ -106,7 +90,7 @@ public class ProductServiceImpl implements ProductService {
 
         this.checkExistingOfCategory(productUpdateCommand.getCategoryId());
 
-        productUpdateCommandToProductEntity.update(productEntity, productUpdateCommand);
+        productUpdateCommandToProductEntity.update(productUpdateCommand, productEntity);
         productRepository.save(productEntity);
 
     }

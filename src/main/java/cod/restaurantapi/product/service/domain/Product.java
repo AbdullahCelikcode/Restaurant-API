@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -25,12 +26,25 @@ public class Product {
     private ProductStatus status;
     private BigDecimal extent;
     private ExtentType extentType;
-    private long categoryId;
+    private Long categoryId;
+    private Category category;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private Category category;
+
 
     public void active() {
         this.status = ProductStatus.ACTIVE;
     }
+
+    public static class ProductBuilder {
+        private ProductBuilder() {
+        }
+
+        public ProductBuilder price(BigDecimal price) {
+            this.price = price.setScale(2, RoundingMode.UP);
+            return this;
+        }
+    }
+
+
 }

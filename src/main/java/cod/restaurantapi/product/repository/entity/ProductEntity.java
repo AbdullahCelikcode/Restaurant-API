@@ -1,5 +1,6 @@
 package cod.restaurantapi.product.repository.entity;
 
+import cod.restaurantapi.category.repository.entity.CategoryEntity;
 import cod.restaurantapi.common.model.BaseEntity;
 import cod.restaurantapi.product.model.enums.ExtentType;
 import cod.restaurantapi.product.model.enums.ProductStatus;
@@ -10,6 +11,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -57,5 +60,9 @@ public class ProductEntity extends BaseEntity {
 
     @Column(name = "category_id")
     private Long categoryId;
+
+    @OneToOne
+    @JoinColumn(name = "category_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private CategoryEntity category;
 
 }

@@ -76,7 +76,7 @@ public class DiningTableServiceImpl implements DiningTableService {
 
         DiningTableEntity diningTableEntity = diningTableRepository.findById(id).orElseThrow(DiningTableNotExistException::new);
 
-        diningTableUpdateCommandToDiningTableEntityMapper.update(diningTableEntity, diningTableUpdateCommand);
+        diningTableUpdateCommandToDiningTableEntityMapper.update(diningTableUpdateCommand, diningTableEntity);
         diningTableRepository.save(diningTableEntity);
 
     }

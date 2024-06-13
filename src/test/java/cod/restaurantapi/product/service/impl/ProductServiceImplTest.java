@@ -29,6 +29,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +54,11 @@ class ProductServiceImplTest extends RMAServiceTest {
     void givenFindById_whenProductExists_thenReturnProduct() {
 
         // given
+        CategoryEntity categoryEntity = CategoryEntity.builder()
+                .id(1L)
+                .name("TestCategory")
+                .status(CategoryStatus.ACTIVE)
+                .build();
 
         ProductEntity productEntity = ProductEntity.builder()
                 .id(UUID.randomUUID())
@@ -63,6 +69,7 @@ class ProductServiceImplTest extends RMAServiceTest {
                 .extentType(ExtentType.GR)
                 .ingredient("ingredients")
                 .price(BigDecimal.valueOf(100))
+                .category(categoryEntity)
                 .build();
 
         // when
@@ -75,12 +82,12 @@ class ProductServiceImplTest extends RMAServiceTest {
         Mockito.verify(productRepository, Mockito.times(1)).findById(Mockito.any(UUID.class));
         Assertions.assertEquals(productEntity.getName(), exceptedProduct.getName());
         Assertions.assertEquals(productEntity.getId(), exceptedProduct.getId());
-        Assertions.assertEquals(productEntity.getCategoryId(), exceptedProduct.getCategoryId());
+        Assertions.assertEquals(productEntity.getCategoryId(), exceptedProduct.getCategory().getId());
         Assertions.assertEquals(productEntity.getStatus(), exceptedProduct.getStatus());
         Assertions.assertEquals(productEntity.getExtent(), exceptedProduct.getExtent());
         Assertions.assertEquals(productEntity.getExtentType(), exceptedProduct.getExtentType());
         Assertions.assertEquals(productEntity.getIngredient(), exceptedProduct.getIngredient());
-        Assertions.assertEquals(productEntity.getPrice(), exceptedProduct.getPrice());
+        Assertions.assertEquals(productEntity.getPrice().setScale(2, RoundingMode.UP), exceptedProduct.getPrice());
     }
 
     @Test
