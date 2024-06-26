@@ -526,10 +526,7 @@ class CategoryControllerTest extends RMAControllerTest {
         categoryUpdateRequest.setName("TestCategory");
         categoryUpdateRequest.setStatus(CategoryStatus.INACTIVE);
 
-        Category category = Category.builder()
-                .name("TestCategory")
-                .status(CategoryStatus.INACTIVE)
-                .build();
+
 
 
         //Then

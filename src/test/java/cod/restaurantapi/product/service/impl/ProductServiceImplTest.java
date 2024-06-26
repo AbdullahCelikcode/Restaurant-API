@@ -355,10 +355,6 @@ class ProductServiceImplTest extends RMAServiceTest {
                 .build();
         // then
 
-        CategoryEntity categoryEntity = CategoryEntity.builder()
-                .status(CategoryStatus.ACTIVE)
-                .id(productAddCommand.getCategoryId())
-                .build();
 
         Mockito.when(categoryRepository.existsByIdAndStatusIsNot(Mockito.anyLong(), Mockito.any(CategoryStatus.class)))
                 .thenReturn(true);
@@ -425,11 +421,7 @@ class ProductServiceImplTest extends RMAServiceTest {
 
         productEntity.setUpdatedAt(LocalDateTime.now());
 
-        CategoryEntity categoryEntity = CategoryEntity.builder()
-                .id(1L)
-                .name("TestCategory")
-                .status(CategoryStatus.ACTIVE)
-                .build();
+
 
         Mockito.when(productRepository.findById(Mockito.any(UUID.class)))
                 .thenReturn(Optional.of(productEntity));
