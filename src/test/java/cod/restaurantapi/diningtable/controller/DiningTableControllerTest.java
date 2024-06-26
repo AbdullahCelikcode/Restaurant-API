@@ -602,13 +602,8 @@ class DiningTableControllerTest extends RMAControllerTest {
                 .status(DiningTableStatus.OCCUPIED)
                 .build();
 
-        //when
 
-        DiningTable diningTable = DiningTable.builder()
-                .id(1L)
-                .size(1)
-                .status(DiningTableStatus.AVAILABLE)
-                .build();
+
 
 
         //Then
