@@ -3,23 +3,28 @@ package cod.restaurantapi.diningtable.service.impl;
 import cod.restaurantapi.common.exception.RMAStatusAlreadyChangedException;
 import cod.restaurantapi.common.model.RMAPageResponse;
 import cod.restaurantapi.common.model.Sorting;
+import cod.restaurantapi.diningtable.controller.exceptions.DiningTableAlreadySplitException;
 import cod.restaurantapi.diningtable.controller.exceptions.DiningTableNotExistException;
+import cod.restaurantapi.diningtable.controller.exceptions.MergeNotExistException;
 import cod.restaurantapi.diningtable.model.enums.DiningTableStatus;
 import cod.restaurantapi.diningtable.repository.DiningTableRepository;
 import cod.restaurantapi.diningtable.repository.entity.DiningTableEntity;
 import cod.restaurantapi.diningtable.service.DiningTableService;
 import cod.restaurantapi.diningtable.service.command.DiningTableAddCommand;
 import cod.restaurantapi.diningtable.service.command.DiningTableListCommand;
+import cod.restaurantapi.diningtable.service.command.DiningTableMergeCommand;
+import cod.restaurantapi.diningtable.service.command.DiningTableStatusCommand;
 import cod.restaurantapi.diningtable.service.command.DiningTableUpdateCommand;
-import cod.restaurantapi.diningtable.service.command.DiningTableUpdateCommandToDiningTableEntityMapper;
 import cod.restaurantapi.diningtable.service.domain.DiningTable;
 import cod.restaurantapi.diningtable.service.mapper.DiningTableEntityToDiningTableMapper;
+import cod.restaurantapi.diningtable.service.mapper.DiningTableUpdateCommandToDiningTableEntityMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -52,6 +57,47 @@ public class DiningTableServiceImpl implements DiningTableService {
                 .sortedBy(Sorting.of(diningTableEntityPage.getSort()))
                 .filteredBy(diningTableListCommand.getFilter())
                 .build();
+    }
+
+    @Override
+    public void changeStatus(DiningTableStatusCommand diningTableStatusCommand, Long id) {
+
+        DiningTableEntity diningTableEntity = diningTableRepository.findById(id).orElseThrow(DiningTableNotExistException::new);
+        this.checkIfStatusChanged(diningTableEntity.getStatus(), diningTableStatusCommand.getStatus());
+        diningTableEntity.setStatus(diningTableStatusCommand.getStatus());
+
+        diningTableRepository.save(diningTableEntity);
+    }
+
+    @Override
+    public UUID mergeDiningTables(DiningTableMergeCommand diningTableMergeCommand) {
+        List<DiningTableEntity> diningTableEntityList = diningTableRepository.findAllById(diningTableMergeCommand.getIds());
+
+        UUID mergeId = UUID.randomUUID();
+
+        for (DiningTableEntity diningTableEntity : diningTableEntityList) {
+            diningTableEntity.setMergeId(mergeId);
+        }
+        diningTableRepository.saveAll(diningTableEntityList);
+
+        return mergeId;
+    }
+
+    @Override
+    public void splitDiningTables(UUID mergeId) {
+        List<DiningTableEntity> diningTableEntityList = diningTableRepository.findByMergeId(mergeId);
+
+        if (diningTableEntityList == null || diningTableEntityList.isEmpty()) {
+            throw new MergeNotExistException();
+        }
+        if (diningTableEntityList.size() == 1) {
+            throw new DiningTableAlreadySplitException();
+        }
+
+        for (DiningTableEntity diningTableEntity : diningTableEntityList) {
+            diningTableEntity.setMergeId(UUID.randomUUID());
+        }
+        diningTableRepository.saveAll(diningTableEntityList);
     }
 
 

@@ -5,12 +5,16 @@ import cod.restaurantapi.common.model.RMAPage;
 import cod.restaurantapi.common.model.RMAPageResponse;
 import cod.restaurantapi.diningtable.controller.mapper.DiningTableAddRequestToCommandMapper;
 import cod.restaurantapi.diningtable.controller.mapper.DiningTableListRequestToCommandMapper;
+import cod.restaurantapi.diningtable.controller.mapper.DiningTableMergeRequestToDiningTableMergeCommand;
+import cod.restaurantapi.diningtable.controller.mapper.DiningTableStatusRequestToDiningTableStatusCommandMapper;
 import cod.restaurantapi.diningtable.controller.mapper.DiningTableToDiningTableResponseMapper;
 import cod.restaurantapi.diningtable.controller.mapper.DiningTableUpdateRequestToCommandMapper;
 import cod.restaurantapi.diningtable.controller.request.DiningTableAddRequest;
 import cod.restaurantapi.diningtable.controller.request.DiningTableListRequest;
+import cod.restaurantapi.diningtable.controller.request.DiningTableMergeRequest;
 import cod.restaurantapi.diningtable.controller.request.DiningTableUpdateRequest;
 import cod.restaurantapi.diningtable.controller.response.DiningTableResponse;
+import cod.restaurantapi.diningtable.controller.response.DiningTableStatusRequest;
 import cod.restaurantapi.diningtable.service.DiningTableService;
 import cod.restaurantapi.diningtable.service.command.DiningTableUpdateCommand;
 import cod.restaurantapi.diningtable.service.domain.DiningTable;
@@ -24,7 +28,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.UUID;
 
 @RestController
 @Validated
@@ -36,6 +43,8 @@ class DiningTableController {
     private static final DiningTableToDiningTableResponseMapper diningTableToDiningTableResponseMapper = DiningTableToDiningTableResponseMapper.INSTANCE;
     private static final DiningTableUpdateRequestToCommandMapper diningTableUpdateRequestToCommandMapper = DiningTableUpdateRequestToCommandMapper.INSTANCE;
     private static final DiningTableListRequestToCommandMapper diningTableListRequestToCommandMapper = DiningTableListRequestToCommandMapper.INSTANCE;
+    private static final DiningTableStatusRequestToDiningTableStatusCommandMapper diningTableStatusRequestToCommand = DiningTableStatusRequestToDiningTableStatusCommandMapper.INSTANCE;
+    private static final DiningTableMergeRequestToDiningTableMergeCommand diningTableMergeRequestToCommand = DiningTableMergeRequestToDiningTableMergeCommand.INSTANCE;
 
     @GetMapping("/api/v1/dining-table/{id}")
     public BaseResponse<DiningTableResponse> getDiningTableById(@PathVariable @Positive Long id) {
@@ -50,12 +59,33 @@ class DiningTableController {
     public BaseResponse<RMAPage<DiningTableResponse>> findAllDiningTables(
             @RequestBody @Valid DiningTableListRequest diningTableListRequest) {
 
-        RMAPageResponse<DiningTable> diningTableList = diningTableService.findAll(diningTableListRequestToCommandMapper.map(diningTableListRequest));
+        RMAPageResponse<DiningTable> diningTableList = diningTableService.findAll(
+                diningTableListRequestToCommandMapper.map(diningTableListRequest));
+
         RMAPage<DiningTableResponse> diningTableResponse = RMAPage.<DiningTableResponse>builder()
                 .map(diningTableToDiningTableResponseMapper.map(diningTableList.getContent()), diningTableList)
                 .build();
 
         return BaseResponse.successOf(diningTableResponse);
+
+    }
+
+    @PostMapping("/api/v1/dining-table/merge")
+    public BaseResponse<UUID> mergeDiningTables(
+            @RequestBody @Valid DiningTableMergeRequest diningTableMergeRequest) {
+
+        UUID mergeId = diningTableService.mergeDiningTables(diningTableMergeRequestToCommand.map(diningTableMergeRequest));
+
+
+        return BaseResponse.successOf(mergeId);
+
+    }
+
+    @PostMapping("/api/v1/dining-table/{id}/split")
+    public BaseResponse<Void> mergeDiningTables(@PathVariable UUID id) {
+        diningTableService.splitDiningTables(id);
+
+        return BaseResponse.SUCCESS;
 
     }
 
@@ -66,6 +96,16 @@ class DiningTableController {
         diningTableService.save(diningTableAddRequestToCommandMapper.map(diningTableAddRequest));
 
         return BaseResponse.SUCCESS;
+    }
+
+    @PutMapping("/api/v1/dining-table/{id}/status")
+    public BaseResponse<Void> changeDiningTableStatus(
+            @RequestBody @Valid DiningTableStatusRequest diningTableStatusRequest, @RequestParam Long id) {
+
+        diningTableService.changeStatus(diningTableStatusRequestToCommand.map(diningTableStatusRequest), id);
+
+        return BaseResponse.SUCCESS;
+
     }
 
     @PutMapping("/api/v1/dining-table/{id}")
