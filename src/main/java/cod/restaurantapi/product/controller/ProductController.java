@@ -74,7 +74,7 @@ public class ProductController {
     }
 
     @PutMapping("/api/v1/product/{id}")
-    public BaseResponse<Void> productUpdate(@PathVariable UUID id,
+    public BaseResponse<Void> productUpdate(@PathVariable  UUID id,
                                             @RequestBody @Valid ProductUpdateRequest productUpdateRequest) {
 
         ProductUpdateCommand productUpdateCommand = productUpdateRequestToCommand.map(productUpdateRequest);

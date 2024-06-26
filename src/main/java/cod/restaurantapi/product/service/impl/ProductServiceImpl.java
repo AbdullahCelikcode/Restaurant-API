@@ -24,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -36,13 +37,16 @@ public class ProductServiceImpl implements ProductService {
     private static final ProductToProductEntityMapper productDtoToProductEntity = ProductToProductEntityMapper.INSTANCE;
     private static final ProductEntityToProductMapper productEntityToProductMapper = ProductEntityToProductMapper.INSTANCE;
     private static final ProductUpdateCommandToProductEntity productUpdateCommandToProductEntity = ProductUpdateCommandToProductEntity.INSTANCE;
+    private final String currency;
 
     @Override
     public Product findById(UUID id) {
 
         ProductEntity productEntity = productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
+        Product product = productEntityToProductMapper.map(productEntity);
+        product.setCurrency(currency);
 
-        return productEntityToProductMapper.map(productEntity);
+        return product;
     }
 
 
@@ -53,10 +57,12 @@ public class ProductServiceImpl implements ProductService {
                 productListCommand.toSpecification(ProductEntity.class),
                 productListCommand.toPageable());
 
+        List<Product> productList = productEntityToProductMapper.map(responseList.getContent());
+        productList.forEach(product -> product.setCurrency(currency));
 
         return RMAPageResponse.<Product>builder()
                 .page(responseList)
-                .content(productEntityToProductMapper.map(responseList.getContent()))
+                .content(productList)
                 .sortedBy(Sorting.of(responseList.getSort()))
                 .filteredBy(productListCommand.getFilter()).build();
     }

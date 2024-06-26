@@ -28,6 +28,7 @@ public class Product {
     private ExtentType extentType;
     private Long categoryId;
     private Category category;
+    private String currency;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 

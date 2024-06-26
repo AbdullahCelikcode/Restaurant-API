@@ -8,7 +8,6 @@ import lombok.Setter;
 import java.math.BigDecimal;
 
 @Getter
-@Setter
 @Builder
 public class ProductAddCommand {
     private String name;
