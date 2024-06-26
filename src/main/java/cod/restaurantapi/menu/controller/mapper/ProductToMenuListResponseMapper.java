@@ -11,7 +11,6 @@ import org.mapstruct.factory.Mappers;
 public interface ProductToMenuListResponseMapper extends BaseMapper<Product, MenuResponse> {
     ProductToMenuListResponseMapper INSTANCE = Mappers.getMapper(ProductToMenuListResponseMapper.class);
 
-
     @Mapping(source = "id", target = "product.id")
     @Mapping(source = "name", target = "product.name")
     @Mapping(source = "ingredient", target = "product.ingredient")
