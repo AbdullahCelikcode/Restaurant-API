@@ -25,7 +25,6 @@ public class MenuRequest extends RMAListRequest {
     @AllArgsConstructor
     public static class MenuFilter implements RMAFilter {
 
-
         private String name;
 
     }

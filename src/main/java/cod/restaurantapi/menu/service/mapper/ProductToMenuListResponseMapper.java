@@ -1,4 +1,4 @@
-package cod.restaurantapi.menu.controller.mapper;
+package cod.restaurantapi.menu.service.mapper;
 
 import cod.restaurantapi.common.model.mapper.BaseMapper;
 import cod.restaurantapi.menu.controller.response.MenuResponse;
