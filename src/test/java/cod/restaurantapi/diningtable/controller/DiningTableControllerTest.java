@@ -6,11 +6,15 @@ import cod.restaurantapi.common.model.RMAPageResponse;
 import cod.restaurantapi.common.model.Sorting;
 import cod.restaurantapi.diningtable.controller.request.DiningTableAddRequest;
 import cod.restaurantapi.diningtable.controller.request.DiningTableListRequest;
+import cod.restaurantapi.diningtable.controller.request.DiningTableMergeRequest;
 import cod.restaurantapi.diningtable.controller.request.DiningTableUpdateRequest;
+import cod.restaurantapi.diningtable.controller.response.DiningTableStatusRequest;
 import cod.restaurantapi.diningtable.model.enums.DiningTableStatus;
 import cod.restaurantapi.diningtable.service.DiningTableService;
 import cod.restaurantapi.diningtable.service.command.DiningTableAddCommand;
 import cod.restaurantapi.diningtable.service.command.DiningTableListCommand;
+import cod.restaurantapi.diningtable.service.command.DiningTableMergeCommand;
+import cod.restaurantapi.diningtable.service.command.DiningTableStatusCommand;
 import cod.restaurantapi.diningtable.service.command.DiningTableUpdateCommand;
 import cod.restaurantapi.diningtable.service.domain.DiningTable;
 import org.junit.jupiter.api.Test;
@@ -25,6 +29,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @WebMvcTest(controllers = DiningTableController.class)
 class DiningTableControllerTest extends RMAControllerTest {
@@ -603,9 +608,6 @@ class DiningTableControllerTest extends RMAControllerTest {
                 .build();
 
 
-
-
-
         //Then
 
 
@@ -717,6 +719,234 @@ class DiningTableControllerTest extends RMAControllerTest {
 
         Mockito.verify(diningTableService, Mockito.times(0)).deleteById(diningTableId);
 
+    }
+
+    @Test
+    void givenChangeStatusIdAndDiningTableStatusRequest_whenValidStatus_thenReturnSuccess() throws Exception {
+        // Given
+        Long tableId = 1L;
+        DiningTableStatusRequest diningTableStatusRequest = DiningTableStatusRequest.builder()
+                .status(DiningTableStatus.OCCUPIED)
+                .build();
+
+        // When
+        DiningTableStatusCommand diningTableStatusCommand = DiningTableStatusCommand.builder().build();
+        Mockito.doNothing().when(diningTableService).changeStatus(diningTableStatusCommand, tableId);
+
+        // Assert
+        mockMvc.perform(MockMvcRequestBuilders.put(BASE_URL + "/{id}/status", tableId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(diningTableStatusRequest)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true));
+
+        // Verify
+        Mockito.verify(diningTableService, Mockito.times(1))
+                .changeStatus(Mockito.any(DiningTableStatusCommand.class), Mockito.anyLong());
+    }
+
+    @Test
+    void givenChangeDiningTableStatusId_whenInValidIdInput_thenReturnBadRequest() throws Exception {
+
+        //Given
+
+        Long diningTableId = -1L;
+        DiningTableStatusRequest diningTableStatusRequest = DiningTableStatusRequest.builder()
+                .status(DiningTableStatus.OCCUPIED)
+                .build();
+
+        //Then
+
+        mockMvc.perform(MockMvcRequestBuilders.delete(BASE_URL + "/{id}/status", diningTableId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(diningTableStatusRequest)))
+                .andExpect(MockMvcResultMatchers.status().isInternalServerError());
+
+        // Verify
+
+        Mockito.verify(diningTableService, Mockito.times(0))
+                .changeStatus(Mockito.any(DiningTableStatusCommand.class), Mockito.anyLong());
+
+    }
+
+    @Test
+    void givenChangeDiningTableStatusId_whenInValidStatusInput_thenReturnBadRequest() throws Exception {
+
+        //Given
+
+        Long diningTableId = 1L;
+        DiningTableStatusRequest diningTableStatusRequest = DiningTableStatusRequest.builder()
+                .build();
+
+        //Then
+
+        mockMvc.perform(MockMvcRequestBuilders.delete(BASE_URL + "/{id}/status", diningTableId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(diningTableStatusRequest)))
+                .andExpect(MockMvcResultMatchers.status().isInternalServerError());
+
+        // Verify
+
+        Mockito.verify(diningTableService, Mockito.times(0))
+                .changeStatus(Mockito.any(DiningTableStatusCommand.class), Mockito.anyLong());
+
+    }
+
+    @Test
+    void givenMergeDiningTableIds_whenValidInput_thenReturnSuccess() throws Exception {
+        // Given
+        List<Long> diningTableIds = List.of(1L, 2L);
+        DiningTableMergeRequest diningTableMergeRequest = DiningTableMergeRequest.builder()
+                .ids(diningTableIds)
+                .build();
+
+        // When
+
+        Mockito.doNothing().when(diningTableService).mergeDiningTables(Mockito.any(DiningTableMergeCommand.class));
+
+        // Assert
+        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/merge")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(diningTableMergeRequest)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true));
+
+        // Verify
+        Mockito.verify(diningTableService, Mockito.times(1))
+                .mergeDiningTables(Mockito.any(DiningTableMergeCommand.class));
+    }
+
+    @Test
+    void givenMergeDiningTableIds_whenInvalidIdLowSize_thenReturnException() throws Exception {
+        // Given
+        List<Long> diningTableIds = List.of(1L);
+        DiningTableMergeRequest diningTableMergeRequest = DiningTableMergeRequest.builder()
+                .ids(diningTableIds)
+                .build();
+
+        // When
+
+        Mockito.doNothing().when(diningTableService).mergeDiningTables(Mockito.any(DiningTableMergeCommand.class));
+
+        // Assert
+        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/merge")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(diningTableMergeRequest)))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+        // Verify
+        Mockito.verify(diningTableService, Mockito.times(0))
+                .mergeDiningTables(Mockito.any(DiningTableMergeCommand.class));
+    }
+
+    @Test
+    void givenMergeDiningTableIds_whenInvalidIdBiggerSize_thenReturnException() throws Exception {
+        // Given
+        List<Long> diningTableIds = List.of(1L, 5L, 4L, 3L, 6L, 7L);
+        DiningTableMergeRequest diningTableMergeRequest = DiningTableMergeRequest.builder()
+                .ids(diningTableIds)
+                .build();
+
+        // When
+
+        Mockito.doNothing().when(diningTableService).mergeDiningTables(Mockito.any(DiningTableMergeCommand.class));
+
+        // Assert
+        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/merge")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(diningTableMergeRequest)))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+        // Verify
+        Mockito.verify(diningTableService, Mockito.times(0))
+                .mergeDiningTables(Mockito.any(DiningTableMergeCommand.class));
+    }
+
+    @Test
+    void givenMergeDiningTableIds_whenInvalidId_thenReturnException() throws Exception {
+        // Given
+        List<Long> diningTableIds = List.of(-1L, -2L);
+        DiningTableMergeRequest diningTableMergeRequest = DiningTableMergeRequest.builder()
+                .ids(diningTableIds)
+                .build();
+
+        // When
+
+        Mockito.doNothing().when(diningTableService).mergeDiningTables(Mockito.any(DiningTableMergeCommand.class));
+
+        // Assert
+        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/merge")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(diningTableMergeRequest)))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+        // Verify
+        Mockito.verify(diningTableService, Mockito.times(0))
+                .mergeDiningTables(Mockito.any(DiningTableMergeCommand.class));
+    }
+
+    @Test
+    void givenMergeDiningTableIds_whenDuplicatedId_thenReturnException() throws Exception {
+        // Given
+        List<Long> diningTableIds = List.of(1L, 1L);
+        DiningTableMergeRequest diningTableMergeRequest = DiningTableMergeRequest.builder()
+                .ids(diningTableIds)
+                .build();
+
+        // When
+
+        Mockito.doNothing().when(diningTableService).mergeDiningTables(Mockito.any(DiningTableMergeCommand.class));
+
+        // Assert
+        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/merge")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(diningTableMergeRequest)))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+        // Verify
+        Mockito.verify(diningTableService, Mockito.times(0))
+                .mergeDiningTables(Mockito.any(DiningTableMergeCommand.class));
+    }
+
+    @Test
+    void givenSplitMergeId_whenValidId_thenReturnSuccess() throws Exception {
+        // Given
+        UUID givenMergeId = UUID.randomUUID();
+
+        // When
+
+        Mockito.doNothing().when(diningTableService).mergeDiningTables(Mockito.any(DiningTableMergeCommand.class));
+
+        // Assert
+        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/{id}/split", givenMergeId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true));
+
+
+        // Verify
+        Mockito.verify(diningTableService, Mockito.times(1))
+                .splitDiningTables(Mockito.any(UUID.class));
+    }
+
+    @Test
+    void givenSplitMergeId_whenInvalidId_thenReturnSuccess() throws Exception {
+        // Given
+        String givenMergeId = "ddd";
+
+        // When
+
+        Mockito.doNothing().when(diningTableService).mergeDiningTables(Mockito.any(DiningTableMergeCommand.class));
+
+        // Assert
+        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/{id}/split", givenMergeId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+
+        // Verify
+        Mockito.verify(diningTableService, Mockito.times(0))
+                .splitDiningTables(Mockito.any(UUID.class));
     }
 
 }

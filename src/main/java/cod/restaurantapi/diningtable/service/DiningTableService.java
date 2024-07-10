@@ -24,7 +24,7 @@ public interface DiningTableService {
 
     void changeStatus(DiningTableStatusCommand DiningTableStatusCommand, Long id);
 
-    UUID mergeDiningTables(DiningTableMergeCommand diningTableMergeCommand);
+    void mergeDiningTables(DiningTableMergeCommand diningTableMergeCommand);
 
     void splitDiningTables(UUID mergeId);
 }

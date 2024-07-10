@@ -16,6 +16,8 @@ import cod.restaurantapi.diningtable.controller.request.DiningTableUpdateRequest
 import cod.restaurantapi.diningtable.controller.response.DiningTableResponse;
 import cod.restaurantapi.diningtable.controller.response.DiningTableStatusRequest;
 import cod.restaurantapi.diningtable.service.DiningTableService;
+import cod.restaurantapi.diningtable.service.command.DiningTableMergeCommand;
+import cod.restaurantapi.diningtable.service.command.DiningTableStatusCommand;
 import cod.restaurantapi.diningtable.service.command.DiningTableUpdateCommand;
 import cod.restaurantapi.diningtable.service.domain.DiningTable;
 import jakarta.validation.Valid;
@@ -32,8 +34,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
 
-@RestController
 @Validated
+@RestController
 @RequiredArgsConstructor
 class DiningTableController {
     private final DiningTableService diningTableService;
@@ -69,26 +71,6 @@ class DiningTableController {
 
     }
 
-    @PostMapping("/api/v1/dining-table/merge")
-    public BaseResponse<UUID> mergeDiningTables(
-            @RequestBody @Valid DiningTableMergeRequest diningTableMergeRequest) {
-
-        UUID mergeId = diningTableService.mergeDiningTables(diningTableMergeRequestToCommand.map(diningTableMergeRequest));
-
-
-        return BaseResponse.successOf(mergeId);
-
-    }
-
-    @PostMapping("/api/v1/dining-table/{id}/split")
-    public BaseResponse<Void> mergeDiningTables(@PathVariable UUID id) {
-        diningTableService.splitDiningTables(id);
-
-        return BaseResponse.SUCCESS;
-
-    }
-
-
     @PostMapping("/api/v1/dining-table")
     public BaseResponse<Void> diningTableAdd(@RequestBody @Valid DiningTableAddRequest diningTableAddRequest) {
 
@@ -97,11 +79,29 @@ class DiningTableController {
         return BaseResponse.SUCCESS;
     }
 
+    @PostMapping("/api/v1/dining-table/merge")
+    public BaseResponse<Void> mergeDiningTables(
+            @RequestBody @Valid DiningTableMergeRequest diningTableMergeRequest) {
+
+        DiningTableMergeCommand diningTableMergeCommand = diningTableMergeRequestToCommand.map(diningTableMergeRequest);
+        diningTableService.mergeDiningTables(diningTableMergeCommand);
+
+        return BaseResponse.SUCCESS;
+    }
+
+    @PostMapping("/api/v1/dining-table/{id}/split")
+    public BaseResponse<Void> mergeDiningTables(@PathVariable UUID id) {
+        diningTableService.splitDiningTables(id);
+
+        return BaseResponse.SUCCESS;
+    }
+
+
     @PutMapping("/api/v1/dining-table/{id}/status")
     public BaseResponse<Void> changeDiningTableStatus(
             @RequestBody @Valid DiningTableStatusRequest diningTableStatusRequest, @PathVariable Long id) {
-
-        diningTableService.changeStatus(diningTableStatusRequestToCommand.map(diningTableStatusRequest), id);
+        DiningTableStatusCommand diningTableStatusCommand = diningTableStatusRequestToCommand.map(diningTableStatusRequest);
+        diningTableService.changeStatus(diningTableStatusCommand, id);
 
         return BaseResponse.SUCCESS;
 

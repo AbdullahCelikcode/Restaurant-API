@@ -1,15 +1,21 @@
 package cod.restaurantapi.diningtable.service.impl;
 
 import cod.restaurantapi.RMAServiceTest;
+import cod.restaurantapi.common.exception.RMAStatusAlreadyChangedException;
 import cod.restaurantapi.common.model.Pagination;
 import cod.restaurantapi.common.model.RMAPageResponse;
 import cod.restaurantapi.common.model.Sorting;
+import cod.restaurantapi.diningtable.controller.exceptions.DiningTableAlreadySplitException;
 import cod.restaurantapi.diningtable.controller.exceptions.DiningTableNotExistException;
+import cod.restaurantapi.diningtable.controller.exceptions.DiningTableStatusIsNotValid;
+import cod.restaurantapi.diningtable.controller.exceptions.MergeNotExistException;
 import cod.restaurantapi.diningtable.model.enums.DiningTableStatus;
 import cod.restaurantapi.diningtable.repository.DiningTableRepository;
 import cod.restaurantapi.diningtable.repository.entity.DiningTableEntity;
 import cod.restaurantapi.diningtable.service.command.DiningTableAddCommand;
 import cod.restaurantapi.diningtable.service.command.DiningTableListCommand;
+import cod.restaurantapi.diningtable.service.command.DiningTableMergeCommand;
+import cod.restaurantapi.diningtable.service.command.DiningTableStatusCommand;
 import cod.restaurantapi.diningtable.service.command.DiningTableUpdateCommand;
 import cod.restaurantapi.diningtable.service.domain.DiningTable;
 import org.junit.jupiter.api.Assertions;
@@ -26,6 +32,7 @@ import org.springframework.data.jpa.domain.Specification;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 class DiningTableServiceImplTest extends RMAServiceTest {
 
@@ -398,4 +405,250 @@ class DiningTableServiceImplTest extends RMAServiceTest {
         Assertions.assertEquals(DiningTableStatus.DELETED, diningTableEntity.getStatus());
 
     }
+
+    @Test
+    void givenChangeStatus_whenTableStatusIsChanging_thenReturnSuccess() {
+
+        // given
+        Long diningTableId = 1L;
+
+
+        DiningTableStatusCommand diningTableStatusCommand = DiningTableStatusCommand.builder()
+                .status(DiningTableStatus.AVAILABLE)
+                .build();
+        // when
+
+        DiningTableEntity diningTableEntity = DiningTableEntity.builder()
+                .id(diningTableId)
+                .mergeId(UUID.randomUUID())
+                .size(4)
+                .status(DiningTableStatus.RESERVED)
+                .build();
+
+        Mockito.when(diningTableRepository.findById(Mockito.any(Long.class)))
+                .thenReturn(Optional.of(diningTableEntity));
+
+        // then
+
+        diningTableService.changeStatus(diningTableStatusCommand, diningTableId);
+
+        // verify
+
+        Mockito.verify(diningTableRepository, Mockito.times(1)).findById(Mockito.anyLong());
+        Mockito.verify(diningTableRepository, Mockito.times(1)).save(Mockito.any(DiningTableEntity.class));
+
+    }
+
+    @Test
+    void givenChangeStatus_whenTableStatusIsSame_thenReturnException() {
+
+        // given
+
+        Long diningTableId = 1L;
+
+        DiningTableStatusCommand diningTableStatusCommand = DiningTableStatusCommand.builder()
+                .status(DiningTableStatus.AVAILABLE)
+                .build();
+        // when
+
+        DiningTableEntity diningTableEntity = DiningTableEntity.builder()
+                .id(diningTableId)
+                .mergeId(UUID.randomUUID())
+                .size(4)
+                .status(DiningTableStatus.AVAILABLE)
+                .build();
+
+        Mockito.when(diningTableRepository.findById(Mockito.any(Long.class)))
+                .thenReturn(Optional.of(diningTableEntity));
+
+        // then
+
+        Assertions.assertThrows(RMAStatusAlreadyChangedException.class,
+                () -> diningTableService.changeStatus(diningTableStatusCommand, diningTableId));
+
+        // verify
+
+        Mockito.verify(diningTableRepository, Mockito.times(1)).findById(Mockito.anyLong());
+        Mockito.verify(diningTableRepository, Mockito.times(0)).save(Mockito.any(DiningTableEntity.class));
+
+    }
+
+    @Test
+    void givenValidMergeRequest_whenDiningTablesStatusAreValid_thenReturnSuccess() {
+
+        // given
+        List<Long> diningTableIds = List.of(1L, 2L);
+        DiningTableMergeCommand mergeCommand = DiningTableMergeCommand.builder()
+                .ids(diningTableIds)
+                .build();
+
+        // when
+        DiningTableEntity diningTableEntity1 = DiningTableEntity.builder()
+                .id(1L)
+                .mergeId(UUID.randomUUID())
+                .size(4)
+                .status(DiningTableStatus.OCCUPIED)
+                .build();
+        DiningTableEntity diningTableEntity2 = DiningTableEntity.builder()
+                .id(2L)
+                .mergeId(UUID.randomUUID())
+                .size(4)
+                .status(DiningTableStatus.OCCUPIED)
+                .build();
+
+        List<DiningTableEntity> diningTableEntities = new ArrayList<>();
+        diningTableEntities.add(diningTableEntity1);
+        diningTableEntities.add(diningTableEntity2);
+
+        Mockito.when(diningTableRepository.findAllById(Mockito.anyList()))
+                .thenReturn(diningTableEntities);
+
+        // then
+
+        diningTableService.mergeDiningTables(mergeCommand);
+
+        // verify
+
+        Mockito.verify(diningTableRepository, Mockito.times(1))
+                .saveAll(Mockito.anyList());
+    }
+
+    @Test
+    void givenValidMergeRequest_whenDiningTablesStatusAreNotValid_thenReturnException() {
+
+        // given
+        List<Long> diningTableIds = List.of(1L, 2L);
+        DiningTableMergeCommand mergeCommand = DiningTableMergeCommand.builder()
+                .ids(diningTableIds)
+                .build();
+
+        // when
+        DiningTableEntity diningTableEntity1 = DiningTableEntity.builder()
+                .id(1L)
+                .mergeId(UUID.randomUUID())
+                .size(4)
+                .status(DiningTableStatus.AVAILABLE)
+                .build();
+        DiningTableEntity diningTableEntity2 = DiningTableEntity.builder()
+                .id(2L)
+                .mergeId(UUID.randomUUID())
+                .size(4)
+                .status(DiningTableStatus.OCCUPIED)
+                .build();
+
+        List<DiningTableEntity> diningTableEntities = new ArrayList<>();
+        diningTableEntities.add(diningTableEntity1);
+        diningTableEntities.add(diningTableEntity2);
+
+        Mockito.when(diningTableRepository.findAllById(Mockito.anyList()))
+                .thenReturn(diningTableEntities);
+
+        // then
+        Assertions.assertThrows(DiningTableStatusIsNotValid.class,
+                () -> diningTableService.mergeDiningTables(mergeCommand));
+
+
+        // verify
+
+        Mockito.verify(diningTableRepository, Mockito.times(0))
+                .saveAll(Mockito.anyList());
+    }
+
+    @Test
+    void givenValidSplitMergeId_whenDiningTablesMergeIdExist_thenReturnSuccess() {
+
+        // given
+        UUID givenMergeId = UUID.fromString("d362cbef-38c7-465c-a6f6-1e6961151578");
+
+
+        // when
+        DiningTableEntity diningTableEntity1 = DiningTableEntity.builder()
+                .id(1L)
+                .mergeId(givenMergeId)
+                .size(4)
+                .status(DiningTableStatus.OCCUPIED)
+                .build();
+        DiningTableEntity diningTableEntity2 = DiningTableEntity.builder()
+                .id(2L)
+                .mergeId(givenMergeId)
+                .size(4)
+                .status(DiningTableStatus.OCCUPIED)
+                .build();
+
+        List<DiningTableEntity> diningTableEntities = new ArrayList<>();
+        diningTableEntities.add(diningTableEntity1);
+        diningTableEntities.add(diningTableEntity2);
+
+        Mockito.when(diningTableRepository.findByMergeId(Mockito.any(UUID.class)))
+                .thenReturn(diningTableEntities);
+
+        // then
+
+        diningTableService.splitDiningTables(givenMergeId);
+
+        // verify
+
+        Mockito.verify(diningTableRepository, Mockito.times(1))
+                .saveAll(Mockito.anyList());
+    }
+
+    @Test
+    void givenValidSplitMergeId_whenDiningTablesNotMerged_thenReturnException() {
+
+        // given
+        UUID givenMergeId = UUID.fromString("d362cbef-38c7-465c-a6f6-1e6961151578");
+
+
+        // when
+        DiningTableEntity diningTableEntity1 = DiningTableEntity.builder()
+                .id(1L)
+                .mergeId(givenMergeId)
+                .size(4)
+                .status(DiningTableStatus.OCCUPIED)
+                .build();
+
+
+        List<DiningTableEntity> diningTableEntities = new ArrayList<>();
+        diningTableEntities.add(diningTableEntity1);
+
+
+        Mockito.when(diningTableRepository.findByMergeId(Mockito.any(UUID.class)))
+                .thenReturn(diningTableEntities);
+
+        // then
+        Assertions.assertThrows(DiningTableAlreadySplitException.class,
+                () -> diningTableService.splitDiningTables(givenMergeId));
+
+
+        // verify
+
+        Mockito.verify(diningTableRepository, Mockito.times(0))
+                .saveAll(Mockito.anyList());
+    }
+
+    @Test
+    void givenValidSplitMergeId_whenMergeIdIsNotExist_thenReturnException() {
+
+        // given
+        UUID givenMergeId = UUID.fromString("d362cbef-38c7-465c-a6f6-1e6961151578");
+
+
+        // when
+
+
+        Mockito.when(diningTableRepository.findByMergeId(Mockito.any(UUID.class)))
+                .thenReturn(null);
+
+        // then
+        Assertions.assertThrows(MergeNotExistException.class,
+                () -> diningTableService.splitDiningTables(givenMergeId));
+
+
+        // verify
+
+        Mockito.verify(diningTableRepository, Mockito.times(0))
+                .saveAll(Mockito.anyList());
+    }
+
+
 }

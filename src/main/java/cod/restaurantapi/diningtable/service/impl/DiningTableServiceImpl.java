@@ -5,6 +5,7 @@ import cod.restaurantapi.common.model.RMAPageResponse;
 import cod.restaurantapi.common.model.Sorting;
 import cod.restaurantapi.diningtable.controller.exceptions.DiningTableAlreadySplitException;
 import cod.restaurantapi.diningtable.controller.exceptions.DiningTableNotExistException;
+import cod.restaurantapi.diningtable.controller.exceptions.DiningTableStatusIsNotValid;
 import cod.restaurantapi.diningtable.controller.exceptions.MergeNotExistException;
 import cod.restaurantapi.diningtable.model.enums.DiningTableStatus;
 import cod.restaurantapi.diningtable.repository.DiningTableRepository;
@@ -70,9 +71,13 @@ public class DiningTableServiceImpl implements DiningTableService {
     }
 
     @Override
-    public UUID mergeDiningTables(DiningTableMergeCommand diningTableMergeCommand) {
+    public void mergeDiningTables(DiningTableMergeCommand diningTableMergeCommand) {
         List<DiningTableEntity> diningTableEntityList = diningTableRepository.findAllById(diningTableMergeCommand.getIds());
-
+        for (DiningTableEntity diningTableEntity : diningTableEntityList) {
+            if (diningTableEntity.getStatus() != DiningTableStatus.OCCUPIED) {
+                throw new DiningTableStatusIsNotValid();
+            }
+        }
         UUID mergeId = UUID.randomUUID();
 
         for (DiningTableEntity diningTableEntity : diningTableEntityList) {
@@ -80,7 +85,6 @@ public class DiningTableServiceImpl implements DiningTableService {
         }
         diningTableRepository.saveAll(diningTableEntityList);
 
-        return mergeId;
     }
 
     @Override
@@ -96,6 +100,7 @@ public class DiningTableServiceImpl implements DiningTableService {
 
         for (DiningTableEntity diningTableEntity : diningTableEntityList) {
             diningTableEntity.setMergeId(UUID.randomUUID());
+            diningTableEntity.setStatus(DiningTableStatus.AVAILABLE);
         }
         diningTableRepository.saveAll(diningTableEntityList);
     }

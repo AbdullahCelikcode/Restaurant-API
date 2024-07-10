@@ -6,7 +6,9 @@ import cod.restaurantapi.common.model.Pagination;
 import cod.restaurantapi.common.model.Sorting;
 import cod.restaurantapi.diningtable.controller.request.DiningTableAddRequest;
 import cod.restaurantapi.diningtable.controller.request.DiningTableListRequest;
+import cod.restaurantapi.diningtable.controller.request.DiningTableMergeRequest;
 import cod.restaurantapi.diningtable.controller.request.DiningTableUpdateRequest;
+import cod.restaurantapi.diningtable.controller.response.DiningTableStatusRequest;
 import cod.restaurantapi.diningtable.model.enums.DiningTableStatus;
 import cod.restaurantapi.diningtable.repository.DiningTableTestRepository;
 import cod.restaurantapi.diningtable.repository.entity.DiningTableEntity;
@@ -211,7 +213,7 @@ class DiningTableSystemTest extends RMASystemTest {
     }
 
     @Test
-    void givenDiningTableUpdateRequstAndDiningTableId_thenUpdateDiningTable() throws Exception {
+    void givenDiningTableUpdateRequestAndDiningTableId_thenUpdateDiningTable() throws Exception {
         UUID mergeId = UUID.randomUUID();
         DiningTableEntity diningTableEntity = DiningTableEntity.builder()
                 .size(21)
@@ -265,5 +267,139 @@ class DiningTableSystemTest extends RMASystemTest {
 
 
     }
+
+    @Test
+    void givenChangeStatusDiningTableId_thenChangeStatus() throws Exception {
+
+        // initialize
+        UUID mergeId = UUID.randomUUID();
+        DiningTableEntity createdDiningTableEntity = DiningTableEntity.builder()
+                .status(DiningTableStatus.AVAILABLE)
+                .size(4)
+                .mergeId(mergeId)
+                .build();
+        diningTableTestRepository.save(createdDiningTableEntity);
+
+        Long diningTableId = diningTableTestRepository.findBymergeId(createdDiningTableEntity.getMergeId()).get().getId();
+
+        // given
+
+        DiningTableStatusRequest diningTableStatusRequest = DiningTableStatusRequest.builder()
+                .status(DiningTableStatus.OCCUPIED)
+                .build();
+
+        //when
+
+        mockMvc.perform(MockMvcRequestBuilders.put(BASE_URL + "/{id}/status", diningTableId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(diningTableStatusRequest)))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        DiningTableEntity diningTable = diningTableTestRepository.findById(diningTableId)
+                .orElseThrow(CategoryNotFoundException::new);
+
+        //verify
+
+        Assertions.assertEquals(diningTableStatusRequest.getStatus(), diningTable.getStatus());
+
+        // delete
+        diningTableTestRepository.deleteById(diningTableId);
+
+
+    }
+
+    @Test
+    void givenDiningTableMerge_thenMergeTables() throws Exception {
+
+        // initialize
+        UUID mergeId1 = UUID.randomUUID();
+        DiningTableEntity createdDiningTableEntity = DiningTableEntity.builder()
+                .status(DiningTableStatus.OCCUPIED)
+                .size(4)
+                .mergeId(mergeId1)
+                .build();
+        UUID mergeId2 = UUID.randomUUID();
+        DiningTableEntity createdDiningTableEntity2 = DiningTableEntity.builder()
+                .status(DiningTableStatus.OCCUPIED)
+                .size(4)
+                .mergeId(mergeId2)
+                .build();
+        diningTableTestRepository.save(createdDiningTableEntity);
+        diningTableTestRepository.save(createdDiningTableEntity2);
+
+        Long diningTableId = diningTableTestRepository.findBymergeId(createdDiningTableEntity.getMergeId()).get().getId();
+        Long diningTableId2 = diningTableTestRepository.findBymergeId(createdDiningTableEntity2.getMergeId()).get().getId();
+
+        // given
+        List<Long> diningTableIds = List.of(diningTableId, diningTableId2);
+        DiningTableMergeRequest diningTableMergeRequest = DiningTableMergeRequest.builder()
+                .ids(diningTableIds)
+                .build();
+
+        //when
+
+        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/merge")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(diningTableMergeRequest)))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        DiningTableEntity diningTable = diningTableTestRepository.findById(diningTableId)
+                .orElseThrow(CategoryNotFoundException::new);
+        DiningTableEntity diningTable2 = diningTableTestRepository.findById(diningTableId)
+                .orElseThrow(CategoryNotFoundException::new);
+
+        //verify
+
+        Assertions.assertEquals(diningTable.getMergeId(), diningTable2.getMergeId());
+
+        // delete
+        diningTableTestRepository.deleteById(diningTableId);
+        diningTableTestRepository.deleteById(diningTableId2);
+
+
+    }
+
+    @Test
+    void givenDiningTableSplit_thenSplitTables() throws Exception {
+
+        // initialize
+        UUID mergeId = UUID.randomUUID();
+        DiningTableEntity createdDiningTableEntity = DiningTableEntity.builder()
+                .status(DiningTableStatus.OCCUPIED)
+                .size(4)
+                .mergeId(mergeId)
+                .build();
+        DiningTableEntity createdDiningTableEntity2 = DiningTableEntity.builder()
+                .status(DiningTableStatus.OCCUPIED)
+                .size(4)
+                .mergeId(mergeId)
+                .build();
+        diningTableTestRepository.save(createdDiningTableEntity);
+        diningTableTestRepository.save(createdDiningTableEntity2);
+
+        List<DiningTableEntity> diningTableEntityList = diningTableTestRepository.findByMergeId(mergeId);
+
+
+        //when
+
+        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/{id}/split", mergeId))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        DiningTableEntity diningTable = diningTableTestRepository.findById(diningTableEntityList.get(0).getId())
+                .orElseThrow(CategoryNotFoundException::new);
+        DiningTableEntity diningTable2 = diningTableTestRepository.findById(diningTableEntityList.get(1).getId())
+                .orElseThrow(CategoryNotFoundException::new);
+
+        //verify
+
+        Assertions.assertNotEquals(diningTable.getMergeId(), diningTable2.getMergeId());
+
+        // delete
+        diningTableTestRepository.deleteById(diningTable.getId());
+        diningTableTestRepository.deleteById(diningTable2.getId());
+
+
+    }
+
 
 }
