@@ -1,4 +1,4 @@
-package cod.restaurantapi.common.parameter.repository.entity;
+package cod.restaurantapi.parameter.repository.entity;
 
 
 import cod.restaurantapi.common.model.BaseEntity;
@@ -8,17 +8,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "rma_parameter")
 public class RMAParameterEntity extends BaseEntity {

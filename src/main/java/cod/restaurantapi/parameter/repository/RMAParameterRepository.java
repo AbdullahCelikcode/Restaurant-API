@@ -1,6 +1,6 @@
-package cod.restaurantapi.common.parameter.repository;
+package cod.restaurantapi.parameter.repository;
 
-import cod.restaurantapi.common.parameter.repository.entity.RMAParameterEntity;
+import cod.restaurantapi.parameter.repository.entity.RMAParameterEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
