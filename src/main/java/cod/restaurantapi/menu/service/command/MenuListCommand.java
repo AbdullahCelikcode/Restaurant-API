@@ -1,5 +1,6 @@
 package cod.restaurantapi.menu.service.command;
 
+import cod.restaurantapi.category.model.enums.CategoryStatus;
 import cod.restaurantapi.common.model.RMAFilter;
 import cod.restaurantapi.common.model.RMASpecification;
 import cod.restaurantapi.common.service.command.RMAListCommand;
@@ -33,14 +34,18 @@ public class MenuListCommand extends RMAListCommand implements RMASpecification 
 
         Specification<C> specification = Specification.where(null);
 
-        Specification<C> statusSpecification = (root, _, _) ->
-                root.get("status").in(ProductStatus.ACTIVE);
-        specification = specification.and(statusSpecification);
+        Specification<C> statusProductSpecification = (root, _, _) -> root.get("status").in(ProductStatus.ACTIVE);
+        Specification<C> statusCategorySpecification = (root, _, _) -> root.join("category").get("status").in(CategoryStatus.ACTIVE);
+
+        specification = specification.and(statusProductSpecification.and(statusCategorySpecification));
 
         if (this.filter != null && StringUtils.hasText(this.filter.getName())) {
-            Specification<C> nameSpecification = (root, _, criteriaBuilder) ->
+            Specification<C> productNameSpecification = (root, _, criteriaBuilder) ->
                     criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), STR."%\{filter.getName().toLowerCase()}%");
-            specification = specification.and(nameSpecification);
+
+            Specification<C> categoryNameSpecification = (root, _, criteriaBuilder) ->
+                    criteriaBuilder.like(criteriaBuilder.lower(root.join("category").get("name")), STR."%\{filter.getName().toLowerCase()}%");
+            specification = specification.and(productNameSpecification.or(categoryNameSpecification));
         }
 
 

@@ -87,7 +87,7 @@ class ProductControllerTest extends RMAControllerTest {
 
         //then
         mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/{id}", productId))
-                .andExpect(MockMvcResultMatchers.status().isInternalServerError());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
@@ -97,7 +97,7 @@ class ProductControllerTest extends RMAControllerTest {
 
         //then
         mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/{id}", productId))
-                .andExpect(MockMvcResultMatchers.status().isInternalServerError());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
 
@@ -702,7 +702,7 @@ class ProductControllerTest extends RMAControllerTest {
 
         //then
         mockMvc.perform(MockMvcRequestBuilders.delete(BASE_URL + "/{id}", productId))
-                .andExpect(MockMvcResultMatchers.status().isInternalServerError());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
@@ -712,7 +712,7 @@ class ProductControllerTest extends RMAControllerTest {
 
         //then
         mockMvc.perform(MockMvcRequestBuilders.delete(BASE_URL + "/{id}", productId))
-                .andExpect(MockMvcResultMatchers.status().isInternalServerError());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
 }

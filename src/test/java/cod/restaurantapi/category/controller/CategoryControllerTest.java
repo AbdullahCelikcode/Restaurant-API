@@ -500,7 +500,7 @@ class CategoryControllerTest extends RMAControllerTest {
 
 
         mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/{id}", "abc"))
-                .andExpect(MockMvcResultMatchers.status().isInternalServerError());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
@@ -581,7 +581,7 @@ class CategoryControllerTest extends RMAControllerTest {
     void givenDeleteCategory_whenInvalidStringInput_thenReturnBadRequest() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders.delete(BASE_URL + "/{id}", "abc"))
-                .andExpect(MockMvcResultMatchers.status().isInternalServerError());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
