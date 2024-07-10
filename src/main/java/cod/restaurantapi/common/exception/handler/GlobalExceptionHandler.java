@@ -1,6 +1,7 @@
 package cod.restaurantapi.common.exception.handler;
 
 import cod.restaurantapi.common.exception.RMAAlreadyExistException;
+import cod.restaurantapi.common.exception.RMABadRequest;
 import cod.restaurantapi.common.exception.RMANotFoundException;
 import cod.restaurantapi.common.exception.RMAStatusAlreadyChangedException;
 import cod.restaurantapi.common.exception.model.RMAError;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,6 +40,22 @@ public class GlobalExceptionHandler {
                 .field(fieldError.getField())
                 .message(fieldError.getDefaultMessage())
                 .build()));
+
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<RMAError> handleMethodTypeMisMatchException(
+            final MethodArgumentTypeMismatchException exception) {
+
+        log.error(exception.getMessage(), exception);
+
+        RMAError error = RMAError.builder()
+                .status(HttpStatus.BAD_REQUEST)
+                .errors(new ArrayList<>())
+                .build();
 
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
 
@@ -130,6 +148,21 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
+
+    @ExceptionHandler(RMABadRequest.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<RMAError> handleRMABadRequest(
+            final RMABadRequest exception) {
+
+        log.error(exception.getMessage(), exception);
+
+        RMAError error = RMAError.builder()
+                .message(exception.getMessage())
+                .status(HttpStatus.BAD_REQUEST)
+                .build();
+
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler(IOException.class)
     public ResponseEntity<RMAError> handleIOException(final IOException exception) {
