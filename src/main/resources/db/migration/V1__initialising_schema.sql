@@ -66,7 +66,8 @@ create table if not exists rma_dining_table
         constraint pk__rma_dining_table__id primary key,
     merge_id   uuid         not null,
     status     varchar(20)  not null
-        constraint c__rma_dining_table__status check (status in ('OCCUPIED', 'AVAILABLE', 'RESERVED', 'DELETED')),
+        constraint c__rma_dining_table__status check (status in ('OCCUPIED', 'AVAILABLE', 'RESERVED', 'DELETED',
+                                                                 'TAKING ORDERS')),
     size       int          not null,
     created_at timestamp(0) not null,
     updated_at timestamp(0)
