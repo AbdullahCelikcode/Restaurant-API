@@ -72,9 +72,11 @@ public class DiningTableServiceImpl implements DiningTableService {
 
     @Override
     public void mergeDiningTables(DiningTableMergeCommand diningTableMergeCommand) {
+
         List<DiningTableEntity> diningTableEntityList = diningTableRepository.findAllById(diningTableMergeCommand.getIds());
+
         for (DiningTableEntity diningTableEntity : diningTableEntityList) {
-            if (diningTableEntity.getStatus() != DiningTableStatus.OCCUPIED) {
+            if (diningTableEntity.getStatus() != DiningTableStatus.AVAILABLE) {
                 throw new DiningTableStatusIsNotValid();
             }
         }
@@ -82,6 +84,7 @@ public class DiningTableServiceImpl implements DiningTableService {
 
         for (DiningTableEntity diningTableEntity : diningTableEntityList) {
             diningTableEntity.setMergeId(mergeId);
+            diningTableEntity.setStatus(DiningTableStatus.OCCUPIED);
         }
         diningTableRepository.saveAll(diningTableEntityList);
 
@@ -96,6 +99,12 @@ public class DiningTableServiceImpl implements DiningTableService {
         }
         if (diningTableEntityList.size() == 1) {
             throw new DiningTableAlreadySplitException();
+        }
+
+        for (DiningTableEntity diningTableEntity : diningTableEntityList) {
+            if (diningTableEntity.getStatus() == DiningTableStatus.TAKING_ORDERS) {
+                throw new DiningTableStatusIsNotValid();
+            }
         }
 
         for (DiningTableEntity diningTableEntity : diningTableEntityList) {
