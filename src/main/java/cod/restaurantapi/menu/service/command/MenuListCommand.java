@@ -3,12 +3,14 @@ package cod.restaurantapi.menu.service.command;
 import cod.restaurantapi.category.model.enums.CategoryStatus;
 import cod.restaurantapi.common.model.RMAFilter;
 import cod.restaurantapi.common.model.RMASpecification;
+import cod.restaurantapi.common.model.Sorting;
 import cod.restaurantapi.common.service.command.RMAListCommand;
 import cod.restaurantapi.product.model.enums.ProductStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
 
@@ -26,11 +28,18 @@ public class MenuListCommand extends RMAListCommand implements RMASpecification 
 
         private String name;
 
+
     }
 
 
     @Override
     public <C> Specification<C> toSpecification(Class<C> clazz) {
+
+        Sorting sorting = Sorting.builder()
+                .direction(Sort.Direction.ASC)
+                .property("id")
+                .build();
+        this.setSorting(sorting);
 
         Specification<C> specification = Specification.where(null);
 
