@@ -3,6 +3,8 @@ package cod.restaurantapi.category.controller.request;
 import cod.restaurantapi.category.model.enums.CategoryStatus;
 import cod.restaurantapi.common.controller.request.RMAListRequest;
 import cod.restaurantapi.common.model.RMAFilter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.validation.constraints.AssertTrue;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,6 +32,14 @@ public class CategoryListRequest extends RMAListRequest {
         private String name;
         private Set<CategoryStatus> statuses;
 
+    }
+
+    @JsonIgnore
+    @AssertTrue
+    @Override
+    public boolean isOrderPropertyAccepted() {
+        final Set<String> acceptedFilterFields = Set.of("id", "name");
+        return this.isPropertyAccepted(acceptedFilterFields);
     }
 
 }
