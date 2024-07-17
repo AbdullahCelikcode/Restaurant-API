@@ -1,14 +1,14 @@
 package cod.restaurantapi.menu.service.mapper;
 
 import cod.restaurantapi.common.model.mapper.BaseMapper;
-import cod.restaurantapi.menu.service.MenuDTO;
+import cod.restaurantapi.menu.service.domain.Menu;
 import cod.restaurantapi.product.service.domain.Product;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 @Mapper
-public interface ProductToMenuMapper extends BaseMapper<Product, MenuDTO> {
+public interface ProductToMenuMapper extends BaseMapper<Product, Menu> {
     ProductToMenuMapper INSTANCE = Mappers.getMapper(ProductToMenuMapper.class);
 
     @Mapping(source = "id", target = "product.id")
@@ -19,5 +19,5 @@ public interface ProductToMenuMapper extends BaseMapper<Product, MenuDTO> {
     @Mapping(source = "extent", target = "product.extent")
     @Mapping(source = "extentType", target = "product.extentType")
     @Mapping(source = "category", target = "category")
-    MenuDTO map(Product source);
+    Menu map(Product source);
 }
