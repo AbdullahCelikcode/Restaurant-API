@@ -4,8 +4,8 @@ import cod.restaurantapi.RMAServiceTest;
 import cod.restaurantapi.common.model.Pagination;
 import cod.restaurantapi.common.model.RMAPageResponse;
 import cod.restaurantapi.common.model.Sorting;
-import cod.restaurantapi.menu.service.MenuDTO;
 import cod.restaurantapi.menu.service.command.MenuListCommand;
+import cod.restaurantapi.menu.service.domain.Menu;
 import cod.restaurantapi.product.model.enums.ExtentType;
 import cod.restaurantapi.product.model.enums.ProductStatus;
 import cod.restaurantapi.product.repository.ProductRepository;
@@ -99,7 +99,7 @@ class MenuServiceImplTest extends RMAServiceTest {
                 Mockito.any(Pageable.class))).thenReturn(productEntityPage);
 
 
-        RMAPageResponse<MenuDTO> exceptedList = menuService.getMenu(menuListCommand);
+        RMAPageResponse<Menu> exceptedList = menuService.getMenu(menuListCommand);
 
         //verify
         Mockito.verify(productRepository, Mockito.times(1))
@@ -178,7 +178,7 @@ class MenuServiceImplTest extends RMAServiceTest {
                 Mockito.any(Pageable.class))).thenReturn(productEntityPage);
 
 
-        RMAPageResponse<MenuDTO> exceptedList = menuService.getMenu(menuListCommand);
+        RMAPageResponse<Menu> exceptedList = menuService.getMenu(menuListCommand);
 
         //verify
         Mockito.verify(productRepository, Mockito.times(1))
@@ -256,7 +256,7 @@ class MenuServiceImplTest extends RMAServiceTest {
                 Mockito.any(Pageable.class))).thenReturn(productEntityPage);
 
 
-        RMAPageResponse<MenuDTO> exceptedList = menuService.getMenu(menuListCommand);
+        RMAPageResponse<Menu> exceptedList = menuService.getMenu(menuListCommand);
 
         //verify
         Mockito.verify(productRepository, Mockito.times(1))
@@ -330,7 +330,7 @@ class MenuServiceImplTest extends RMAServiceTest {
                 Mockito.any(Pageable.class))).thenReturn(productEntityPage);
 
 
-        RMAPageResponse<MenuDTO> exceptedList = menuService.getMenu(menuListCommand);
+        RMAPageResponse<Menu> exceptedList = menuService.getMenu(menuListCommand);
 
         //verify
         Mockito.verify(productRepository, Mockito.times(1))

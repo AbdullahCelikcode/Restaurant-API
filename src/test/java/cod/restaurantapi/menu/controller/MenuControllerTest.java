@@ -5,9 +5,9 @@ import cod.restaurantapi.common.model.Pagination;
 import cod.restaurantapi.common.model.RMAPageResponse;
 import cod.restaurantapi.common.model.Sorting;
 import cod.restaurantapi.menu.controller.request.MenuRequest;
-import cod.restaurantapi.menu.service.MenuDTO;
 import cod.restaurantapi.menu.service.MenuService;
 import cod.restaurantapi.menu.service.command.MenuListCommand;
+import cod.restaurantapi.menu.service.domain.Menu;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -49,32 +49,32 @@ public class MenuControllerTest extends RMAControllerTest {
                 .build();
         //when
 
-        List<MenuDTO> menuDTOS = new ArrayList<>();
+        List<Menu> Menus = new ArrayList<>();
 
-        menuDTOS.add(
-                MenuDTO.builder()
-                        .category(MenuDTO.Category.builder().build())
-                        .product(MenuDTO.Product.builder().build())
+        Menus.add(
+                Menu.builder()
+                        .category(Menu.Category.builder().build())
+                        .product(Menu.Product.builder().build())
                         .build()
         );
-        menuDTOS.add(
-                MenuDTO.builder()
-                        .category(MenuDTO.Category.builder().build())
-                        .product(MenuDTO.Product.builder().build())
+        Menus.add(
+                Menu.builder()
+                        .category(Menu.Category.builder().build())
+                        .product(Menu.Product.builder().build())
                         .build()
         );
-        menuDTOS.add(
-                MenuDTO.builder()
-                        .category(MenuDTO.Category.builder().build())
-                        .product(MenuDTO.Product.builder().build())
+        Menus.add(
+                Menu.builder()
+                        .category(Menu.Category.builder().build())
+                        .product(Menu.Product.builder().build())
                         .build()
         );
-        RMAPageResponse<MenuDTO> menuDTORMAPageResponse = RMAPageResponse.<MenuDTO>builder()
-                .content(menuDTOS)
+        RMAPageResponse<Menu> menuDTORMAPageResponse = RMAPageResponse.<Menu>builder()
+                .content(Menus)
                 .pageNumber(pagination.getPageNumber())
                 .pageSize(pagination.getPageSize())
-                .totalPageCount(menuDTOS.size())
-                .totalElementCount((long) menuDTOS.size())
+                .totalPageCount(Menus.size())
+                .totalElementCount((long) Menus.size())
                 .sortedBy(sorting)
                 .filteredBy(menuFilter)
                 .build();
@@ -119,32 +119,32 @@ public class MenuControllerTest extends RMAControllerTest {
                 .build();
         //when
 
-        List<MenuDTO> menuDTOS = new ArrayList<>();
+        List<Menu> Menus = new ArrayList<>();
 
-        menuDTOS.add(
-                MenuDTO.builder()
-                        .category(MenuDTO.Category.builder().build())
-                        .product(MenuDTO.Product.builder().build())
+        Menus.add(
+                Menu.builder()
+                        .category(Menu.Category.builder().build())
+                        .product(Menu.Product.builder().build())
                         .build()
         );
-        menuDTOS.add(
-                MenuDTO.builder()
-                        .category(MenuDTO.Category.builder().build())
-                        .product(MenuDTO.Product.builder().build())
+        Menus.add(
+                Menu.builder()
+                        .category(Menu.Category.builder().build())
+                        .product(Menu.Product.builder().build())
                         .build()
         );
-        menuDTOS.add(
-                MenuDTO.builder()
-                        .category(MenuDTO.Category.builder().build())
-                        .product(MenuDTO.Product.builder().build())
+        Menus.add(
+                Menu.builder()
+                        .category(Menu.Category.builder().build())
+                        .product(Menu.Product.builder().build())
                         .build()
         );
-        RMAPageResponse<MenuDTO> menuDTORMAPageResponse = RMAPageResponse.<MenuDTO>builder()
-                .content(menuDTOS)
+        RMAPageResponse<Menu> menuDTORMAPageResponse = RMAPageResponse.<Menu>builder()
+                .content(Menus)
                 .pageNumber(pagination.getPageNumber())
                 .pageSize(pagination.getPageSize())
-                .totalPageCount(menuDTOS.size())
-                .totalElementCount((long) menuDTOS.size())
+                .totalPageCount(Menus.size())
+                .totalElementCount((long) Menus.size())
                 .sortedBy(sorting)
                 .build();
 
@@ -185,32 +185,32 @@ public class MenuControllerTest extends RMAControllerTest {
                 .build();
         //when
 
-        List<MenuDTO> menuDTOS = new ArrayList<>();
+        List<Menu> Menus = new ArrayList<>();
 
-        menuDTOS.add(
-                MenuDTO.builder()
-                        .category(MenuDTO.Category.builder().build())
-                        .product(MenuDTO.Product.builder().build())
+        Menus.add(
+                Menu.builder()
+                        .category(Menu.Category.builder().build())
+                        .product(Menu.Product.builder().build())
                         .build()
         );
-        menuDTOS.add(
-                MenuDTO.builder()
-                        .category(MenuDTO.Category.builder().build())
-                        .product(MenuDTO.Product.builder().build())
+        Menus.add(
+                Menu.builder()
+                        .category(Menu.Category.builder().build())
+                        .product(Menu.Product.builder().build())
                         .build()
         );
-        menuDTOS.add(
-                MenuDTO.builder()
-                        .category(MenuDTO.Category.builder().build())
-                        .product(MenuDTO.Product.builder().build())
+        Menus.add(
+                Menu.builder()
+                        .category(Menu.Category.builder().build())
+                        .product(Menu.Product.builder().build())
                         .build()
         );
-        RMAPageResponse<MenuDTO> menuDTORMAPageResponse = RMAPageResponse.<MenuDTO>builder()
-                .content(menuDTOS)
+        RMAPageResponse<Menu> menuDTORMAPageResponse = RMAPageResponse.<Menu>builder()
+                .content(Menus)
                 .pageNumber(pagination.getPageNumber())
                 .pageSize(pagination.getPageSize())
-                .totalPageCount(menuDTOS.size())
-                .totalElementCount((long) menuDTOS.size())
+                .totalPageCount(Menus.size())
+                .totalElementCount((long) Menus.size())
                 .filteredBy(menuFilter)
                 .build();
 
@@ -249,32 +249,32 @@ public class MenuControllerTest extends RMAControllerTest {
                 .build();
         //when
 
-        List<MenuDTO> menuDTOS = new ArrayList<>();
+        List<Menu> Menus = new ArrayList<>();
 
-        menuDTOS.add(
-                MenuDTO.builder()
-                        .category(MenuDTO.Category.builder().build())
-                        .product(MenuDTO.Product.builder().build())
+        Menus.add(
+                Menu.builder()
+                        .category(Menu.Category.builder().build())
+                        .product(Menu.Product.builder().build())
                         .build()
         );
-        menuDTOS.add(
-                MenuDTO.builder()
-                        .category(MenuDTO.Category.builder().build())
-                        .product(MenuDTO.Product.builder().build())
+        Menus.add(
+                Menu.builder()
+                        .category(Menu.Category.builder().build())
+                        .product(Menu.Product.builder().build())
                         .build()
         );
-        menuDTOS.add(
-                MenuDTO.builder()
-                        .category(MenuDTO.Category.builder().build())
-                        .product(MenuDTO.Product.builder().build())
+        Menus.add(
+                Menu.builder()
+                        .category(Menu.Category.builder().build())
+                        .product(Menu.Product.builder().build())
                         .build()
         );
-        RMAPageResponse<MenuDTO> menuDTORMAPageResponse = RMAPageResponse.<MenuDTO>builder()
-                .content(menuDTOS)
+        RMAPageResponse<Menu> menuDTORMAPageResponse = RMAPageResponse.<Menu>builder()
+                .content(Menus)
                 .pageNumber(pagination.getPageNumber())
                 .pageSize(pagination.getPageSize())
-                .totalPageCount(menuDTOS.size())
-                .totalElementCount((long) menuDTOS.size())
+                .totalPageCount(Menus.size())
+                .totalElementCount((long) Menus.size())
                 .build();
 
         Mockito.when(menuService.getMenu(Mockito.any(MenuListCommand.class)))

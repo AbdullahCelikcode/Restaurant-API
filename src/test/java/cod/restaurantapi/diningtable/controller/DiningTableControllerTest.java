@@ -7,6 +7,7 @@ import cod.restaurantapi.common.model.Sorting;
 import cod.restaurantapi.diningtable.controller.request.DiningTableAddRequest;
 import cod.restaurantapi.diningtable.controller.request.DiningTableListRequest;
 import cod.restaurantapi.diningtable.controller.request.DiningTableMergeRequest;
+import cod.restaurantapi.diningtable.controller.request.DiningTableSplitRequest;
 import cod.restaurantapi.diningtable.controller.request.DiningTableUpdateRequest;
 import cod.restaurantapi.diningtable.controller.response.DiningTableStatusRequest;
 import cod.restaurantapi.diningtable.model.enums.DiningTableStatus;
@@ -912,40 +913,24 @@ class DiningTableControllerTest extends RMAControllerTest {
     void givenSplitMergeId_whenValidId_thenReturnSuccess() throws Exception {
         // Given
         UUID givenMergeId = UUID.randomUUID();
+        DiningTableSplitRequest diningTableSplitRequest = DiningTableSplitRequest.builder()
+                .mergeId(givenMergeId)
+                .build();
 
         // When
 
         Mockito.doNothing().when(diningTableService).mergeDiningTables(Mockito.any(DiningTableMergeCommand.class));
 
         // Assert
-        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/{id}/split", givenMergeId)
-                        .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/split")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(diningTableSplitRequest)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isSuccess").value(true));
 
 
         // Verify
         Mockito.verify(diningTableService, Mockito.times(1))
-                .splitDiningTables(Mockito.any(UUID.class));
-    }
-
-    @Test
-    void givenSplitMergeId_whenInvalidId_thenReturnSuccess() throws Exception {
-        // Given
-        String givenMergeId = "ddd";
-
-        // When
-
-        Mockito.doNothing().when(diningTableService).mergeDiningTables(Mockito.any(DiningTableMergeCommand.class));
-
-        // Assert
-        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/{id}/split", givenMergeId)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
-
-
-        // Verify
-        Mockito.verify(diningTableService, Mockito.times(0))
                 .splitDiningTables(Mockito.any(UUID.class));
     }
 

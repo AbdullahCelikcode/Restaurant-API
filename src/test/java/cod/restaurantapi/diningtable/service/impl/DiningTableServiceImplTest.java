@@ -487,13 +487,13 @@ class DiningTableServiceImplTest extends RMAServiceTest {
                 .id(1L)
                 .mergeId(UUID.randomUUID())
                 .size(4)
-                .status(DiningTableStatus.OCCUPIED)
+                .status(DiningTableStatus.AVAILABLE)
                 .build();
         DiningTableEntity diningTableEntity2 = DiningTableEntity.builder()
                 .id(2L)
                 .mergeId(UUID.randomUUID())
                 .size(4)
-                .status(DiningTableStatus.OCCUPIED)
+                .status(DiningTableStatus.AVAILABLE)
                 .build();
 
         List<DiningTableEntity> diningTableEntities = new ArrayList<>();

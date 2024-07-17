@@ -7,6 +7,7 @@ import cod.restaurantapi.common.model.Sorting;
 import cod.restaurantapi.diningtable.controller.request.DiningTableAddRequest;
 import cod.restaurantapi.diningtable.controller.request.DiningTableListRequest;
 import cod.restaurantapi.diningtable.controller.request.DiningTableMergeRequest;
+import cod.restaurantapi.diningtable.controller.request.DiningTableSplitRequest;
 import cod.restaurantapi.diningtable.controller.request.DiningTableUpdateRequest;
 import cod.restaurantapi.diningtable.controller.response.DiningTableStatusRequest;
 import cod.restaurantapi.diningtable.model.enums.DiningTableStatus;
@@ -314,13 +315,13 @@ class DiningTableSystemTest extends RMASystemTest {
         // initialize
         UUID mergeId1 = UUID.randomUUID();
         DiningTableEntity createdDiningTableEntity = DiningTableEntity.builder()
-                .status(DiningTableStatus.OCCUPIED)
+                .status(DiningTableStatus.AVAILABLE)
                 .size(4)
                 .mergeId(mergeId1)
                 .build();
         UUID mergeId2 = UUID.randomUUID();
         DiningTableEntity createdDiningTableEntity2 = DiningTableEntity.builder()
-                .status(DiningTableStatus.OCCUPIED)
+                .status(DiningTableStatus.AVAILABLE)
                 .size(4)
                 .mergeId(mergeId2)
                 .build();
@@ -362,8 +363,14 @@ class DiningTableSystemTest extends RMASystemTest {
     @Test
     void givenDiningTableSplit_thenSplitTables() throws Exception {
 
-        // initialize
+        // given
+
         UUID mergeId = UUID.randomUUID();
+        DiningTableSplitRequest diningTableSplitRequest = DiningTableSplitRequest.builder()
+                .mergeId(mergeId)
+                .build();
+
+        // initialize
         DiningTableEntity createdDiningTableEntity = DiningTableEntity.builder()
                 .status(DiningTableStatus.OCCUPIED)
                 .size(4)
@@ -382,7 +389,9 @@ class DiningTableSystemTest extends RMASystemTest {
 
         //when
 
-        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/{id}/split", mergeId))
+        mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/split")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(diningTableSplitRequest)))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
         DiningTableEntity diningTable = diningTableTestRepository.findById(diningTableEntityList.get(0).getId())
