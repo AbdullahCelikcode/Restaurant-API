@@ -12,6 +12,7 @@ import cod.restaurantapi.diningtable.controller.mapper.DiningTableUpdateRequestT
 import cod.restaurantapi.diningtable.controller.request.DiningTableAddRequest;
 import cod.restaurantapi.diningtable.controller.request.DiningTableListRequest;
 import cod.restaurantapi.diningtable.controller.request.DiningTableMergeRequest;
+import cod.restaurantapi.diningtable.controller.request.DiningTableSplitRequest;
 import cod.restaurantapi.diningtable.controller.request.DiningTableUpdateRequest;
 import cod.restaurantapi.diningtable.controller.response.DiningTableResponse;
 import cod.restaurantapi.diningtable.controller.response.DiningTableStatusRequest;
@@ -31,8 +32,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.UUID;
 
 @Validated
 @RestController
@@ -89,9 +88,9 @@ class DiningTableController {
         return BaseResponse.SUCCESS;
     }
 
-    @PostMapping("/api/v1/dining-table/{id}/split")
-    public BaseResponse<Void> mergeDiningTables(@PathVariable UUID id) {
-        diningTableService.splitDiningTables(id);
+    @PostMapping("/api/v1/dining-table/split")
+    public BaseResponse<Void> mergeDiningTables(@RequestBody DiningTableSplitRequest diningTableSplitRequest) {
+        diningTableService.splitDiningTables(diningTableSplitRequest.getMergeId());
 
         return BaseResponse.SUCCESS;
     }
