@@ -1,4 +1,4 @@
-package cod.restaurantapi.menu.service;
+package cod.restaurantapi.menu.service.domain;
 
 import cod.restaurantapi.product.model.enums.ExtentType;
 import lombok.AllArgsConstructor;
@@ -13,7 +13,7 @@ import java.util.UUID;
 @Builder
 @Setter
 @AllArgsConstructor
-public class MenuDTO {
+public class Menu {
 
 
     private Product product;

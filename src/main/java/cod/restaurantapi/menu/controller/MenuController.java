@@ -7,8 +7,8 @@ import cod.restaurantapi.menu.controller.mapper.MenuDtoToMenuListResponseMapper;
 import cod.restaurantapi.menu.controller.mapper.MenuRequestToMenuListCommandMapper;
 import cod.restaurantapi.menu.controller.request.MenuRequest;
 import cod.restaurantapi.menu.controller.response.MenuResponse;
-import cod.restaurantapi.menu.service.MenuDTO;
 import cod.restaurantapi.menu.service.MenuService;
+import cod.restaurantapi.menu.service.domain.Menu;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,7 +27,7 @@ public class MenuController {
 
     @PostMapping("/api/v1/menu")
     public BaseResponse<RMAPage<MenuResponse>> getMenu(@RequestBody MenuRequest menuRequest) {
-        RMAPageResponse<MenuDTO> menu = menuService.getMenu(menuRequestToMenuListCommandMapper.map(menuRequest));
+        RMAPageResponse<Menu> menu = menuService.getMenu(menuRequestToMenuListCommandMapper.map(menuRequest));
 
 
         RMAPage<MenuResponse> pageResponse = RMAPage.<MenuResponse>builder()
