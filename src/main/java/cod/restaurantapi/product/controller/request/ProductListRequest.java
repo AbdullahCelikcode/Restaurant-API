@@ -3,7 +3,9 @@ package cod.restaurantapi.product.controller.request;
 import cod.restaurantapi.common.controller.request.RMAListRequest;
 import cod.restaurantapi.common.model.RMAFilter;
 import cod.restaurantapi.product.model.enums.ProductStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -43,6 +45,13 @@ public class ProductListRequest extends RMAListRequest {
         @Positive
         private Integer maxPrice;
 
+    }
 
+    @JsonIgnore
+    @AssertTrue
+    @Override
+    public boolean isOrderPropertyAccepted() {
+        final Set<String> acceptedFilterFields = Set.of("name", "categoryId", "id", "price");
+        return this.isPropertyAccepted(acceptedFilterFields);
     }
 }
