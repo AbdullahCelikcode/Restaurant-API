@@ -4,5 +4,6 @@ public enum DiningTableStatus {
     OCCUPIED,
     AVAILABLE,
     RESERVED,
-    DELETED
+    DELETED,
+    TAKING_ORDERS
 }
